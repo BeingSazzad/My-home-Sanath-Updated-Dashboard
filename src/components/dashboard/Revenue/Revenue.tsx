@@ -56,7 +56,7 @@ const RevenueAnalytics: React.FC = () => {
                     className={cn(
                       "w-full text-left px-4 py-2.5 text-sm transition-colors",
                       period === p
-                        ? "bg-[#0B3C6D]/5 text-[#0B3C6D] font-semibold"
+                        ? "bg-blue-50 text-blue-900 font-semibold"
                         : "text-slate-600 hover:bg-slate-50"
                     )}
                   >

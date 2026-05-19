@@ -84,7 +84,7 @@ const ActiveListings = () => {
         <div className="relative" ref={dropRef}>
           <button
             onClick={() => setOpen((o) => !o)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#0B3C6D] text-white rounded-xl hover:bg-[#0B3C6D]/90 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm"
           >
             <ListFilter className="w-4 h-4" />
             {selected === "All" ? "Filter" : selected}
@@ -108,7 +108,7 @@ const ActiveListings = () => {
                   className={cn(
                     "w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 transition-colors",
                     selected === s
-                      ? "bg-[#0B3C6D]/5 text-[#0B3C6D] font-semibold"
+                      ? "bg-blue-50 text-blue-900 font-semibold"
                       : "text-gray-600 hover:bg-gray-50"
                   )}
                 >
