@@ -38,16 +38,6 @@ const FALLBACK: PropertyListing[] = [
 ];
 
 // ─── Sub-components ───────────────────────────────────────
-const SkeletonRow = () => (
-  <TableRow>
-    {Array.from({ length: 5 }).map((_, i) => (
-      <TableCell key={i}>
-        <div className="h-4 bg-gray-100 rounded animate-pulse w-24" />
-      </TableCell>
-    ))}
-  </TableRow>
-);
-
 const StatusBadge = ({ status }: { status: StatusType }) => {
   const { cls, dot } = statusConfig[status];
   return (
@@ -60,8 +50,8 @@ const StatusBadge = ({ status }: { status: StatusType }) => {
 
 // ─── Main Component ───────────────────────────────────────
 const ActiveListings = () => {
-  const { data, isLoading } = useGetActiveListingsQuery({});
-  const allListings: PropertyListing[] = FALLBACK ?? data?.data;
+  const { data } = useGetActiveListingsQuery({});
+  const allListings: PropertyListing[] = data?.data ?? FALLBACK;
 
   const [selected, setSelected] = useState<StatusFilter>("All");
   const [open, setOpen]         = useState(false);
@@ -139,9 +129,7 @@ const ActiveListings = () => {
         </TableHeader>
 
         <TableBody>
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)
-          ) : listings.length === 0 ? (
+          {listings.length === 0 ? (
             <TableRow>
               <TableCell colSpan={5} className="text-center py-12 text-gray-400 text-sm">
                 No listings match the selected filter.

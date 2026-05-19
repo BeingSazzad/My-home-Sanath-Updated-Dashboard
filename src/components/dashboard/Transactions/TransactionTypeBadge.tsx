@@ -10,7 +10,7 @@ const config: Record<TxnType, string> = {
 
 export function TransactionTypeBadge({ type }: { type: TxnType }) {
   return (
-    <Badge variant="outline" className={`text-xs font-medium ${config[type]}`}>
+    <Badge variant="outline" className={`text-xs font-medium capitalize ${config[type]}`}>
       {type}
     </Badge>
   );
