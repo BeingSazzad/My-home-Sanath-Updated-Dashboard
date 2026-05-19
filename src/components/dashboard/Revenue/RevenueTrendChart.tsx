@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { cn } from "../../../lib/utils";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
@@ -9,10 +11,49 @@ const chartData = trendData.labels.map((month, i) => ({
   revenue: trendData.values[i],
 }));
 
-const RevenueTrendChart: React.FC = () => (
+const YEARS = ["2026", "2025"];
+
+const RevenueTrendChart: React.FC = () => {
+  const [year, setYear] = useState(YEARS[0]);
+  const [open, setOpen] = useState(false);
+
+  return (
   <div className="bg-white border border-gray-100 rounded-2xl p-5">
-    <p className="text-[15px] font-medium text-gray-900">Revenue Trend</p>
-    <p className="text-xs text-gray-400 mb-4">Monthly revenue</p>
+    <div className="flex justify-between items-start mb-4">
+      <div>
+        <p className="text-[15px] font-medium text-gray-900">Revenue Trend</p>
+        <p className="text-xs text-gray-400">Monthly revenue</p>
+      </div>
+
+      <div className="relative">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors shadow-sm"
+        >
+          <span className="text-slate-700">{year}</span>
+          <ChevronDown className={cn("w-3 h-3 text-slate-500 transition-transform", open && "rotate-180")} />
+        </button>
+
+        {open && (
+          <div className="absolute right-0 mt-1.5 w-24 bg-white rounded-lg border border-slate-100 shadow-lg z-20 py-1 overflow-hidden">
+            {YEARS.map((y) => (
+              <button
+                key={y}
+                onClick={() => { setYear(y); setOpen(false); }}
+                className={cn(
+                  "w-full text-left px-3 py-1.5 text-xs transition-colors",
+                  year === y
+                    ? "bg-blue-50 text-blue-900 font-semibold"
+                    : "text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
 
     <ResponsiveContainer width="100%" height={220}>
       <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
@@ -55,6 +96,7 @@ const RevenueTrendChart: React.FC = () => (
       ))}
     </div>
   </div>
-);
+  );
+};
 
 export default RevenueTrendChart;

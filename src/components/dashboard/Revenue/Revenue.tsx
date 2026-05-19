@@ -7,18 +7,16 @@ import RevenueTrendChart from "./RevenueTrendChart";
 import RecentTransactions from "./RecentTransactions";
 import { Button } from "../../ui/button";
 
-type Period = "This Month" | "Last 3 Months" | "Last 6 Months" | "Last 12 Months" | "All Time";
+type Period = "All Time" | "This Year" | "This Month";
 
 const PERIODS: Period[] = [
-  "This Month",
-  "Last 3 Months",
-  "Last 6 Months",
-  "Last 12 Months",
   "All Time",
+  "This Year",
+  "This Month",
 ];
 
 const RevenueAnalytics: React.FC = () => {
-  const [period, setPeriod] = useState<Period>("Last 12 Months");
+  const [period, setPeriod] = useState<Period>("This Year");
   const [open, setOpen] = useState(false);
 
   return (
@@ -77,7 +75,15 @@ const RevenueAnalytics: React.FC = () => {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-3 gap-4 mb-4">
-        {statsData.map((s) => <RevenueStatCard key={s.id} {...s} />)}
+        {statsData.map((s) => {
+          let baseLabel = "";
+          if (s.id === "total") baseLabel = "Revenue";
+          if (s.id === "month") baseLabel = "Net Profit";
+          if (s.id === "txn") baseLabel = "Transactions";
+          
+          const label = period === "All Time" ? `Total ${baseLabel}` : `${baseLabel} (${period})`;
+          return <RevenueStatCard key={s.id} {...s} label={label} />;
+        })}
       </div>
 
       {/* Trend Chart */}
