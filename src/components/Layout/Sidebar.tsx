@@ -33,20 +33,22 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="bg-white border-r border-neutral-200 w-full h-screen">
+    <aside className="bg-white border-r border-slate-100 w-full h-screen">
       <div className="h-full flex flex-col">
         
         {/* Header */}
-        <div className="flex flex-col py-3 items-center border-b border-neutral-200 px-4">
-          <img className="w-20 mx-auto" src="/logo.png" alt="" />
-          <span className="text-lg font-semibold text-neutral-900">
-            Admin Dashboard
-          </span>
+        <div className="flex items-center justify-between py-5 px-6 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <img className="h-8 w-auto shrink-0" src="/logo.png" alt="Logo" />
+            <span className="text-base font-bold text-slate-800 tracking-tight">
+              MyHome
+            </span>
+          </div>
         </div>
 
         {/* Navigation */}
-        <ScrollArea className="flex-1 px-3 py-4">
-          <nav className="space-y-2">
+        <ScrollArea className="flex-1 pr-3 pl-0 py-5">
+          <nav className="space-y-1.5">
             {filteredSidebarItems?.map((item) => {
               const itemPath = `/${item.path}`;
               const isItemActive = isActive(itemPath);
@@ -56,13 +58,18 @@ export default function Sidebar() {
                   key={item.key}
                   to={itemPath}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-11 transition-all border",
+                    "relative flex items-center gap-3 pl-6 pr-4 py-2.5 min-h-11 transition-all rounded-r-xl rounded-l-none font-medium text-sm",
                     isItemActive
-                      ? "bg-primary text-white! border-primary shadow-sm font-medium"
-                      : "border border-slate-200/80 text-slate-700 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900"
+                      ? "bg-[#0B3C6D]/8 text-[#0B3C6D]! font-semibold"
+                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
                   )}
                 >
-                  {item.icon}
+                  {isItemActive && (
+                    <div className="absolute left-0 top-[20%] bottom-[20%] w-1 rounded-r bg-[#0B3C6D]" />
+                  )}
+                  <span className={cn("shrink-0", isItemActive ? "text-[#0B3C6D]" : "text-slate-400")}>
+                    {item.icon}
+                  </span>
                   <span>{item.label}</span>
                 </Link>
               );
@@ -71,12 +78,13 @@ export default function Sidebar() {
         </ScrollArea>
 
         {/* Logout */}
-        <div className="border-t border-neutral-200 p-3">
+        <div className="border-t border-slate-100 p-4">
           <Button
             onClick={handleLogout}
-            className="w-full gap-3 bg-primary hover:bg-primary/95 text-white transition-all shadow-sm font-medium"
+            variant="ghost"
+            className="w-full gap-3 justify-start pl-6 py-2.5 h-11 text-slate-500 hover:text-red-600 hover:bg-red-50/50 transition-all font-medium rounded-xl border-0 shadow-none"
           >
-            <FiLogOut className="h-5 w-5" />
+            <FiLogOut className="h-5 w-5 shrink-0" />
             <span>Log Out</span>
           </Button>
         </div>
