@@ -203,7 +203,7 @@ export default function AdminManage() {
             <div className="flex items-start justify-between mb-6">
                 <div>
                     <h2 className="text-3xl font-bold text-gray-900">Admin Management</h2>
-                    <p className="text-sm text-blue-500 mt-1">Add and manage administrator accounts and permissions</p>
+                    <p className="text-sm text-slate-500 mt-1">Add and manage administrator accounts and permissions</p>
                 </div>
 
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>

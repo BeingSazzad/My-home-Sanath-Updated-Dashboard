@@ -53,12 +53,12 @@ export default function PushNotificationsPage() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="title">Push Notifications</h1>
-          <p className="text-sm text-blue-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Send targeted push notifications to users and agents
           </p>
         </div>
         <Button
-          className="gap-2 bg-blue-900 hover:bg-blue-800 text-white"
+          className="gap-2 bg-[#0B3C6D] hover:bg-[#0B3C6D]/95 text-white"
           onClick={() => setModalOpen(true)}
         >
           <Plus size={16} />

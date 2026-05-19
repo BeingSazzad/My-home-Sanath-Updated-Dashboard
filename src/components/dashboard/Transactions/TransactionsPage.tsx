@@ -62,7 +62,7 @@ export default function TransactionsPage() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="title">Transactions</h1>
-          <p className="text-sm text-blue-500 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             View and manage all platform transactions and payments
           </p>
         </div>
