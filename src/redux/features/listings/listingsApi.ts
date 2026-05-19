@@ -1,6 +1,6 @@
 import { baseApi } from "../../base/baseAPI";
 
-export const listingsApi = baseApi.injectEndpoints({
+export const listingsApi = baseApi.enhanceEndpoints({addTagTypes: ['Listings']}).injectEndpoints({
   endpoints: (build) => ({
     getAllListings: build.query({
       query: (params) => {
@@ -13,8 +13,17 @@ export const listingsApi = baseApi.injectEndpoints({
         
         return `/listings/admin/all?${queryParams.toString()}`;
       },
+      providesTags: ['Listings'],
+    }),
+    changeListingStatus: build.mutation({
+      query: ({ id, status }) => ({
+        url: `/listings/admin/change-status/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: ['Listings'],
     }),
   }),
 });
 
-export const { useGetAllListingsQuery } = listingsApi;
+export const { useGetAllListingsQuery, useChangeListingStatusMutation } = listingsApi;

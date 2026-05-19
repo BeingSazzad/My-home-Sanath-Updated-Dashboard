@@ -29,9 +29,14 @@ const ListingsManagement: React.FC = () => {
     status: tab === "pending" ? "PENDING_APPROVAL" : undefined,
   });
 
+  // Fetch counts independently so they don't go to 0 when switching tabs
+  const { data: allCountData } = useGetAllListingsQuery({ limit: 1 });
+  const { data: pendingCountData } = useGetAllListingsQuery({ limit: 1, status: "PENDING_APPROVAL" });
+
   const listingsList = allData?.data || [];
   const totalPages = allData?.meta?.totalPage || 1;
-  const totalCount = allData?.meta?.total || 0;
+  const allCount = allCountData?.meta?.total || 0;
+  const pendingCount = pendingCountData?.meta?.total || 0;
 
   const handleSearch = (val: string) => {
     setSearch(val);
@@ -53,8 +58,8 @@ const ListingsManagement: React.FC = () => {
 
       <ListingTabs
         active={tab}
-        allCount={tab === "all" ? totalCount : 0}
-        pendingCount={tab === "pending" ? totalCount : 0}
+        allCount={allCount}
+        pendingCount={pendingCount}
         onChange={(t) => { setTab(t); setSearch(""); setTypeFilter(""); setPage(1); }}
       />
 
