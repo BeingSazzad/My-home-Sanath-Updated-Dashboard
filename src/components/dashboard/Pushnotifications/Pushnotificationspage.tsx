@@ -20,12 +20,12 @@ import {
 } from "../../ui/table";
 
 
-import { AudienceBadge } from "./Audiencebadge";
+import { AudienceBadge } from "./AudienceBadge";
 
 
 import { pushNotifications } from "../../../data/pushNotifications";
 import { Button } from "../../ui/button";
-import { CreateNotificationModal } from "./Createnotificationmodal";
+import { CreateNotificationModal } from "./CreateNotificationModal";
 import { NotificationStatusBadge } from "./NotificationStatusBadge";
 
 const PAGE_SIZE = 4;

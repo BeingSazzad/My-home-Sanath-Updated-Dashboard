@@ -7,7 +7,7 @@ import NewPassword from "../auth/NewPassword";
 import OTPVerifyPage from "../auth/OTPVerifyPage";
 import AdminManage from "../dashboard/Admin/Admins";
 import Dashboard from "../dashboard/Dashboard/Dashboard";
-import Notificatiion from "../dashboard/Notification/Notification";
+import Notification from "../dashboard/Notification/Notification";
 import Settings from "../dashboard/Setting/Setting";
 import Users from "../dashboard/Users/Users";
 import Revenue from "../dashboard/Revenue/Revenue";
@@ -15,7 +15,7 @@ import Agents from "../dashboard/Agents/Agents";
 import ListingsManagement from "../dashboard/ListingsManagement/ListingsManagement";
 import EnquiriesPage from "../dashboard/Enquiries/EnquiriesPage";
 import TransactionsPage from "../dashboard/Transactions/TransactionsPage";
-import PushNotificationsPage from "../dashboard/Pushnotifications/Pushnotificationspage";
+import PushNotificationsPage from "../dashboard/PushNotifications/PushNotificationsPage";
 
 const router = createBrowserRouter([
     {
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "notification",
-                element: <Notificatiion />
+                element: <Notification />
             },
         ]
     },
