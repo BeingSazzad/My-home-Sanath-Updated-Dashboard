@@ -1,139 +1,341 @@
 import React from "react";
-import type { ListingDetail } from "../../../../types/listing.types";
-
-import { Pencil } from "lucide-react";
-import ModalImageGallery from "./ModalImageGallery";
-import ModalPropertySpecs from "./ModalPropertySpecs";
-import ModalPropertyFeatures from "./ModalPropertyFeatures";
-import ModalAgentInfo from "./ModalAgentInfo";
-import ModalPerformance from "./ModalPerformance";
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "../../../ui/dialog";
 import { Button } from "../../../ui/button";
+import { MapPin, Eye, Home, Bath, Maximize, Tag, Calendar, User, FileText, CheckCircle2, ChevronLeft, ChevronRight, Video, Mail, Phone } from "lucide-react";
+import ListingStatusBadge from "../ListingStatusBadge";
+import { useGetListingByIdQuery } from "../../../../redux/features/listings/listingsApi";
 
 interface Props {
-  listing: ListingDetail | null;
+  listing: any | null;
   isOpen: boolean;
   onClose: () => void;
-  onEdit: (id: number) => void;
+  onEdit: (id: string) => void;
+}
+
+// function ImageSlider({ images, title }: { images: string[], title: string }) {
+//   const [active, setActive] = React.useState(0);
+//   if (!images || !images.length) return null;
+//   const prev = () => setActive((i) => (i === 0 ? images.length - 1 : i - 1));
+//   const next = () => setActive((i) => (i === images.length - 1 ? 0 : i + 1));
+//   return (
+//     <div className="space-y-2">
+//       <div className="relative w-full h-56 sm:h-80 rounded-xl overflow-hidden bg-gray-100 group">
+//         <img
+//           src={`${import.meta.env.VITE_IMAGE_BASE_URL}${images[active]}`}
+//           alt={`${title} - photo ${active + 1}`}
+//           className="w-full h-full object-cover transition-all duration-300"
+//           onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/800x400?text=No+Image+Available"; }}
+//         />
+//         {images.length > 1 && (
+//           <>
+//             <button
+//               onClick={prev}
+//               className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black border-2 border-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-10"
+//             >
+//               <ChevronLeft className="w-6 h-6 text-white" strokeWidth={3} />
+//             </button>
+
+//             <button
+//               onClick={next}
+//               className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black border-2 border-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-10"
+//             >
+//               <ChevronRight className="w-6 h-6 text-white" strokeWidth={3} />
+//             </button>
+//             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
+//               {active + 1} / {images.length}
+//             </div>
+//           </>
+//         )}
+//       </div>
+//       {images.length > 1 && (
+//         <div className="flex gap-2 overflow-x-auto pb-1 mt-2">
+//           {images.map((src, i) => (
+//             <button key={i} onClick={() => setActive(i)} className={`relative flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === active ? "border-blue-600" : "border-transparent opacity-60 hover:opacity-100"}`}>
+//               <img src={`${import.meta.env.VITE_IMAGE_BASE_URL}${src}`} alt={`thumb-${i}`} className="w-full h-full object-cover" />
+//             </button>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+function ImageSlider({ images, title }: { images: string[], title: string }) {
+  const [active, setActive] = React.useState(0);
+  if (!images || !images.length) return null;
+  const prev = () => setActive((i) => (i === 0 ? images.length - 1 : i - 1));
+  const next = () => setActive((i) => (i === images.length - 1 ? 0 : i + 1));
+  return (
+    <div className="space-y-2">
+      <div className="relative w-full h-56 sm:h-80 rounded-xl overflow-hidden bg-gray-100">
+        <img
+          src={`${import.meta.env.VITE_IMAGE_BASE_URL}${images[active]}`}
+          alt={`${title} - photo ${active + 1}`}
+          className="w-full h-full object-cover transition-all duration-300"
+          onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/800x400?text=No+Image+Available"; }}
+        />
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              style={{
+                position: 'absolute',
+                left: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: '#1447e6',
+                border: '2px solid #fff',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10,
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              <ChevronLeft size={18} color="#fff" strokeWidth={3} />
+            </button>
+
+            <button
+              onClick={next}
+              style={{
+                position: 'absolute',
+                right: 12,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: '#1447e6',
+                border: '2px solid #fff',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10,
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              <ChevronRight size={18} color="#fff" strokeWidth={3} />
+            </button>
+
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
+              {active + 1} / {images.length}
+            </div>
+          </>
+        )}
+      </div>
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 mt-2">
+          {images.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => setActive(i)}
+              className={`relative flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === active ? "border-blue-600" : "border-transparent opacity-60 hover:opacity-100"
+                }`}
+            >
+              <img src={`${import.meta.env.VITE_IMAGE_BASE_URL}${src}`} alt={`thumb-${i}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function InfoRow({ icon: Icon, label, value }: { icon: any, label: string, value: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-2 text-gray-500">
+        <Icon className="w-4 h-4" />
+        <span className="text-[13px]">{label}</span>
+      </div>
+      <span className="text-[13px] font-semibold text-gray-900 text-right">{value || "N/A"}</span>
+    </div>
+  );
+}
+
+function StatTile({ icon: Icon, label, value }: any) {
+  return (
+    <div className="flex flex-col items-center justify-center bg-gray-50 rounded-xl py-3 px-2 text-center border border-gray-100">
+      <Icon className="text-blue-600 w-5 h-5 mb-1.5" />
+      <span className="text-[15px] font-bold text-gray-900">{value}</span>
+      <span className="text-[11px] text-gray-400 mt-0.5">{label}</span>
+    </div>
+  );
 }
 
 const ListingDetailsModal: React.FC<Props> = ({ listing, isOpen, onClose, onEdit }) => {
-  if (!listing) return null;
-  const l = listing;
+  const { data, isLoading } = useGetListingByIdQuery(listing?._id, { skip: !isOpen || !listing?._id });
+  const detail = data?.data;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="min-w-250 w-full max-h-[92vh] overflow-y-auto p-0 gap-0 rounded-2xl"
+        className="min-w-250 w-full max-w-3xl max-h-[92vh] overflow-y-auto p-0 gap-0 rounded-2xl bg-white"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         {/* Header */}
-        <DialogHeader className="sticky top-0 bg-white z-10 px-5 py-4 border-b border-gray-100 text-left">
-          <DialogTitle className="text-[15px] font-semibold text-gray-900 leading-tight">
-            Listing Details – Full Review
-          </DialogTitle>
-          <DialogDescription className="text-xs text-gray-400 mt-0.5">
-            Review all information before approving
-          </DialogDescription>
+        <DialogHeader className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100 text-left flex flex-row items-center justify-between">
+          <div>
+            <DialogTitle className="text-lg font-bold text-gray-900 truncate">
+              {detail?.title || "Listing Details"}
+            </DialogTitle>
+            <DialogDescription className="text-xs text-gray-500 mt-0.5">
+              Review property information
+            </DialogDescription>
+          </div>
+          {detail && <ListingStatusBadge status={detail.status} />}
         </DialogHeader>
 
         {/* Body */}
-        <div className="px-5 pt-4 pb-2">
-          <ModalImageGallery count={l.images} />
+        <div className="px-6 py-5">
+          {isLoading ? (
+            <div className="py-20 text-center text-gray-400 text-sm animate-pulse">Loading listing details...</div>
+          ) : !detail ? (
+            <div className="py-20 text-center text-red-500 text-sm">Failed to load listing.</div>
+          ) : (
+            <div className="space-y-6">
+              {/* Images */}
+              {detail.photos && detail.photos.length > 0 ? (
+                <ImageSlider images={detail.photos} title={detail.title} />
+              ) : (
+                <div className="w-full h-40 bg-gray-50 rounded-xl flex items-center justify-center border border-dashed border-gray-200">
+                  <p className="text-gray-400 text-sm flex items-center gap-2">
+                    <FileText className="w-4 h-4" /> No images available
+                  </p>
+                </div>
+              )}
 
-          {/* Title + Featured badge */}
-          <div className="flex justify-between items-start mb-1.5">
-            <h1 className="text-xl font-bold text-gray-900">{l.title}</h1>
-            {/* {l.featured && (
-              <span className="flex items-center gap-1 bg-amber-100 text-amber-800 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ml-2">
-                ⭐ Featured
-              </span>
-            )} */}
-          </div>
-
-          {/* Address */}
-          <p className="flex items-center gap-1.5 text-[12.5px] text-gray-400 mb-4">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            {l.address}
-          </p>
-
-          {/* Price & Type cards */}
-          <div className="grid grid-cols-2 gap-3 mb-5">
-            <div className="bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-400 mb-1">Price</p>
-              <p className="text-2xl font-bold text-slate-800">
-                {l.price}{" "}
-                <span className="text-sm font-normal text-slate-400">{l.period}</span>
-              </p>
-            </div>
-            <div className="bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-400 mb-1">Property Type</p>
-              <p className="text-xl font-bold text-slate-800">Apartment</p>
-              <p className="text-xs text-slate-400 mt-0.5">For sale</p>
-            </div>
-          </div>
-
-          <ModalPropertySpecs listing={l} />
-
-          {/* Full Description */}
-          <div className="mb-5">
-            <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-gray-900 mb-2.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="8" y1="6" x2="21" y2="6"/>
-                <line x1="8" y1="12" x2="21" y2="12"/>
-                <line x1="8" y1="18" x2="21" y2="18"/>
-                <line x1="3" y1="6" x2="3.01" y2="6"/>
-                <line x1="3" y1="12" x2="3.01" y2="12"/>
-                <line x1="3" y1="18" x2="3.01" y2="18"/>
-              </svg>
-              Full Description
-            </h3>
-            <p className="text-md text-justify font-medium text-gray-600 leading-relaxed bg-gray-50 rounded-xl p-3.5">
-              Beautiful modern apartment in the heart of Manchester city centre. This stunning property features contemporary design throughout with high-quality finishes. The open-plan living area is perfect for entertaining, and floor-to-ceiling windows flood the space with natural light. Located within walking distance of shops, restaurants, and transport links.
-            </p>
-          </div>
-
-          <ModalPropertyFeatures features={l.features} />
-          <ModalAgentInfo agent={l.agent} />
-          <ModalPerformance stats={l.stats} />
-
-          {/* Listing Status */}
-          <div className="mb-5">
-            <h3 className="flex items-center gap-1.5 text-lg font-semibold text-gray-900 mb-3">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              Listing Status
-            </h3>
-            <div className="flex justify-between items-center">
-              <span className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-md font-medium px-3 py-1.5 rounded-full">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#15803d" strokeWidth="2.5">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-                Active
-              </span>
-              <div className="text-right">
-                <p className="text-[13px] text-gray-400">Published</p>
-                <p className="text-md font-semibold text-gray-700">12/05/2026</p>
+              {/* Price & Basic Info */}
+              <div className="flex items-start justify-between flex-wrap gap-4">
+                <div>
+                  <p className="text-2xl font-bold text-gray-900">£{detail.askingPrice?.toLocaleString()}</p>
+                  <p className="text-sm text-gray-500 flex items-center gap-1.5 mt-1">
+                    <MapPin className="w-4 h-4 text-gray-400" />
+                    {detail.location?.address || `${detail.city}, ${detail.country}`}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1.5 text-sm text-gray-500 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                    <Eye className="w-4 h-4" /> {detail.views || 0} views
+                  </span>
+                  <span className="text-sm font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 uppercase tracking-wider">
+                    {detail.listingType}
+                  </span>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Footer */}
-        <div className="px-5 pb-5">
-          <Button
-            onClick={() => onEdit(l.id)}
-            className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3.5 rounded-xl h-auto text-[14px]"
-          >
-            <Pencil className="w-4 h-4 mr-2" />
-            Edit Listing
-          </Button>
+              {/* Stats Grid */}
+              <div>
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Property Stats</h4>
+                <div className="grid grid-cols-4 gap-3">
+                  <StatTile icon={Home} label="Bedrooms" value={detail.propertyBedrooms || "-"} />
+                  <StatTile icon={Bath} label="Bathrooms" value={detail.propertyBathrooms || "-"} />
+                  <StatTile icon={Maximize} label="Sq Ft" value={detail.propertySquareFoot?.toLocaleString() || "-"} />
+                  <StatTile icon={Tag} label="EPC" value={detail.epcEnergyRating?.label || "-"} />
+                </div>
+              </div>
+
+              {/* Property Details */}
+              <div>
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Property Information</h4>
+                <div className="bg-gray-50 rounded-xl px-4 py-1 border border-gray-100">
+                  <InfoRow icon={Home} label="Property Type" value={detail.propertyType} />
+                  <InfoRow icon={Tag} label="Tenure" value={detail.tenure} />
+                  <InfoRow icon={FileText} label="Council Tax Band" value={detail.councilTaxBand} />
+                  <InfoRow icon={Calendar} label="Listed Date" value={new Date(detail.createdAt).toLocaleDateString()} />
+                  <InfoRow icon={User} label="Leads Generated" value={detail.leadsCount || 0} />
+                </div>
+              </div>
+
+              {/* Agent & Agency Info */}
+              <div>
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Agent & Agency</h4>
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col sm:flex-row gap-6">
+                  {/* Agent */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 border border-gray-300 shrink-0">
+                      {detail.agentId?.profileImage ? (
+                        <img src={`${import.meta.env.VITE_IMAGE_BASE_URL}${detail.agentId.profileImage}`} className="w-full h-full object-cover" />
+                      ) : <User className="w-6 h-6 m-3 text-gray-400" />}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{detail.agentId?.name || "Unknown Agent"}</p>
+                      <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5"><Mail className="w-3 h-3" /> {detail.agentId?.email}</p>
+                      {detail.agentId?.phone && <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3" /> {detail.agentId.phone}</p>}
+                    </div>
+                  </div>
+                  {/* Agency */}
+                  <div className="flex items-center gap-3 border-t sm:border-t-0 sm:border-l border-gray-200 pt-4 sm:pt-0 sm:pl-6">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-white border border-gray-200 shrink-0 flex items-center justify-center p-1.5">
+                      {detail.agentId?.agencyLogo ? (
+                        <img src={`${import.meta.env.VITE_IMAGE_BASE_URL}${detail.agentId.agencyLogo}`} className="max-w-full max-h-full object-contain" />
+                      ) : <Home className="w-6 h-6 text-gray-400" />}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-gray-900">{detail.agentId?.agencyName || "No Agency"}</p>
+                      <p className="text-[11px] text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full inline-block mt-1 border border-blue-100">Agency</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Videos */}
+              {detail.videos && detail.videos.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Videos</h4>
+                  <div className="flex flex-col gap-4 w-full">
+                    {detail.videos.map((vid: string, idx: number) => (
+                      <div key={idx} className="relative w-full h-[300px] sm:h-[400px] rounded-xl overflow-hidden bg-black shadow-inner border border-gray-100">
+                        <video src={`${import.meta.env.VITE_IMAGE_BASE_URL}${vid}`} controls className="w-full h-full object-cover rounded-xl" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Floor Plans */}
+              {detail.floorPlans && detail.floorPlans.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Floor Plans</h4>
+                  <div className="border border-gray-100 p-2 rounded-xl bg-gray-50">
+                    <ImageSlider images={detail.floorPlans} title="Floor Plan" />
+                  </div>
+                </div>
+              )}
+
+              {/* Features */}
+              {detail.features && detail.features.length > 0 && (
+                <div>
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Key Features</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {detail.features.map((f: string) => (
+                      <span key={f} className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-full px-3 py-1 text-xs font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
+              {detail.description && (
+                <div>
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Description</h4>
+                  <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    {detail.description}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

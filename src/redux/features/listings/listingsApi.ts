@@ -23,7 +23,11 @@ export const listingsApi = baseApi.enhanceEndpoints({addTagTypes: ['Listings']})
       }),
       invalidatesTags: ['Listings'],
     }),
+    getListingById: build.query({
+      query: (id: string) => `/listings/admin/${id}`,
+      providesTags: ['Listings'],
+    }),
   }),
 });
 
-export const { useGetAllListingsQuery, useChangeListingStatusMutation } = listingsApi;
+export const { useGetAllListingsQuery, useChangeListingStatusMutation, useGetListingByIdQuery } = listingsApi;
