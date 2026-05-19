@@ -55,13 +55,13 @@ const DashboardCharts = () => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 py-2">
       <ChartCard
-        title="User Growth"
-        subtitle="Total users over time"
+        title="Property Seeker"
+        subtitle="Total property seekers over time"
         data={userGrowthData}
         color="#3b82f6"
         gradientId="userGradient"
         footerLabel="Current"
-        footerValue={`${currentUsers.toLocaleString()} users`}
+        footerValue={`${currentUsers.toLocaleString()} seekers`}
         selectedYear={userYear}
         onYearChange={setUserYear}
       />

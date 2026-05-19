@@ -9,13 +9,13 @@ interface Props {
 
 export const EnquiryTable = ({ data, onView }: Props) => {
   return (
-    <div className="border rounded-xl overflow-hidden">
+    <div className="border rounded-2xl overflow-hidden">
       <table className="w-full text-sm">
         <thead className="bg-muted">
           <tr>
             <th className="p-3 text-left">Date</th>
             <th className="p-3 text-left">Property</th>
-            <th className="p-3 text-left">Seeker</th>
+            <th className="p-3 text-left">Property Seeker</th>
             <th className="p-3 text-left">Agent</th>
             <th className="p-3 text-right">Action</th>
           </tr>

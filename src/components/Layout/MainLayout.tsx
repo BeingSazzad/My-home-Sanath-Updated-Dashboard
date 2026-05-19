@@ -22,12 +22,12 @@ export default function DashboardLayout() {
 
   return (
     <>
-      <div className="grid grid-cols-[300px_1fr] flex-start! h-screen w-screen bg-[#F9FAFB80]">
+      <div className="grid grid-cols-[300px_1fr] flex-start! h-screen w-screen bg-[#F8FAFC]">
         <Sidebar />
 
         <div className="flex flex-col overflow-y-auto!">
           <Navbar />
-          <main className=" w-full px-5 pt-5">
+          <main className="w-full px-6 pt-6 pb-10">
             <Outlet />
           </main>
         </div>

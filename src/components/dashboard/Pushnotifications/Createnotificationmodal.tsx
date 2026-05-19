@@ -115,7 +115,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
                   <SelectItem value="users">Users</SelectItem>
                   <SelectItem value="agents">Agents</SelectItem>
                   <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="custom">Custom</SelectItem>
                 </SelectContent>
               </Select>
             </div>

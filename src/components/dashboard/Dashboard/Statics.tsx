@@ -30,7 +30,6 @@ const StatsCards = () => {
       icon: <FiUsers className="h-5 w-5 text-blue-600" />,
       iconBgColor: "bg-blue-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
-      growth: "+12.5%",
     },
     {
       title: "Total Agents",
@@ -38,7 +37,6 @@ const StatsCards = () => {
       icon: <MdOutlineRealEstateAgent className="h-5 w-5 text-purple-600" />,
       iconBgColor: "bg-purple-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
-      growth: "+8.2%",
     },
     {
       title: "Total Revenue",
@@ -48,7 +46,6 @@ const StatsCards = () => {
       icon: <BsCurrencyDollar className="h-5 w-5 text-green-600" />,
       iconBgColor: "bg-green-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
-      growth: "+15.3%",
     },
   ];
 
@@ -72,7 +69,7 @@ const StatsCards = () => {
             <SelectValue placeholder="Year" />
           </SelectTrigger>
           <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+            {[0, 1].map((i) => (
               <SelectItem key={i} value={(currentYear - i).toString()} className="cursor-pointer hover:bg-slate-50">
                 {currentYear - i}
               </SelectItem>

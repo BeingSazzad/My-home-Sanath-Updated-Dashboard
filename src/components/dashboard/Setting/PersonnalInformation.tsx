@@ -1,4 +1,3 @@
-
 import { Save, User, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -6,16 +5,12 @@ import { toast } from 'sonner';
 import { cn } from '../../../lib/utils';
 import { imageUrl } from '../../../redux/base/baseAPI';
 import { useEditProfileMutation, useGetProfileQuery } from '../../../redux/features/user/userApi';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
 import { Button } from '../../ui/button';
 import { Card, CardContent } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 
-
 const PersonalInformation = () => {
-
-
   const [formData, setFormData] = useState({ name: "", email: "" });
 
   // Profile photo states
@@ -24,13 +19,14 @@ const PersonalInformation = () => {
   const [existingProfileUrl, setExistingProfileUrl] = useState<string | null>(null);
 
   const { data: profileData } = useGetProfileQuery({});
-  const [editProfile] = useEditProfileMutation()
-
+  const [editProfile] = useEditProfileMutation();
 
   useEffect(() => {
-    setFormData({ name: profileData?.name, email: profileData?.email });
-    setExistingProfileUrl(imageUrl + profileData?.profileImage)
-  }, [profileData])
+    setFormData({ name: profileData?.name || "", email: profileData?.email || "" });
+    if (profileData?.profileImage) {
+      setExistingProfileUrl(imageUrl + profileData?.profileImage);
+    }
+  }, [profileData]);
 
   // ────────────── react-dropzone configuration ───────────────────────────────
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -44,7 +40,6 @@ const PersonalInformation = () => {
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
       if (!file) return;
-
 
       setSelectedFile(file);
       const reader = new FileReader();
@@ -65,122 +60,124 @@ const PersonalInformation = () => {
   };
 
   const handleSave = async () => {
-
     try {
       const payload = new FormData();
-
       if (selectedFile) {
-        payload.append("profileImage", selectedFile)
+        payload.append("profileImage", selectedFile);
       }
       payload.append("data", JSON.stringify(formData));
 
       const response = await editProfile(payload)?.unwrap();
-
       if (response?.success) {
-        toast.success(response?.message)
+        toast.success(response?.message);
       }
-
     } catch (err: any) {
-      toast?.error(err?.data?.message)
+      toast?.error(err?.data?.message || "Failed to update profile");
     }
   };
 
   return (
-    <Card className="border-none shadow-sm w-full max-w-6xl mx-auto">
-      <CardContent className="px-6 sm:px-8 py-8 ">
-        <div className="flex gap-10 lg:gap-12">
+    <Card className="border-none shadow-none w-full max-w-4xl mx-auto bg-transparent">
+      <CardContent className="p-0">
+        <div className="flex flex-col md:flex-row gap-10 lg:gap-14 items-center md:items-start">
           {/* ── Profile Photo Section ── */}
-          <div className="flex flex-col items-center md:items-start gap-6 order-1 md:order-0">
-            <h2 className="text-2xl font-bold md:hidden mb-2">Profile Photo</h2>
-
-            <div className=" w-full mx-auto max-w-70 md:mx-0">
+          <div className="flex flex-col items-center gap-4 shrink-0">
+            <Label className="text-sm font-semibold text-slate-700">Profile Picture</Label>
+            <div className="relative group">
               <div
                 {...getRootProps()}
                 className={cn(
-                  "group relative border-2 border-dashed rounded-2xl p-4 transition-all duration-200",
-                  "hover:border-primary/60 hover:bg-muted/40",
-                  isDragActive
-                    ? "border-primary bg-primary/5 ring-2 ring-primary/20 scale-[1.015]"
-                    : "border-border/60",
-                  "cursor-pointer flex flex-col items-center justify-center text-center min-h-65 sm:min-h-70"
+                  "relative w-44 h-44 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-all duration-200",
+                  isDragActive 
+                    ? "border-[#0B3C6D] bg-[#0B3C6D]/5 scale-[1.02]" 
+                    : "border-slate-200 hover:border-[#0B3C6D]/50 hover:bg-slate-50/50"
                 )}
               >
                 <input {...getInputProps()} />
-
+                
                 {displayImage ? (
-                  <div className="relative w-60">
-                    <Avatar className="h-full w-full rounded-lg! border-4 border-background shadow-lg">
-                      <AvatarImage src={displayImage} alt="Profile photo" />
-                      <AvatarFallback className="bg-muted text-muted-foreground text-6xl">
-                        <User className="h-full w-full" />
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <Button
-                      size="icon"
-                      className="absolute -top-3 -right-3 h-7 w-7 rounded-full shadow-md"
-                      onClick={handleRemoveImage}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
+                  <div className="w-full h-full relative">
+                    <img 
+                      src={displayImage} 
+                      alt="Profile Preview" 
+                      className="w-full h-full object-cover rounded-2xl" 
+                    />
+                    {/* Hover Overlay to Change */}
+                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 rounded-2xl">
+                      <User className="h-5 w-5" />
+                      <span>Change Photo</span>
+                    </div>
                   </div>
                 ) : (
-                  <>
-                    <div className="rounded-full bg-muted/60 p-5 mb-4 group-hover:bg-muted/80 transition-colors">
-                      <User className="h-10 w-10 text-muted-foreground group-hover:text-primary/80 transition-colors" />
+                  <div className="flex flex-col items-center justify-center p-4 text-center">
+                    <div className="p-3 rounded-full bg-slate-50 text-slate-400 group-hover:bg-[#0B3C6D]/8 group-hover:text-[#0B3C6D] transition-colors duration-200 mb-2">
+                      <User className="h-6 w-6" />
                     </div>
-                    <p className="text-base font-medium mb-1.5">
-                      {isDragActive ? "Drop your photo here" : "Drag & drop your photo here"}
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      or click to browse
-                    </p>
-                    <p className="text-xs text-muted-foreground/80">
-                      JPG, PNG, WebP • Max 5 MB
-                    </p>
-                  </>
+                    <span className="text-xs font-semibold text-slate-600 group-hover:text-[#0B3C6D]">
+                      Upload Photo
+                    </span>
+                    <span className="text-[10px] text-slate-400 mt-1 max-w-[120px]">
+                      JPG, PNG or WebP up to 5MB
+                    </span>
+                  </div>
                 )}
               </div>
+
+              {/* Remove Image Button */}
+              {displayImage && (
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1.5 shadow-md border border-white hover:scale-105 transition-all z-20"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
 
           {/* ── General Settings Form ── */}
-          <div className="space-y-7 order-2 md:order-0 flex-1">
-            <h2 className="text-2xl font-bold">General Information</h2>
+          <div className="space-y-6 flex-1 w-full">
+            <h2 className="text-xl font-bold text-slate-800">General Information</h2>
 
-            <div className="grid gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+            <div className="grid gap-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="name" className="text-slate-600 text-sm">Full Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e: any) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
-                  className="h-11"
+                  className="h-11 border-slate-200 focus:border-[#0B3C6D] focus:ring-1 focus:ring-[#0B3C6D] rounded-xl transition-all"
                   placeholder="Your full name"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-slate-600 text-sm">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
                   disabled
-                  value={formData.email}
-                  className="h-11"
+                  value={formData.email || "superadmin@myhome.com"}
+                  className="h-11 bg-slate-50 border-slate-200 text-slate-400 rounded-xl select-none cursor-not-allowed opacity-85"
                 />
+                <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1 font-medium">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B3C6D" strokeWidth="2.5" className="shrink-0">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                  This email address is fixed and cannot be changed for Superadmin.
+                </p>
               </div>
             </div>
 
             <div className="pt-2">
               <Button
                 onClick={handleSave}                
-                className="bg-[#0B192C] hover:bg-[#0B192C]/95 text-white px-8 min-w-40"
-                size="lg"
+                className="bg-[#0B3C6D] hover:bg-[#0B3C6D]/95 text-white px-8 h-11 rounded-xl shadow-sm text-sm font-medium"
               >
-                <Save className="mr-2 h-5 w-5" />
+                <Save className="mr-2 h-4 w-4" />
                 Save Changes
               </Button>
             </div>

@@ -55,16 +55,16 @@ const ManagePagination = ({ meta }: any) => {
   const paginationRange = getPaginationRange(currentPage, totalPage);
 
   return (
-    <div className={`${!totalPage ? "hidden" : "flex"} items-center justify-center w-full p-4`}>
-      <div className="flex items-center space-x-2 md:space-x-4">
+    <div className={`${!totalPage ? "hidden" : "flex"} items-center justify-center w-full mt-6`}>
+      <div className="flex items-center gap-1.5">
 
         {/* Prev */}
         <button
           disabled={currentPage === 1 || totalPage === 1}
           onClick={() => updatePage(currentPage - 1)}
-          className="disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center size-9 rounded-lg border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-all shadow-xs cursor-pointer"
         >
-          <ChevronLeft />
+          <ChevronLeft className="size-4" />
         </button>
 
         {/* Pages */}
@@ -73,9 +73,9 @@ const ManagePagination = ({ meta }: any) => {
             return (
               <span
                 key={`dots-${index}`}
-                className="flex items-center justify-center w-12 h-12 text-muted-foreground select-none"
+                className="flex items-center justify-center size-9 text-slate-400 select-none text-xs font-medium"
               >
-                ···
+                •••
               </span>
             );
           }
@@ -86,10 +86,10 @@ const ManagePagination = ({ meta }: any) => {
             <button
               key={page}
               onClick={() => updatePage(page as number)}
-              className={`flex items-center justify-center w-12 h-12 rounded-full
+              className={`flex items-center justify-center size-9 rounded-lg text-xs font-semibold transition-all cursor-pointer
                 ${isActive
-                  ? "bg-primary! text-white"
-                  : "border border-primary! text-primary!"
+                  ? "bg-[#0B3C6D] text-white border border-[#0B3C6D] shadow-sm"
+                  : "border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 shadow-xs"
                 }
               `}
             >
@@ -102,9 +102,9 @@ const ManagePagination = ({ meta }: any) => {
         <button
           disabled={currentPage === totalPage || totalPage === 1}
           onClick={() => updatePage(currentPage + 1)}
-          className="disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center justify-center size-9 rounded-lg border border-slate-200 text-slate-500 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-all shadow-xs cursor-pointer"
         >
-          <ChevronRight />
+          <ChevronRight className="size-4" />
         </button>
 
       </div>

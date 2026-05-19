@@ -47,11 +47,11 @@ const ChartCard = ({
           value={selectedYear}
           onValueChange={onYearChange}
         >
-          <SelectTrigger className="w-24 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg text-xs py-1 h-8">
+          <SelectTrigger className="w-[110px] bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg text-xs py-1 h-8">
             <SelectValue placeholder="Year" />
           </SelectTrigger>
           <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+            {[0, 1].map((i) => (
               <SelectItem key={i} value={(currentYear - i).toString()} className="cursor-pointer hover:bg-slate-50 text-xs">
                 {currentYear - i}
               </SelectItem>

@@ -1,5 +1,5 @@
 export type NotificationStatus = "sent" | "scheduled" | "draft";
-export type AudienceType = "users" | "agents" | "all" | "custom";
+export type AudienceType = "users" | "agents" | "all";
 
 export interface Notification {
   id: string;
@@ -49,7 +49,7 @@ export const notifications: Notification[] = [
     id: "notif-4",
     title: "Price Drop Alert",
     message: "A property you saved has reduced its price by £25,000.",
-    audience: "custom",
+    audience: "users",
     recipients: 128,
     date: null,
     status: "draft",

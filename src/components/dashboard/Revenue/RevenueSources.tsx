@@ -2,7 +2,7 @@ import React from "react";
 import { sourcesData } from "../../../data/revenueData";
 
 const RevenueSources: React.FC = () => (
-  <div className="bg-white border border-gray-100 rounded-xl p-5 h-full">
+  <div className="bg-white border border-gray-100 rounded-2xl p-5 h-full">
     <p className="text-[15px] font-medium text-gray-900">Revenue Sources</p>
     <p className="text-xs text-gray-400 mb-5">Breakdown by category</p>
 

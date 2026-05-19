@@ -15,7 +15,7 @@ interface Props { user: User; index: number; }
 const UserTableRow: React.FC<Props> = ({ user, index }) => {
   const c = avatarColors[index % avatarColors.length];
   return (
-    <tr className="border-b border-gray-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
+    <tr className="border-b border-slate-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
       <td className="py-4 px-5">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0"

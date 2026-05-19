@@ -37,12 +37,17 @@ export default function Sidebar() {
       <div className="h-full flex flex-col">
         
         {/* Header */}
-        <div className="flex items-center justify-between py-5 px-6 border-b border-slate-100">
-          <div className="flex items-center gap-2.5">
-            <img className="h-8 w-auto shrink-0" src="/logo.png" alt="Logo" />
-            <span className="text-base font-bold text-slate-800 tracking-tight">
-              MyHome
-            </span>
+        <div className="flex items-center py-5 px-6 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <img className="h-9 w-auto shrink-0" src="/logo.png" alt="Logo" />
+            <div className="flex flex-col">
+              <span className="text-base font-bold text-slate-800 tracking-tight leading-tight">
+                MyHome
+              </span>
+              <span className="text-[11px] font-semibold text-slate-400 tracking-wider uppercase mt-0.5">
+                Admin Dashboard
+              </span>
+            </div>
           </div>
         </div>
 

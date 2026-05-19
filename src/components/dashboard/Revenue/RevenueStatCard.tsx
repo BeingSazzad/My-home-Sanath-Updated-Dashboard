@@ -6,12 +6,6 @@ const iconBgColorMap: Record<string, string> = {
   purple: "bg-purple-50 text-purple-600",
 };
 
-const badgeColorMap: Record<string, string> = {
-  green: "bg-green-50/80 text-green-600",
-  blue: "bg-blue-50/80 text-blue-600",
-  purple: "bg-purple-50/80 text-purple-600",
-};
-
 const icons: Record<string, React.ReactNode> = {
   dollar: (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -41,15 +35,12 @@ interface Props {
   icon: string;
 }
 
-const RevenueStatCard: React.FC<Props> = ({ label, value, badge, color, icon }) => (
+const RevenueStatCard: React.FC<Props> = ({ label, value, color, icon }) => (
   <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-5 flex flex-col gap-4">
     <div className="flex items-center justify-between">
       <div className={`flex h-11 w-11 items-center justify-center rounded-xl shadow-sm ${iconBgColorMap[color] || "bg-slate-50 text-slate-600"}`}>
         {icons[icon]}
       </div>
-      <span className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${badgeColorMap[color] || "bg-slate-50 text-slate-600"}`}>
-        ↑ {badge}
-      </span>
     </div>
 
     <div>

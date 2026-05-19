@@ -8,11 +8,11 @@ const HEADERS = ["AGENT", "AGENCY", "PLAN", "LISTINGS", "REVENUE", "STATUS", "JO
 interface Props { agents: Agent[]; total: number }
 
 const AgentTable: React.FC<Props> = ({ agents, total }) => (
-  <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
+  <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
     <div className="overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="bg-slate-50/70 border-b border-gray-100">
+          <tr className="bg-slate-50/70 border-b border-slate-100">
             {HEADERS.map(h => (
               <th key={h} className="text-left text-[11.5px] font-semibold text-slate-500 uppercase tracking-wider px-5 py-4 whitespace-nowrap">
                 {h}
@@ -25,7 +25,7 @@ const AgentTable: React.FC<Props> = ({ agents, total }) => (
         </tbody>
       </table>
     </div>
-    <div className="flex justify-between items-center px-5 py-3.5 border-t border-gray-100">
+    <div className="flex justify-between items-center px-5 py-3.5 border-t border-slate-100">
       <span className="text-sm text-gray-400">Showing {agents.length} of {total} agents</span>
       <div className="flex items-center gap-2">
         <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50">Previous</button>

@@ -18,7 +18,7 @@ const config: Record<UserStatus, { cls: string; icon: React.ReactNode }> = {
 };
 
 const StatusBadge: React.FC<{ status: UserStatus }> = ({ status }) => (
-  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium ${config[status].cls}`}>
+  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium capitalize ${config[status].cls}`}>
     {config[status].icon}
     {status}
   </span>

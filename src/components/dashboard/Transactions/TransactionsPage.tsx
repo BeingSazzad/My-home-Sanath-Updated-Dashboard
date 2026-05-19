@@ -127,7 +127,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-white rounded-2xl shadow-sm p-6">
         <div className="mb-5">
           <h2 className="text-lg font-semibold text-gray-900">All Transactions</h2>
           <p className="text-sm text-gray-500">{filtered.length} transactions found</p>

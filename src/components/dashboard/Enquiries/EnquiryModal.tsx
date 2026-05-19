@@ -49,7 +49,7 @@ export const EnquiryModal = ({ open, onClose, data }: Props) => {
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p className="font-medium">Seeker</p>
+                            <p className="font-medium">Property Seeker</p>
                             <p>{data.seeker.name}</p>
                             <p className="text-muted-foreground">{data.seeker.email}</p>
                             <p className="text-muted-foreground">{data.seeker.phone}</p>

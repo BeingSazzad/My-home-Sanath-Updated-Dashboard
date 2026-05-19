@@ -18,7 +18,7 @@ const AgentStatCards: React.FC<Props> = ({ agents }) => {
   return (
     <div className="grid grid-cols-4 gap-4 mb-6">
       {cards.map(c => (
-        <div key={c.label} className="bg-white border border-gray-100 rounded-xl px-5 py-4">
+        <div key={c.label} className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
           <p className="text-xs text-gray-400 mb-2">{c.label}</p>
           <p className={`text-3xl font-medium ${c.cls}`}>{c.value}</p>
         </div>

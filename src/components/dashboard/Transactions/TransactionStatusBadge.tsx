@@ -30,7 +30,7 @@ const config: Record<Status, { label: string; icon: React.ReactNode; className: 
 export function TransactionStatusBadge({ status }: { status: Status }) {
   const c = config[status];
   return (
-    <Badge variant="outline" className={`gap-1 text-xs font-medium ${c.className}`}>
+    <Badge variant="outline" className={`gap-1 text-xs font-medium capitalize ${c.className}`}>
       {c.icon}
       {c.label}
     </Badge>

@@ -25,7 +25,7 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => (
 );
 
 const RecentTransactions: React.FC = () => (
-  <div className="bg-white border border-gray-100 rounded-xl p-5">
+  <div className="bg-white border border-gray-100 rounded-2xl p-5">
     <div className="flex justify-between items-start mb-5">
       <div>
         <p className="text-lg font-medium text-gray-900">Recent Transactions</p>

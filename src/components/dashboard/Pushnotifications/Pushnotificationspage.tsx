@@ -1,4 +1,4 @@
-import { Bell, Calendar, Eye, Plus, Trash2, TrendingUp, Users } from "lucide-react";
+import { Bell, Calendar, Eye, Plus, Trash2, Users } from "lucide-react";
 import { useState } from "react";
 
 import { toast } from "sonner";
@@ -48,9 +48,9 @@ export default function PushNotificationsPage() {
   };
 
   return (
-    <div className="">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="title">Push Notifications</h1>
           <p className="text-sm text-slate-500 mt-1">
@@ -67,7 +67,7 @@ export default function PushNotificationsPage() {
       </div>
 
       {/* Table Card */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         <div className="mb-5">
           <h2 className="text-lg font-semibold text-gray-900">All Notifications</h2>
           <p className="text-sm text-gray-500">{data.length} notifications created</p>
@@ -75,11 +75,10 @@ export default function PushNotificationsPage() {
 
         <Table>
           <TableHeader>
-            <TableRow className="text-xs uppercase tracking-wider text-gray-500">
-              <TableHead>Notification</TableHead>
+            <TableRow>
+              <TableHead className="w-[38%]">Notification</TableHead>
               <TableHead>Audience</TableHead>
               <TableHead>Recipients</TableHead>
-              <TableHead>Performance</TableHead>
               <TableHead>Date</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -107,20 +106,6 @@ export default function PushNotificationsPage() {
                     <Users size={13} className="text-gray-400" />
                     {notif.recipients.toLocaleString()}
                   </span>
-                </TableCell>
-                <TableCell>
-                  {notif.opened != null ? (
-                    <div className="text-xs text-gray-600 space-y-0.5">
-                      <div className="flex items-center gap-1">
-                        <Eye size={12} className="text-gray-400" /> {notif.opened} opened
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <TrendingUp size={12} className="text-gray-400" /> {notif.clicked} clicked
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="text-gray-400 text-sm">-</span>
-                  )}
                 </TableCell>
                 <TableCell className="text-sm text-gray-600">
                   {notif.date ? (

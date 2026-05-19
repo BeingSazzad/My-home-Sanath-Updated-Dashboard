@@ -13,7 +13,7 @@ const config: Record<NotificationStatus, { icon: React.ReactNode; className: str
 export function NotificationStatusBadge({ status }: { status: NotificationStatus }) {
   const c = config[status];
   return (
-    <Badge variant="outline" className={`gap-1 text-xs font-medium ${c.className}`}>
+    <Badge variant="outline" className={`gap-1 text-xs font-medium capitalize ${c.className}`}>
       {c.icon}
       {status}
     </Badge>

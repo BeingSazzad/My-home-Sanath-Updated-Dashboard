@@ -17,7 +17,7 @@ const ListingTable: React.FC<Props> = ({ listings }) => {
     const [selectedListing, setSelectedListing] = useState<any | null>(null);
     const navigate = useNavigate();
     return (
-        <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
             {listings.length === 0 ? (
                 <p className="text-center py-12 text-gray-400 text-sm">No listings found.</p>
             ) : (
@@ -50,7 +50,7 @@ const ListingTable: React.FC<Props> = ({ listings }) => {
                                             </svg>
                                             {l.address}
                                         </div>
-                                        <p className="text-[11px] text-gray-400">{l.beds} bed • {l.baths} bath • {l.photos} photos</p>
+
                                     </td>
                                     <td className="py-3.5 px-4">
                                         <p className="text-[13px] font-medium text-gray-900">{l.agent.name}</p>

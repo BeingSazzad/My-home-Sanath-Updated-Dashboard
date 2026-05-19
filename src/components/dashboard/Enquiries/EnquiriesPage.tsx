@@ -9,9 +9,9 @@ import { EnquiryModal } from "./EnquiryModal";
 import { Inbox, Calendar, BarChart3 } from "lucide-react";
 
 
-const StatsCard = ({ title, value, growth, icon: Icon, iconBg, iconColor }: any) => {
+const StatsCard = ({ title, value, icon: Icon, iconBg, iconColor }: any) => {
     return (
-        <Card className="rounded-xl border border-gray-150/70 shadow-sm bg-white hover:shadow-md transition-all duration-300">
+        <Card className="rounded-2xl border border-gray-150/70 shadow-sm bg-white hover:shadow-md transition-all duration-300">
         <CardContent className="p-4">
             <div className="flex items-center gap-3">
               {Icon && (
@@ -23,9 +23,6 @@ const StatsCard = ({ title, value, growth, icon: Icon, iconBg, iconColor }: any)
                 <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{title}</p>
                 <div className="flex items-baseline gap-2 mt-0.5">
                   <span className="text-xl font-extrabold text-slate-800">{value}</span>
-                  <span className="text-[10.5px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded font-semibold">
-                    {growth}
-                  </span>
                 </div>
               </div>
             </div>
@@ -57,7 +54,6 @@ export default function EnquiriesPage() {
         <StatsCard
           title="Total Enquiries"
           value="1,247"
-          growth="+12.5%"
           icon={Inbox}
           iconBg="bg-blue-50"
           iconColor="text-blue-600"
@@ -65,7 +61,6 @@ export default function EnquiriesPage() {
         <StatsCard
           title="New This Week"
           value="87"
-          growth="+8.2%"
           icon={Calendar}
           iconBg="bg-purple-50"
           iconColor="text-purple-600"
@@ -73,7 +68,6 @@ export default function EnquiriesPage() {
         <StatsCard
           title="This Month"
           value="342"
-          growth="+15.3%"
           icon={BarChart3}
           iconBg="bg-emerald-50"
           iconColor="text-emerald-600"

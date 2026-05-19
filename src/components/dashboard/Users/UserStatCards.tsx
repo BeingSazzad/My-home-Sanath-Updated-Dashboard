@@ -4,25 +4,25 @@ import { statCards } from "../../../data/usersData";
 const themeStyles: Record<string, { cardBg: string; border: string; iconBg: string; iconColor: string }> = {
   blue: {
     cardBg: "bg-white",
-    border: "border-gray-150/70",
+    border: "border-slate-100",
     iconBg: "bg-blue-50",
     iconColor: "text-blue-600",
   },
   green: {
     cardBg: "bg-white",
-    border: "border-gray-150/70",
+    border: "border-slate-100",
     iconBg: "bg-emerald-50",
     iconColor: "text-emerald-600",
   },
   purple: {
     cardBg: "bg-white",
-    border: "border-gray-150/70",
+    border: "border-slate-100",
     iconBg: "bg-purple-50",
     iconColor: "text-purple-600",
   },
   orange: {
     cardBg: "bg-white",
-    border: "border-gray-150/70",
+    border: "border-slate-100",
     iconBg: "bg-amber-50",
     iconColor: "text-amber-600",
   },
@@ -40,7 +40,7 @@ const UserStatCards: React.FC = () => (
     {statCards.map((s) => {
       const theme = themeStyles[s.color] || themeStyles.blue;
       return (
-        <div key={s.label} className={`rounded-xl border ${theme.border} p-4 ${theme.cardBg} shadow-sm hover:shadow-md transition-all duration-300`}>
+        <div key={s.label} className={`rounded-2xl border ${theme.border} p-4 ${theme.cardBg} shadow-sm hover:shadow-md transition-all duration-300`}>
           <div className="flex items-center gap-3">
             <div className={`w-9.5 h-9.5 rounded-xl ${theme.iconBg} ${theme.iconColor} flex items-center justify-center flex-shrink-0`}>
               {icons[s.icon]}
