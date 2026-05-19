@@ -19,13 +19,6 @@ export const sidebarItems = [
     public: true
   },
   {
-    key: "revenues",
-    label: "Revenues",
-    path: "revenues",
-    icon: <DollarSign size={20} />,
-    public: true
-  },  
-  {
     key: "users",
     label: "User Management",
     path: "users",
@@ -53,6 +46,13 @@ export const sidebarItems = [
     icon: <CreditCard size={20} />,
     public: true
   },
+  {
+    key: "revenues",
+    label: "Revenues",
+    path: "revenues",
+    icon: <DollarSign size={20} />,
+    public: true
+  },  
   {
     key: "push-notifications",
     label: "Push Notifications",
