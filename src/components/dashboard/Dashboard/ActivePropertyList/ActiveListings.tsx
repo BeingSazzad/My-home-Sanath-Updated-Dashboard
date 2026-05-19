@@ -7,7 +7,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 // import { useGetActiveListingsQuery } from "../../../redux/features/dashboard/dashboardApi";
 
 // ─── Types ───────────────────────────────────────────────
-type EngagementLevel = "High" | "Medium" | "Low";
 type StatusType = "Active" | "Under Offer" | "Sold" | "Inactive";
 
 interface PropertyListing {
@@ -17,16 +16,8 @@ interface PropertyListing {
   location: string;
   agent: string;
   price: number;
-  engagement: EngagementLevel;
   status: StatusType;
 }
-
-// ─── Config ──────────────────────────────────────────────
-const engagementConfig: Record<EngagementLevel, string> = {
-  High: "bg-green-50 text-green-600 border border-green-200",
-  Medium: "bg-orange-50 text-orange-500 border border-orange-200",
-  Low: "bg-gray-100 text-gray-500 border border-gray-200",
-};
 
 const statusConfig: Record<StatusType, string> = {
   Active: "bg-blue-50 text-blue-600 border border-blue-200",
@@ -38,16 +29,16 @@ const statusConfig: Record<StatusType, string> = {
 
 // ─── Fallback Data ────────────────────────────────────────
 const FALLBACK: PropertyListing[] = [
-  { _id: "1", name: "Modern Family Home",  views: 1247, location: "London",     agent: "Premium Estates Ltd", price: 485000, engagement: "High",   status: "Active"      },
-  { _id: "2", name: "Luxury Apartment",    views: 892,  location: "Manchester", agent: "Johnson Properties",  price: 325000, engagement: "Medium", status: "Active"      },
-  { _id: "3", name: "Victorian Townhouse", views: 1563, location: "Edinburgh",  agent: "Heritage Homes",      price: 650000, engagement: "High",   status: "Under Offer" },
-  { _id: "4", name: "Contemporary Studio", views: 445,  location: "Birmingham", agent: "City Living Realty",  price: 195000, engagement: "Low",    status: "Active"      },
+  { _id: "1", name: "Modern Family Home",  views: 1247, location: "London",     agent: "Premium Estates Ltd", price: 485000, status: "Active"      },
+  { _id: "2", name: "Luxury Apartment",    views: 892,  location: "Manchester", agent: "Johnson Properties",  price: 325000, status: "Active"      },
+  { _id: "3", name: "Victorian Townhouse", views: 1563, location: "Edinburgh",  agent: "Heritage Homes",      price: 650000, status: "Under Offer" },
+  { _id: "4", name: "Contemporary Studio", views: 445,  location: "Birmingham", agent: "City Living Realty",  price: 195000, status: "Active"      },
 ];
 
 // ─── Sub-components ───────────────────────────────────────
 const SkeletonRow = () => (
   <TableRow>
-    {Array.from({ length: 6 }).map((_, i) => (
+    {Array.from({ length: 5 }).map((_, i) => (
       <TableCell key={i}>
         <div className="h-4 bg-gray-100 rounded animate-pulse w-24" />
       </TableCell>
@@ -90,7 +81,7 @@ const ActiveListings = () => {
       <Table>
         <TableHeader>
           <TableRow className="border-b border-gray-100">
-            {["Property", "Location", "Agent", "Price", "Engagement", "Status"].map((h) => (
+            {["Property", "Location", "Agent", "Price", "Status"].map((h) => (
               <TableHead key={h} className="text-gray-400 font-semibold uppercase text-xs tracking-wider py-3">
                 {h}
               </TableHead>
@@ -103,7 +94,7 @@ const ActiveListings = () => {
             Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)
           ) : listings.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="text-center py-12 text-gray-400 text-sm">
+              <TableCell colSpan={5} className="text-center py-12 text-gray-400 text-sm">
                 No listings match the selected filters.
               </TableCell>
             </TableRow>
@@ -144,10 +135,6 @@ const ActiveListings = () => {
                   </span>
                 </TableCell>
 
-                {/* Engagement */}
-                <TableCell className="py-5">
-                  <Badge label={listing.engagement} className={engagementConfig[listing.engagement]} />
-                </TableCell>
 
                 {/* Status */}
                 <TableCell className="py-5">
