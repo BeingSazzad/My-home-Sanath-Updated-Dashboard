@@ -18,8 +18,8 @@ import StatsCard from "./StatsCard";
 const currentYear = new Date().getFullYear();
 
 const StatsCards = () => {
-  const [selectedYear, setSelectedYear] = useState(currentYear.toString());
-  const { data: analyticsData } = useGetAnalyticsQuery({ year: selectedYear });
+  const [filter, setFilter] = useState("This Year");
+  const { data: analyticsData } = useGetAnalyticsQuery({ period: filter });
 
   const stats = [
     {
@@ -60,18 +60,18 @@ const StatsCards = () => {
           </p>
         </div>
 
-        {/* Year Select */}
+        {/* Period Select */}
         <Select
-          value={selectedYear}
-          onValueChange={(value) => setSelectedYear(value)}
+          value={filter}
+          onValueChange={(value) => setFilter(value)}
         >
-          <SelectTrigger className="w-32 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg">
-            <SelectValue placeholder="Year" />
+          <SelectTrigger className="w-36 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg font-medium">
+            <SelectValue placeholder="Select Period" />
           </SelectTrigger>
           <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">
-            {[0, 1].map((i) => (
-              <SelectItem key={i} value={(currentYear - i).toString()} className="cursor-pointer hover:bg-slate-50">
-                {currentYear - i}
+            {["Total", "This Year", "This Month"].map((option) => (
+              <SelectItem key={option} value={option} className="cursor-pointer hover:bg-slate-50">
+                {option}
               </SelectItem>
             ))}
           </SelectContent>
