@@ -46,7 +46,7 @@ const RevenueStatCard: React.FC<Props> = ({ label, value, color, icon }) => (
     <div>
       <p className="text-sm text-gray-500">{label}</p>
       <h3 className="mt-1 text-3xl font-bold text-gray-800">{value}</h3>
-      <p className="mt-1 text-xs text-gray-400">vs last month</p>
+
     </div>
   </div>
 );

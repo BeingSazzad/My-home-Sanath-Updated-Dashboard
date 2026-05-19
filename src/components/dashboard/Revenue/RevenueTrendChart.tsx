@@ -12,7 +12,7 @@ const chartData = trendData.labels.map((month, i) => ({
 const RevenueTrendChart: React.FC = () => (
   <div className="bg-white border border-gray-100 rounded-2xl p-5">
     <p className="text-[15px] font-medium text-gray-900">Revenue Trend</p>
-    <p className="text-xs text-gray-400 mb-4">Monthly revenue vs target</p>
+    <p className="text-xs text-gray-400 mb-4">Monthly revenue</p>
 
     <ResponsiveContainer width="100%" height={220}>
       <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
