@@ -12,8 +12,6 @@ import { Label } from '../../ui/label';
 
 const PersonalInformation = () => {
   const [formData, setFormData] = useState({ name: "", email: "" });
-
-  // Profile photo states
   const [profilePreview, setProfilePreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [existingProfileUrl, setExistingProfileUrl] = useState<string | null>(null);
@@ -28,14 +26,13 @@ const PersonalInformation = () => {
     }
   }, [profileData]);
 
-  // ────────────── react-dropzone configuration ───────────────────────────────
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
       'image/png': ['.png'],
       'image/webp': ['.webp'],
     },
-    maxSize: 5 * 1024 * 1024, // 5MB
+    maxSize: 5 * 1024 * 1024,
     multiple: false,
     onDrop: (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -71,8 +68,9 @@ const PersonalInformation = () => {
       if (response?.success) {
         toast.success(response?.message);
       }
-    } catch (err: any) {
-      toast?.error(err?.data?.message || "Failed to update profile");
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err?.data?.message || "Failed to update profile");
     }
   };
 
@@ -80,7 +78,6 @@ const PersonalInformation = () => {
     <Card className="border-none shadow-none w-full max-w-4xl mx-auto bg-transparent">
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row gap-10 lg:gap-14 items-center md:items-start">
-          {/* ── Profile Photo Section ── */}
           <div className="flex flex-col items-center gap-4 shrink-0">
             <Label className="text-sm font-semibold text-slate-700">Profile Picture</Label>
             <div className="relative group">
@@ -88,21 +85,20 @@ const PersonalInformation = () => {
                 {...getRootProps()}
                 className={cn(
                   "relative w-44 h-44 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center overflow-hidden cursor-pointer transition-all duration-200",
-                  isDragActive 
-                    ? "border-[#0B3C6D] bg-[#0B3C6D]/5 scale-[1.02]" 
+                  isDragActive
+                    ? "border-[#0B3C6D] bg-[#0B3C6D]/5 scale-[1.02]"
                     : "border-slate-200 hover:border-[#0B3C6D]/50 hover:bg-slate-50/50"
                 )}
               >
                 <input {...getInputProps()} />
-                
+
                 {displayImage ? (
                   <div className="w-full h-full relative">
-                    <img 
-                      src={displayImage} 
-                      alt="Profile Preview" 
-                      className="w-full h-full object-cover rounded-2xl" 
+                    <img
+                      src={displayImage}
+                      alt="Profile Preview"
+                      className="w-full h-full object-cover rounded-2xl"
                     />
-                    {/* Hover Overlay to Change */}
                     <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 rounded-2xl">
                       <User className="h-5 w-5" />
                       <span>Change Photo</span>
@@ -123,7 +119,6 @@ const PersonalInformation = () => {
                 )}
               </div>
 
-              {/* Remove Image Button */}
               {displayImage && (
                 <button
                   type="button"
@@ -136,7 +131,6 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          {/* ── General Settings Form ── */}
           <div className="space-y-6 flex-1 w-full">
             <h2 className="text-xl font-bold text-slate-800">General Information</h2>
 
@@ -146,7 +140,7 @@ const PersonalInformation = () => {
                 <Input
                   id="name"
                   value={formData.name}
-                  onChange={(e: any) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
                   }
                   className="h-11 border-slate-200 focus:border-[#0B3C6D] focus:ring-1 focus:ring-[#0B3C6D] rounded-xl transition-all"
@@ -174,7 +168,7 @@ const PersonalInformation = () => {
 
             <div className="pt-2">
               <Button
-                onClick={handleSave}                
+                onClick={handleSave}
                 className="bg-[#0B3C6D] hover:bg-[#0B3C6D]/95 text-white px-8 h-11 rounded-xl shadow-sm text-sm font-medium"
               >
                 <Save className="mr-2 h-4 w-4" />

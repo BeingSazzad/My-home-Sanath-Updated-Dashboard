@@ -21,4 +21,15 @@ export default defineConfig({
     // port: 5000,
     allowedHosts: ["https://rimaiziza-dashboard.vercel.app", "dashboard.gogreenmatrix.my", "https://api.gogreenmatrix.my"]
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['lucide-react', 'recharts']
+        }
+      }
+    }
+  }
 })

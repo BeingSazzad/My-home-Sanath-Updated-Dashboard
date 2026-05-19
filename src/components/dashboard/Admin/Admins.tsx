@@ -24,35 +24,30 @@ import {
 } from '../../ui/table';
 import AddAdminForm from './AddAdminForm';
 
-// ─── Stat Card ───────────────────────────────────────────────────────────────
-const themeStyles: Record<string, { cardBg: string; border: string; iconBg: string; iconColor: string }> = {
-  purple: {
-    cardBg: "bg-white",
-    border: "border-gray-150/70",
-    iconBg: "bg-purple-50",
-    iconColor: "text-purple-600",
-  },
-  green: {
-    cardBg: "bg-white",
-    border: "border-gray-150/70",
-    iconBg: "bg-emerald-50",
-    iconColor: "text-emerald-600",
-  },
-  blue: {
-    cardBg: "bg-white",
-    border: "border-gray-150/70",
-    iconBg: "bg-blue-50",
-    iconColor: "text-blue-600",
-  },
-};
+interface Admin {
+    _id?: string;
+    id?: string;
+    name: string;
+    email: string;
+    role: string;
+    status?: string;
+    permissions?: string[];
+    createdAt?: string;
+    lastLogin?: string;
+}
 
 interface StatCardProps {
     icon: React.ReactNode;
     label: string;
     value: number | string;
-    sub: string;
     color: "purple" | "green" | "blue";
 }
+
+const themeStyles: Record<string, { cardBg: string; border: string; iconBg: string; iconColor: string }> = {
+    purple: { cardBg: "bg-white", border: "border-gray-150/70", iconBg: "bg-purple-50", iconColor: "text-purple-600" },
+    green:  { cardBg: "bg-white", border: "border-gray-150/70", iconBg: "bg-emerald-50", iconColor: "text-emerald-600" },
+    blue:   { cardBg: "bg-white", border: "border-gray-150/70", iconBg: "bg-blue-50", iconColor: "text-blue-600" },
+};
 
 function StatCard({ icon, label, value, color }: StatCardProps) {
     const theme = themeStyles[color] || themeStyles.blue;
@@ -64,16 +59,13 @@ function StatCard({ icon, label, value, color }: StatCardProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                        <span className="text-xl font-extrabold text-slate-800">{value}</span>
-                    </div>
+                    <span className="text-xl font-extrabold text-slate-800">{value}</span>
                 </div>
             </div>
         </div>
     );
 }
 
-// ─── Avatar ───────────────────────────────────────────────────────────────────
 function AdminAvatar({ name, color }: { name: string; color: string }) {
     const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
     return (
@@ -83,14 +75,13 @@ function AdminAvatar({ name, color }: { name: string; color: string }) {
     );
 }
 
-// ─── Role badge ───────────────────────────────────────────────────────────────
 const ROLE_STYLES: Record<string, string> = {
     'Super Admin': 'bg-purple-100 text-purple-700 border-purple-200',
     'SUPER_ADMIN': 'bg-purple-100 text-purple-700 border-purple-200',
-    'Admin': 'bg-blue-100 text-blue-700 border-blue-200',
-    'ADMIN': 'bg-blue-100 text-blue-700 border-blue-200',
-    'Moderator': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    'MODERATOR': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'Admin':       'bg-blue-100 text-blue-700 border-blue-200',
+    'ADMIN':       'bg-blue-100 text-blue-700 border-blue-200',
+    'Moderator':   'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'MODERATOR':   'bg-emerald-100 text-emerald-700 border-emerald-200',
 };
 
 function RoleBadge({ role }: { role: string }) {
@@ -98,22 +89,20 @@ function RoleBadge({ role }: { role: string }) {
     return <Badge variant="outline" className={`text-xs font-semibold ${cls}`}>{role}</Badge>;
 }
 
-// ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: string }) {
     const active = status?.toLowerCase() === 'active';
     return (
         <Badge
             variant="outline"
-            className={`text-xs font-medium capitalize ${active
-                ? 'bg-green-50 text-green-700 border-green-200'
-                : 'bg-gray-100 text-gray-600 border-gray-200'}`}
+            className={`text-xs font-medium capitalize ${
+                active ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'
+            }`}
         >
             {status}
         </Badge>
     );
 }
 
-// ─── Permissions cell ─────────────────────────────────────────────────────────
 function PermissionsCell({ permissions }: { permissions?: string[] }) {
     if (!permissions?.length) return <span className="text-gray-400 text-sm">—</span>;
     const shown = permissions.slice(0, 2);
@@ -134,13 +123,11 @@ function PermissionsCell({ permissions }: { permissions?: string[] }) {
     );
 }
 
-// ─── Avatar color pool ───────────────────────────────────────────────────────
 const AVATAR_COLORS = [
     'bg-blue-600', 'bg-teal-600', 'bg-indigo-600',
     'bg-rose-500', 'bg-amber-500', 'bg-purple-600',
 ];
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function AdminManage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -148,13 +135,10 @@ export default function AdminManage() {
     const [addAdmin] = useCreateAdminMutation();
     const [deleteAdmin] = useDeleteAdminMutation();
 
-    const admins: any[] = adminsData?.data ?? [];
+    const admins: Admin[] = adminsData?.data ?? [];
     const activeCount = admins.filter((a) => a.status?.toLowerCase() === 'active').length;
-    const superCount = admins.filter((a) =>
-        ['Super Admin', 'SUPER_ADMIN'].includes(a.role)
-    ).length;
+    const superCount = admins.filter((a) => ['Super Admin', 'SUPER_ADMIN'].includes(a.role)).length;
 
-    // ── Handlers ────────────────────────────────────────────────────────────
     const handleFormSubmit = async (formData: FormData) => {
         const data = Object.fromEntries(formData);
         const permissions = formData.getAll('permissions') as string[];
@@ -174,8 +158,9 @@ export default function AdminManage() {
                 refetch();
                 setIsModalOpen(false);
             }
-        } catch (error: any) {
-            toast.error(error?.data?.message ?? 'Something went wrong!');
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message ?? 'Something went wrong!');
             setIsModalOpen(false);
         }
     };
@@ -196,10 +181,8 @@ export default function AdminManage() {
         }
     };
 
-    // ── Render ──────────────────────────────────────────────────────────────
     return (
         <div>
-            {/* Page header */}
             <div className="flex items-start justify-between mb-6">
                 <div>
                     <h2 className="text-3xl font-bold text-gray-900">Admin Management</h2>
@@ -226,32 +209,12 @@ export default function AdminManage() {
                 </Dialog>
             </div>
 
-            {/* Stat cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <StatCard
-                    icon={<Shield size={18} />}
-                    label="Total Admins"
-                    value={admins.length}
-                    sub="Administrator accounts"
-                    color="purple"
-                />
-                <StatCard
-                    icon={<ShieldCheck size={18} />}
-                    label="Active Admins"
-                    value={activeCount}
-                    sub="Currently active"
-                    color="green"
-                />
-                <StatCard
-                    icon={<Users size={18} />}
-                    label="Super Admins"
-                    value={superCount}
-                    sub="Full access"
-                    color="blue"
-                />
+                <StatCard icon={<Shield size={18} />} label="Total Admins" value={admins.length} color="purple" />
+                <StatCard icon={<ShieldCheck size={18} />} label="Active Admins" value={activeCount} color="green" />
+                <StatCard icon={<Users size={18} />} label="Super Admins" value={superCount} color="blue" />
             </div>
 
-            {/* Table card */}
             <Card className="border-none shadow-sm rounded-xl">
                 <CardHeader className="pb-2">
                     <h3 className="text-lg font-semibold text-gray-900">All Administrators</h3>
@@ -272,15 +235,11 @@ export default function AdminManage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {admins.length ? admins.map((admin: any, index: number) => (
+                            {admins.length ? admins.map((admin, index) => (
                                 <TableRow key={admin.id ?? admin._id} className="hover:bg-gray-50" data-aos="fade-up" data-aos-delay={index * 80}>
-                                    {/* Admin */}
                                     <TableCell className="pl-6 py-3">
                                         <div className="flex items-center gap-3">
-                                            <AdminAvatar
-                                                name={admin.name}
-                                                color={AVATAR_COLORS[index % AVATAR_COLORS.length]}
-                                            />
+                                            <AdminAvatar name={admin.name} color={AVATAR_COLORS[index % AVATAR_COLORS.length]} />
                                             <div>
                                                 <p className="font-medium text-sm text-gray-900">{admin.name}</p>
                                                 <p className="text-xs text-gray-500 flex items-center gap-1">
@@ -289,29 +248,15 @@ export default function AdminManage() {
                                             </div>
                                         </div>
                                     </TableCell>
-
-                                    {/* Role */}
                                     <TableCell><RoleBadge role={admin.role} /></TableCell>
-
-                                    {/* Permissions */}
-                                    <TableCell>
-                                        <PermissionsCell permissions={admin.permissions} />
-                                    </TableCell>
-
-                                    {/* Date Added */}
+                                    <TableCell><PermissionsCell permissions={admin.permissions} /></TableCell>
                                     <TableCell className="text-sm text-gray-600">
                                         {admin.createdAt ? new Date(admin.createdAt).toISOString().slice(0, 10) : '—'}
                                     </TableCell>
-
-                                    {/* Last Login */}
                                     <TableCell className="text-sm text-gray-600">
                                         {admin.lastLogin ? new Date(admin.lastLogin).toISOString().slice(0, 10) : '—'}
                                     </TableCell>
-
-                                    {/* Status */}
                                     <TableCell><StatusBadge status={admin.status ?? 'Active'} /></TableCell>
-
-                                    {/* Actions */}
                                     <TableCell className="text-right pr-6">
                                         <div className="flex items-center justify-end gap-2">
                                             <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-gray-700">
@@ -321,7 +266,7 @@ export default function AdminManage() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-red-400 hover:text-red-600"
-                                                onClick={() => handleAdminDelete(admin?._id ?? admin?.id)}
+                                                onClick={() => handleAdminDelete(admin?._id ?? admin?.id ?? '')}
                                             >
                                                 <Trash2 size={15} />
                                             </Button>

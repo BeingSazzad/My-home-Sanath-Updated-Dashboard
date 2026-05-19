@@ -8,7 +8,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../../ui/dialog";
-
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { Label } from "../../ui/label";
@@ -48,13 +47,11 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
 
     setLoading(true);
     try {
-      // Simulate API call
       await new Promise((res) => setTimeout(res, 800));
       toast.success("Notification sent successfully!");
       onCreated();
       handleClose();
-    } catch (err) {
-      console.error("CreateNotificationModal error:", err);
+    } catch {
       toast.error("Unexpected error occurred", { id: "create-notification" });
     } finally {
       setLoading(false);
@@ -76,7 +73,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5 mt-2">
-          {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="notif-title">Notification Title</Label>
             <Input
@@ -89,7 +85,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
             <p className="text-xs text-gray-400">{title.length}/{TITLE_MAX} characters</p>
           </div>
 
-          {/* Message */}
           <div className="space-y-1.5">
             <Label htmlFor="notif-msg">Message</Label>
             <Textarea
@@ -103,7 +98,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
             <p className="text-xs text-gray-400">{message.length}/{MSG_MAX} characters</p>
           </div>
 
-          {/* Audience + Category */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Target Audience</Label>
@@ -134,7 +128,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
             </div>
           </div>
 
-          {/* Schedule */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor="schedule-date">Schedule Date (Optional)</Label>
@@ -156,7 +149,6 @@ export function CreateNotificationModal({ open, onClose, onCreated }: Props) {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" onClick={handleClose}>
               Cancel
