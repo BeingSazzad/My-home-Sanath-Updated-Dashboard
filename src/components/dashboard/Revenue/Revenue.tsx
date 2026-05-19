@@ -2,7 +2,7 @@ import React from "react";
 import { statsData } from "../../../data/revenueData";
 import RevenueStatCard from "./RevenueStatCard";
 import RevenueTrendChart from "./RevenueTrendChart";
-import RevenueSources from "./RevenueSources";
+// import RevenueSources from "./RevenueSources";
 import RecentTransactions from "./RecentTransactions";
 import { Button } from "../../ui/button";
 
@@ -29,10 +29,9 @@ const RevenueAnalytics: React.FC = () => (
       {statsData.map((s) => <RevenueStatCard key={s.id} {...s} />)}
     </div>
 
-    {/* Trend + Sources */}
-    <div className="grid grid-cols-[1.6fr_1fr] gap-4 mb-4">
+    {/* Trend Chart */}
+    <div className="mb-4">
       <RevenueTrendChart />
-      <RevenueSources />
     </div>
 
     {/* Transactions */}

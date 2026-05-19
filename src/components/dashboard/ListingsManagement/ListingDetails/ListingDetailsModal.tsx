@@ -44,11 +44,11 @@ const ListingDetailsModal: React.FC<Props> = ({ listing, isOpen, onClose, onEdit
           {/* Title + Featured badge */}
           <div className="flex justify-between items-start mb-1.5">
             <h1 className="text-xl font-bold text-gray-900">{l.title}</h1>
-            {l.featured && (
+            {/* {l.featured && (
               <span className="flex items-center gap-1 bg-amber-100 text-amber-800 text-[11px] font-semibold px-2.5 py-1 rounded-full whitespace-nowrap ml-2">
                 ⭐ Featured
               </span>
-            )}
+            )} */}
           </div>
 
           {/* Address */}
@@ -62,17 +62,17 @@ const ListingDetailsModal: React.FC<Props> = ({ listing, isOpen, onClose, onEdit
 
           {/* Price & Type cards */}
           <div className="grid grid-cols-2 gap-3 mb-5">
-            <div className="bg-blue-50 rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-500 mb-1">Price</p>
-              <p className="text-2xl font-bold text-blue-700">
+            <div className="bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-3">
+              <p className="text-xs text-gray-400 mb-1">Price</p>
+              <p className="text-2xl font-bold text-slate-800">
                 {l.price}{" "}
-                <span className="text-sm font-normal">{l.period}</span>
+                <span className="text-sm font-normal text-slate-400">{l.period}</span>
               </p>
             </div>
-            <div className="bg-violet-50 rounded-xl px-4 py-3">
-              <p className="text-xs text-gray-500 mb-1">Property Type</p>
-              <p className="text-xl font-bold text-violet-700">Apprtment</p>
-              <p className="text-xs text-violet-400 mt-0.5">For sale</p>
+            <div className="bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-3">
+              <p className="text-xs text-gray-400 mb-1">Property Type</p>
+              <p className="text-xl font-bold text-slate-800">Apartment</p>
+              <p className="text-xs text-slate-400 mt-0.5">For sale</p>
             </div>
           </div>
 

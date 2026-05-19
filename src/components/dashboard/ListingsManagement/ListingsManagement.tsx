@@ -9,18 +9,25 @@ type Tab = "all" | "pending";
 const ListingsManagement: React.FC = () => {
   const [tab, setTab]       = useState<Tab>("all");
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [bedsFilter, setBedsFilter] = useState("");
 
   const filtered = useMemo(() => {
     const q    = search.toLowerCase();
     const base = tab === "pending"
       ? listingsData.filter(l => l.status === "pending")
       : listingsData;
-    return !q ? base : base.filter(l =>
-      l.title.toLowerCase().includes(q)   ||
-      l.address.toLowerCase().includes(q) ||      
-      l.agency.toLowerCase().includes(q)
-    );
-  }, [tab, search]);
+    return base.filter(l => {
+      const matchQ = !q ||
+        l.title.toLowerCase().includes(q)   ||
+        l.address.toLowerCase().includes(q) ||      
+        l.agency.toLowerCase().includes(q);
+      const matchType = !typeFilter || l.type === typeFilter;
+      const matchBeds = !bedsFilter || 
+        (bedsFilter === "4+" ? l.beds >= 4 : l.beds === parseInt(bedsFilter));
+      return matchQ && matchType && matchBeds;
+    });
+  }, [tab, search, typeFilter, bedsFilter]);
 
   const pendingCount = listingsData.filter(l => l.status === "pending").length;
 
@@ -52,12 +59,12 @@ const ListingsManagement: React.FC = () => {
         active={tab}
         allCount={listingsData.length}
         pendingCount={pendingCount}
-        onChange={(t) => { setTab(t); setSearch(""); }}
+        onChange={(t) => { setTab(t); setSearch(""); setTypeFilter(""); setBedsFilter(""); }}
       />
 
-      {/* Search */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-10 bg-white">
+      {/* Search & Filter */}
+      <div className="flex items-center gap-3 mb-4 flex-wrap">
+        <div className="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-10 bg-white">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="flex-shrink-0">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
@@ -68,12 +75,44 @@ const ListingsManagement: React.FC = () => {
             className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder:text-gray-400"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 h-10 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 hover:bg-gray-50">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-          </svg>
-          Filters
-        </button>
+
+        {/* Type Filter */}
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value)}
+          className="h-10 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
+        >
+          <option value="">All Types</option>
+          <option value="Rent">For Rent</option>
+          <option value="Sale">For Sale</option>
+        </select>
+
+        {/* Beds Filter */}
+        <select
+          value={bedsFilter}
+          onChange={(e) => setBedsFilter(e.target.value)}
+          className="h-10 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
+        >
+          <option value="">All Bedrooms</option>
+          <option value="1">1 Bed</option>
+          <option value="2">2 Beds</option>
+          <option value="3">3 Beds</option>
+          <option value="4+">4+ Beds</option>
+        </select>
+
+        {/* Clear Filters Button */}
+        {(search || typeFilter || bedsFilter) && (
+          <button
+            onClick={() => {
+              setSearch("");
+              setTypeFilter("");
+              setBedsFilter("");
+            }}
+            className="text-xs text-slate-500 hover:text-slate-900 cursor-pointer px-2 py-1"
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
 
       <ListingTable listings={filtered} />

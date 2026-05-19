@@ -20,14 +20,14 @@ const ListingTabs: React.FC<Props> = ({ active, allCount, pendingCount, onChange
         onClick={() => onChange(t.key)}
         className={`flex items-center gap-2 px-4 py-2.5 text-[13.5px] border-b-2 -mb-px mr-2 transition-colors ${
           active === t.key
-            ? "border-blue-600 text-blue-700 font-medium"
-            : "border-transparent text-gray-400 hover:text-gray-700"
+            ? "border-slate-800 text-slate-900 font-semibold"
+            : "border-transparent text-slate-400 hover:text-slate-700"
         }`}
       >
         {t.icon}
         {t.label}
         <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-semibold ${
-          active === t.key ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500"
+          active === t.key ? "bg-slate-100 text-slate-800" : "bg-slate-50 text-slate-500"
         }`}>
           {t.count}
         </span>

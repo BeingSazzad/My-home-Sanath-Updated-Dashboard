@@ -48,20 +48,22 @@ const Navbar = () => {
   }, [])
 
   return (
-    <nav className=" bg-gradient-info shadow-lg w-full">
+    <nav className="bg-white border-b border-slate-100 shadow-sm w-full">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-end gap-2">
+        <div className="relative flex h-16 items-center justify-end gap-3">
 
 
-          <div className="relative p-2 bg-white rounded-md">
-            <Bell onClick={() => setShowNotifications(!showNotifications)} className="text-secondary" size={22} />
-            <div className="absolute -top-1 -right-1 shadow-lg w-5 h-5 rounded-full bg-secondary text-white flex items-center justify-center">{unreadCount ?? 0}</div>
+          <div className="relative p-2 bg-slate-50 hover:bg-slate-100 cursor-pointer rounded-lg transition-colors" onClick={() => setShowNotifications(!showNotifications)}>
+            <Bell className="text-slate-600 hover:text-slate-800" size={20} />
+            {unreadCount !== undefined && unreadCount > 0 && (
+              <div className="absolute -top-1 -right-1 shadow-sm w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px] font-bold leading-none">{unreadCount}</div>
+            )}
           </div>
           {/* User Menu */}
-          <div className="hidden md:flex border-l-2 border-slate-200 pl-0.5">
+          <div className="hidden md:flex border-l border-slate-100 pl-3 ml-1">
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex bg-transparent! items-center gap-2 rounded-lg px-2 py-1.5 transition-colors  hover:bg-slate-200/50 focus:outline-none">
-                <Avatar className="h-10 w-10">
+              <DropdownMenuTrigger className="flex bg-transparent! items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-50 focus:outline-none cursor-pointer">
+                <Avatar className="h-9 w-9 border border-slate-100">
                   <AvatarImage
                     src={profileData?.profileImage ? imageUrl + profileData?.profileImage : "/default-avatar.png"}
                     alt="Jessica Jones"
@@ -70,11 +72,11 @@ const Navbar = () => {
                     {profileData?.name?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex  flex-col  items-start">
-                  <p className="hidden text-sm font-semibold text-white lg:inline-block">
+                <div className="flex flex-col items-start leading-tight">
+                  <p className="hidden text-xs font-semibold text-slate-800 lg:inline-block">
                     {profileData?.name || "User Superadmin"}
                   </p>
-                  <p className="hidden text-sm font-semibold text-white lg:inline-block">
+                  <p className="hidden text-[10px] text-slate-400 lg:inline-block">
                     {profileData?.email || "User email role"}
                   </p>
 

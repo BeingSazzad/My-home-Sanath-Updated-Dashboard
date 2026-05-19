@@ -21,7 +21,7 @@ export const sidebarItems = [
   },  
   {
     key: "users",
-    label: "User",
+    label: "User Management",
     path: "users",
     icon: <FaRegCircleUser size={20} />,
     public: true
@@ -52,13 +52,6 @@ export const sidebarItems = [
     label: "Push Notifications",
     path: "push-notifications",
     icon: <Bell size={20} />,
-    public: true
-  },
-  {
-    key: "agents",
-    label: "Agent",
-    path: "agents",
-    icon: <FaRegCircleUser size={20} />,
     public: true
   },
   {

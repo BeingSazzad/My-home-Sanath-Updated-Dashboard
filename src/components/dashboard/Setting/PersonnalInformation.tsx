@@ -177,7 +177,7 @@ const PersonalInformation = () => {
             <div className="pt-2">
               <Button
                 onClick={handleSave}                
-                className="bg-red-600 hover:bg-red-700 text-white px-8 min-w-40"
+                className="bg-[#0B192C] hover:bg-[#0B192C]/95 text-white px-8 min-w-40"
                 size="lg"
               >
                 <Save className="mr-2 h-5 w-5" />

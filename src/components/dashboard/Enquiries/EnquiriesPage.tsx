@@ -6,19 +6,29 @@ import { Input } from "../../ui/input";
 import { enquiries } from "../../../data/enquiries";
 import { EnquiryTable } from "./EnquiryTable";
 import { EnquiryModal } from "./EnquiryModal";
+import { Inbox, Calendar, BarChart3 } from "lucide-react";
 
 
-const StatsCard = ({ title, value, growth }: any) => {
+const StatsCard = ({ title, value, growth, icon: Icon, iconBg, iconColor }: any) => {
     return (
-        <Card className="rounded-2xl shadow-sm">
-        <CardContent className="p-5">
-            <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <span className="text-green-600 text-sm font-medium">
-                {growth}
-            </span>
+        <Card className="rounded-xl border border-gray-150/70 shadow-sm bg-white hover:shadow-md transition-all duration-300">
+        <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              {Icon && (
+                <div className={`p-2.5 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center flex-shrink-0`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{title}</p>
+                <div className="flex items-baseline gap-2 mt-0.5">
+                  <span className="text-xl font-extrabold text-slate-800">{value}</span>
+                  <span className="text-[10.5px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded font-semibold">
+                    {growth}
+                  </span>
+                </div>
+              </div>
             </div>
-            <h2 className="text-2xl font-bold mt-2">{value}</h2>
         </CardContent>
         </Card>
     );
@@ -44,9 +54,30 @@ export default function EnquiriesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <StatsCard title="Total Enquiries" value="1,247" growth="+12.5%" />
-        <StatsCard title="New This Week" value="87" growth="+8.2%" />
-        <StatsCard title="This Month" value="342" growth="+15.3%" />
+        <StatsCard
+          title="Total Enquiries"
+          value="1,247"
+          growth="+12.5%"
+          icon={Inbox}
+          iconBg="bg-blue-50"
+          iconColor="text-blue-600"
+        />
+        <StatsCard
+          title="New This Week"
+          value="87"
+          growth="+8.2%"
+          icon={Calendar}
+          iconBg="bg-purple-50"
+          iconColor="text-purple-600"
+        />
+        <StatsCard
+          title="This Month"
+          value="342"
+          growth="+15.3%"
+          icon={BarChart3}
+          iconBg="bg-emerald-50"
+          iconColor="text-emerald-600"
+        />
       </div>
 
       {/* Search */}

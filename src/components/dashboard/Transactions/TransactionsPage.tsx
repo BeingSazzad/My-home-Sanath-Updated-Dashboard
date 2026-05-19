@@ -27,17 +27,25 @@ const PAGE_SIZE = 5;
 
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(
     () =>
       transactions.filter(
-        (t) =>
-          t.id.toLowerCase().includes(search.toLowerCase()) ||
-          t.agent.name.toLowerCase().includes(search.toLowerCase()) ||
-          t.agent.email.toLowerCase().includes(search.toLowerCase())
+        (t) => {
+          const matchSearch =
+            !search ||
+            t.id.toLowerCase().includes(search.toLowerCase()) ||
+            t.agent.name.toLowerCase().includes(search.toLowerCase()) ||
+            t.agent.email.toLowerCase().includes(search.toLowerCase());
+          const matchType = !typeFilter || t.type === typeFilter;
+          const matchStatus = !statusFilter || t.status === statusFilter;
+          return matchSearch && matchType && matchStatus;
+        }
       ),
-    [search]
+    [search, typeFilter, statusFilter]
   );
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -65,8 +73,8 @@ export default function TransactionsPage() {
       </div>
 
       {/* Search & Filter */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
+        <div className="relative flex-grow max-w-sm">
           <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <Input
             className="pl-9 bg-white"
@@ -75,10 +83,47 @@ export default function TransactionsPage() {
             onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
-        <Button variant="outline" className="gap-2 bg-white ml-auto">
-          <Filter size={16} />
-          Filters
-        </Button>
+        
+        {/* Type Filter */}
+        <select
+          value={typeFilter}
+          onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
+          className="h-10 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
+        >
+          <option value="">All Types</option>
+          <option value="subscription">Subscription</option>
+          <option value="featured">Featured Listing</option>
+          <option value="refund">Refund</option>
+        </select>
+
+        {/* Status Filter */}
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          className="h-10 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
+        >
+          <option value="">All Statuses</option>
+          <option value="completed">Completed</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+          <option value="refunded">Refunded</option>
+        </select>
+
+        {/* Clear Filters Button */}
+        {(search || typeFilter || statusFilter) && (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setSearch("");
+              setTypeFilter("");
+              setStatusFilter("");
+              setPage(1);
+            }}
+            className="text-xs text-slate-500 hover:text-slate-900 cursor-pointer"
+          >
+            Clear Filters
+          </Button>
+        )}
       </div>
 
       {/* Table Card */}

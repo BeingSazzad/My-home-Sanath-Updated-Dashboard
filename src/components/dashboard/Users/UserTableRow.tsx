@@ -15,31 +15,31 @@ interface Props { user: User; index: number; }
 const UserTableRow: React.FC<Props> = ({ user, index }) => {
   const c = avatarColors[index % avatarColors.length];
   return (
-    <tr className="border-b border-gray-50 hover:bg-gray-50/60 last:border-0">
-      <td className="py-3 px-4">
-        <div className="flex items-center gap-2.5">
+    <tr className="border-b border-gray-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
+      <td className="py-4 px-5">
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium flex-shrink-0"
                style={{ background: c.bg, color: c.color }}>
             {user.initials}
           </div>
           <div>
             <p className="text-[13px] font-medium text-gray-900">{user.name}</p>
-            <p className="text-[11px] text-gray-400">{user.email}</p>
+            <p className="text-[11.5px] text-gray-400">{user.email}</p>
           </div>
         </div>
       </td>
-      <td className="py-3 px-4 text-[12px] text-gray-500">{user.phone}</td>
-      <td className="py-3 px-4 text-[12.5px] text-gray-500">{user.location}</td>
-      <td className="py-3 px-4">
+      <td className="py-4 px-5 text-[12.5px] text-gray-500">{user.phone}</td>
+      <td className="py-4 px-5 text-[12.5px] text-gray-500">{user.location}</td>
+      <td className="py-4 px-5">
         <p className="text-[12.5px] font-medium text-gray-900">{user.savedProperties} properties</p>
-        <p className="text-[11px] text-gray-400">{user.searches} searches</p>
+        <p className="text-[11.5px] text-gray-400">{user.searches} searches</p>
       </td>
-      <td className="py-3 px-4 text-[13px] font-medium text-gray-900">{user.enquiries}</td>
-      <td className="py-3 px-4 text-[12px] text-gray-400">{user.joinDate}</td>
-      <td className="py-3 px-4 text-[12px] text-gray-400">{user.lastActive}</td>
-      <td className="py-3 px-4"><StatusBadge status={user.status} /></td>
-      <td className="py-3 px-4">
-        <button className="text-gray-400 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100 text-base">⋮</button>
+      <td className="py-4 px-5 text-[13px] font-medium text-gray-900">{user.enquiries}</td>
+      <td className="py-4 px-5 text-[12.5px] text-gray-400">{user.joinDate}</td>
+      <td className="py-4 px-5 text-[12.5px] text-gray-400">{user.lastActive}</td>
+      <td className="py-4 px-5"><StatusBadge status={user.status} /></td>
+      <td className="py-4 px-5">
+        <button className="text-gray-400 hover:text-gray-700 px-2.5 py-1.5 rounded hover:bg-gray-100 text-base">⋮</button>
       </td>
     </tr>
   );

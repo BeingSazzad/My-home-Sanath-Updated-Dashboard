@@ -20,26 +20,26 @@ const StatsCard = ({
   growth,
 }: StatsCardProps) => {
   return (
-    <div className={cn("rounded-2xl px-4 py-5 flex flex-col gap-4", cardBgColor)}>
-      <div className="flex items-center justify-between">
+    <div className={cn("rounded-xl border border-gray-150/70 p-4 bg-white shadow-sm hover:shadow-md transition-all duration-300", cardBgColor)}>
+      <div className="flex items-center gap-3">
         <div
           className={cn(
-            "flex h-11 w-11 items-center justify-center rounded-xl shadow-sm",
+            "flex h-9.5 w-9.5 items-center justify-center rounded-xl flex-shrink-0 shadow-sm",
             iconBgColor
           )}
         >
           {icon}
         </div>
-        <span className="flex items-center gap-1 text-sm font-semibold text-green-500">
-          <TrendingUp className="h-3.5 w-3.5" />
-          {growth}
-        </span>
-      </div>
-
-      <div>
-        <p className="text-sm text-gray-500">{title}</p>
-        <h3 className="mt-1 text-3xl font-bold text-gray-800">{value}</h3>
-        <p className="mt-1 text-xs text-gray-400">vs last month</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{title}</p>
+          <div className="flex items-baseline gap-2 mt-0.5">
+            <span className="text-xl font-extrabold text-slate-800">{value}</span>
+            <span className="text-[10.5px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded font-semibold flex items-center gap-0.5">
+              <TrendingUp className="h-3 w-3" />
+              {growth}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

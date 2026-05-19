@@ -25,25 +25,49 @@ import {
 import AddAdminForm from './AddAdminForm';
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
+const themeStyles: Record<string, { cardBg: string; border: string; iconBg: string; iconColor: string }> = {
+  purple: {
+    cardBg: "bg-white",
+    border: "border-gray-150/70",
+    iconBg: "bg-purple-50",
+    iconColor: "text-purple-600",
+  },
+  green: {
+    cardBg: "bg-white",
+    border: "border-gray-150/70",
+    iconBg: "bg-emerald-50",
+    iconColor: "text-emerald-600",
+  },
+  blue: {
+    cardBg: "bg-white",
+    border: "border-gray-150/70",
+    iconBg: "bg-blue-50",
+    iconColor: "text-blue-600",
+  },
+};
+
 interface StatCardProps {
     icon: React.ReactNode;
     label: string;
     value: number | string;
     sub: string;
-    bg: string;       // card background
-    iconBg: string;   // icon wrapper background
+    color: "purple" | "green" | "blue";
 }
 
-function StatCard({ icon, label, value, sub, bg, iconBg }: StatCardProps) {
+function StatCard({ icon, label, value, color }: StatCardProps) {
+    const theme = themeStyles[color] || themeStyles.blue;
     return (
-        <div className={`rounded-xl p-5 flex flex-col gap-6 ${bg}`}>
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${iconBg}`}>
-                {icon}
-            </div>
-            <div>
-                <p className="text-sm text-white/80">{label}</p>
-                <p className="text-4xl font-bold text-white mt-1">{value}</p>
-                <p className="text-xs text-white/60 mt-1">{sub}</p>
+        <div className={`rounded-xl border ${theme.border} p-4 ${theme.cardBg} shadow-sm hover:shadow-md transition-all duration-300`}>
+            <div className="flex items-center gap-3">
+                <div className={`w-9.5 h-9.5 rounded-xl ${theme.iconBg} ${theme.iconColor} flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                    {icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                    <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{label}</p>
+                    <div className="flex items-baseline gap-2 mt-0.5">
+                        <span className="text-xl font-extrabold text-slate-800">{value}</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
@@ -184,7 +208,7 @@ export default function AdminManage() {
 
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                     <DialogTrigger asChild>
-                        <Button className="gap-2 bg-blue-900 hover:bg-blue-800 text-white">
+                        <Button className="gap-2 bg-[#0B3C6D] hover:bg-[#0B3C6D]/95 text-white">
                             <UserPlus size={16} />
                             Add New Admin
                         </Button>
@@ -192,7 +216,7 @@ export default function AdminManage() {
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle className="text-2xl font-bold">Add New Administrator</DialogTitle>
-                            <p className="text-sm text-gray-500">Create a new admin account with specific permissions</p>
+                            <p className="text-sm text-gray-500">Create a new admin account to manage the application.</p>
                         </DialogHeader>
                         <AddAdminForm
                             onSubmit={handleFormSubmit}
@@ -205,28 +229,25 @@ export default function AdminManage() {
             {/* Stat cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <StatCard
-                    icon={<Shield size={22} className="text-white" />}
+                    icon={<Shield size={18} />}
                     label="Total Admins"
                     value={admins.length}
                     sub="Administrator accounts"
-                    bg="bg-purple-500/70"
-                    iconBg="bg-purple-600"
+                    color="purple"
                 />
                 <StatCard
-                    icon={<ShieldCheck size={22} className="text-white" />}
+                    icon={<ShieldCheck size={18} />}
                     label="Active Admins"
                     value={activeCount}
                     sub="Currently active"
-                    bg="bg-green-600/60"
-                    iconBg="bg-green-500"
+                    color="green"
                 />
                 <StatCard
-                    icon={<Users size={22} className="text-white" />}
+                    icon={<Users size={18} />}
                     label="Super Admins"
                     value={superCount}
                     sub="Full access"
-                    bg="bg-slate-500/70"
-                    iconBg="bg-blue-500"
+                    color="blue"
                 />
             </div>
 

@@ -22,23 +22,28 @@ const fallbackAgentData = [
 ].map((v, i) => ({ month: monthNames[i], value: v }));
 
 const DashboardCharts = () => {
-  const [selectedYear] = useState(new Date().getFullYear().toString());
-  const { data: chartsData } = useGetRecentActivitiesQuery({ year: selectedYear });
+  const [userYear, setUserYear] = useState(new Date().getFullYear().toString());
+  const [revenueYear, setRevenueYear] = useState(new Date().getFullYear().toString());
+  const [agentYear, setAgentYear] = useState(new Date().getFullYear().toString());
+
+  const { data: userDataResponse } = useGetRecentActivitiesQuery({ year: userYear });
+  const { data: revenueDataResponse } = useGetRecentActivitiesQuery({ year: revenueYear });
+  const { data: agentDataResponse } = useGetRecentActivitiesQuery({ year: agentYear });
 
   const userGrowthData =
-    chartsData?.userGrowth?.map((item: any) => ({
+    userDataResponse?.userGrowth?.map((item: any) => ({
       month: monthNames[item.month - 1],
       value: item.totalUsers,
     })) || fallbackUserData;
 
   const revenueData =
-    chartsData?.revenue?.map((item: any) => ({
+    revenueDataResponse?.revenue?.map((item: any) => ({
       month: monthNames[item.month - 1],
       value: item.totalRevenue,
     })) || fallbackRevenueData;
 
   const agentData =
-    chartsData?.agents?.map((item: any) => ({
+    agentDataResponse?.agents?.map((item: any) => ({
       month: monthNames[item.month - 1],
       value: item.totalAgents,
     })) || fallbackAgentData;
@@ -47,41 +52,41 @@ const DashboardCharts = () => {
   const currentRevenue = revenueData.at(-1)?.value ?? 0;
   const currentAgents = agentData.at(-1)?.value ?? 0;
 
-  const charts = [
-    {
-      title: "User Growth",
-      subtitle: "Total users over time",
-      data: userGrowthData,
-      color: "#3b82f6",
-      gradientId: "userGradient",
-      footerLabel: "Current",
-      footerValue: `${currentUsers.toLocaleString()} users`,
-    },
-    {
-      title: "Revenue",
-      subtitle: "Monthly revenue trend",
-      data: revenueData,
-      color: "#10b981",
-      gradientId: "revenueGradient",
-      footerLabel: "This month",
-      footerValue: `£${currentRevenue.toLocaleString()}`,
-    },
-    {
-      title: "Agents",
-      subtitle: "Agent acquisition trend",
-      data: agentData,
-      color: "#f97316",
-      gradientId: "agentGradient",
-      footerLabel: "Total agents",
-      footerValue: `${currentAgents} agents`,
-    },
-  ];
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 py-2">
-      {charts.map((chart) => (
-        <ChartCard key={chart.title} {...chart} />
-      ))}
+      <ChartCard
+        title="User Growth"
+        subtitle="Total users over time"
+        data={userGrowthData}
+        color="#3b82f6"
+        gradientId="userGradient"
+        footerLabel="Current"
+        footerValue={`${currentUsers.toLocaleString()} users`}
+        selectedYear={userYear}
+        onYearChange={setUserYear}
+      />
+      <ChartCard
+        title="Revenue"
+        subtitle="Monthly revenue trend"
+        data={revenueData}
+        color="#10b981"
+        gradientId="revenueGradient"
+        footerLabel="This month"
+        footerValue={`£${currentRevenue.toLocaleString()}`}
+        selectedYear={revenueYear}
+        onYearChange={setRevenueYear}
+      />
+      <ChartCard
+        title="Agents"
+        subtitle="Agent acquisition trend"
+        data={agentData}
+        color="#f97316"
+        gradientId="agentGradient"
+        footerLabel="Total agents"
+        footerValue={`${currentAgents} agents`}
+        selectedYear={agentYear}
+        onYearChange={setAgentYear}
+      />
     </div>
   );
 };

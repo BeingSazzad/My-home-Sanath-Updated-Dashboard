@@ -27,17 +27,17 @@ const StatsCards = () => {
       value: analyticsData?.totalPropertySeekers
         ? analyticsData.totalPropertySeekers.toLocaleString()
         : "4,020",
-      icon: <FiUsers className="h-5 w-5 text-white" />,
-      iconBgColor: "bg-blue-500",
-      cardBgColor: "bg-blue-50",
+      icon: <FiUsers className="h-5 w-5 text-blue-600" />,
+      iconBgColor: "bg-blue-50/70",
+      cardBgColor: "bg-white border border-slate-100 shadow-sm",
       growth: "+12.5%",
     },
     {
       title: "Total Agents",
       value: analyticsData?.totalAgents ?? "342",
-      icon: <MdOutlineRealEstateAgent className="h-5 w-5 text-white" />,
-      iconBgColor: "bg-purple-500",
-      cardBgColor: "bg-purple-50",
+      icon: <MdOutlineRealEstateAgent className="h-5 w-5 text-purple-600" />,
+      iconBgColor: "bg-purple-50/70",
+      cardBgColor: "bg-white border border-slate-100 shadow-sm",
       growth: "+8.2%",
     },
     {
@@ -45,9 +45,9 @@ const StatsCards = () => {
       value: analyticsData?.totalRevenue
         ? `£${analyticsData.totalRevenue.toLocaleString()}`
         : "£412,450",
-      icon: <BsCurrencyDollar className="h-5 w-5 text-white" />,
-      iconBgColor: "bg-green-500",
-      cardBgColor: "bg-green-50",
+      icon: <BsCurrencyDollar className="h-5 w-5 text-green-600" />,
+      iconBgColor: "bg-green-50/70",
+      cardBgColor: "bg-white border border-slate-100 shadow-sm",
       growth: "+15.3%",
     },
   ];
@@ -68,12 +68,12 @@ const StatsCards = () => {
           value={selectedYear}
           onValueChange={(value) => setSelectedYear(value)}
         >
-          <SelectTrigger className="w-32 bg-primary! text-white! shadow-sm">
+          <SelectTrigger className="w-32 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg">
             <SelectValue placeholder="Year" />
           </SelectTrigger>
-          <SelectContent position="popper" className="bg-primary! text-white">
+          <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">
             {[0, 1, 2, 3, 4, 5].map((i) => (
-              <SelectItem key={i} value={(currentYear - i).toString()}>
+              <SelectItem key={i} value={(currentYear - i).toString()} className="cursor-pointer hover:bg-slate-50">
                 {currentYear - i}
               </SelectItem>
             ))}

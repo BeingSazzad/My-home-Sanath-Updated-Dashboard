@@ -143,7 +143,7 @@ const ChangePassword = () => {
                     <Button
                         onClick={handleUpdatePassword}
                         disabled={isSaving}
-                        className="bg-red-600 hover:bg-red-700 text-white"
+                        className="bg-[#0B192C] hover:bg-[#0B192C]/95 text-white"
                     >
                         {isSaving ? (
                             <>

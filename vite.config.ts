@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   server: {
-    host: "10.10.7.52",
+    // host: "10.10.7.52",
     port: 3025,
     // host: "195.35.6.13",
     // port: 5005,

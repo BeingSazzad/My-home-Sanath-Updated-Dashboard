@@ -47,7 +47,7 @@ export default function Sidebar() {
         {/* Navigation */}
         <ScrollArea className="flex-1 px-3 py-4">
           <nav className="space-y-2">
-            {filteredSidebarItems?.map((item, index) => {
+            {filteredSidebarItems?.map((item) => {
               const itemPath = `/${item.path}`;
               const isItemActive = isActive(itemPath);
 
@@ -56,13 +56,11 @@ export default function Sidebar() {
                   key={item.key}
                   to={itemPath}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-11 transition",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 min-h-11 transition-all border",
                     isItemActive
-                      ? "bg-primary text-white!"
-                      : "border border-black/20 text-black hover:bg-primary hover:text-white!"
+                      ? "bg-primary text-white! border-primary shadow-sm font-medium"
+                      : "border border-slate-200/80 text-slate-700 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900"
                   )}
-                  data-aos="fade-up-right"
-                  data-aos-delay={index * 100}
                 >
                   {item.icon}
                   <span>{item.label}</span>
@@ -76,7 +74,7 @@ export default function Sidebar() {
         <div className="border-t border-neutral-200 p-3">
           <Button
             onClick={handleLogout}
-            className="w-full gap-3 bg-transparent text-white "
+            className="w-full gap-3 bg-primary hover:bg-primary/95 text-white transition-all shadow-sm font-medium"
           >
             <FiLogOut className="h-5 w-5" />
             <span>Log Out</span>

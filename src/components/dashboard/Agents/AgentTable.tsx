@@ -12,9 +12,9 @@ const AgentTable: React.FC<Props> = ({ agents, total }) => (
     <div className="overflow-x-auto">
       <table className="w-full text-sm border-collapse">
         <thead>
-          <tr className="bg-gray-50">
+          <tr className="bg-slate-50/70 border-b border-gray-100">
             {HEADERS.map(h => (
-              <th key={h} className="text-left text-[11px] font-medium text-gray-500 tracking-wider px-4 py-3 border-b border-gray-100 whitespace-nowrap">
+              <th key={h} className="text-left text-[11.5px] font-semibold text-slate-500 uppercase tracking-wider px-5 py-4 whitespace-nowrap">
                 {h}
               </th>
             ))}
