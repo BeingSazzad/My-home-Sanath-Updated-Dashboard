@@ -20,55 +20,20 @@ import PushNotificationsPage from "../dashboard/PushNotifications/PushNotificati
 const router = createBrowserRouter([
     {
         path: "/",
-        // element: <PrivateRoute> <MainLayout /></PrivateRoute>,
         element: <MainLayout />,
         errorElement: <ErrorPage />,
         children: [
-            {
-                path: "",
-                element: <Dashboard />
-            },
-
-            {
-                path: "revenues",
-                element: <Revenue />
-            },            
-            {
-                path: "users",
-                element: <Users />
-            },
-            {
-                path: "agents",
-                element: <Agents />
-            },
-            {
-                path: "listing",
-                element: <ListingsManagement />
-            },
-            {
-                path: "enquiries",
-                element: <EnquiriesPage />
-            },
-            {
-                path: "transactions",
-                element: <TransactionsPage />
-            },
-            {
-                path: "push-notifications",
-                element: <PushNotificationsPage />
-            },
-            {
-                path: "admins",
-                element: <AdminManage />
-            },            
-            {
-                path: "setting",
-                element: <Settings />
-            },
-            {
-                path: "notification",
-                element: <Notification />
-            },
+            { path: "", element: <Dashboard /> },
+            { path: "revenues", element: <Revenue /> },
+            { path: "users", element: <Users /> },
+            { path: "agents", element: <Agents /> },
+            { path: "listing", element: <ListingsManagement /> },
+            { path: "enquiries", element: <EnquiriesPage /> },
+            { path: "transactions", element: <TransactionsPage /> },
+            { path: "push-notifications", element: <PushNotificationsPage /> },
+            { path: "admins", element: <AdminManage /> },
+            { path: "setting", element: <Settings /> },
+            { path: "notification", element: <Notification /> },
         ]
     },
     { path: "/login", element: <Login /> },
