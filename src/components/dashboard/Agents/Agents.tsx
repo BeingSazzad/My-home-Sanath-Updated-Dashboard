@@ -35,12 +35,8 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
           <h1 className={isTabbed ? "text-xl font-bold text-slate-900" : "title"}>Agents</h1>
           <p className={isTabbed ? "text-xs text-slate-400 mt-0.5" : "text-sm text-gray-400 mt-0.5"}>Manage real estate agents and their accounts</p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="ghost" className="flex items-center gap-2  rounded-lg text-sm bg-white text-gray-700 hover:bg-gray-50">
-            <Download />
-            Export
-          </Button>
-          <Button className="flex items-center gap-2  bg-blue-600 rounded-lg text-sm text-white hover:bg-blue-700">           
+        <div >
+          <Button className="bg-blue-600 rounded-lg text-sm text-white hover:bg-blue-700">           
             <Plus /> Add Agent
           </Button>
         </div>

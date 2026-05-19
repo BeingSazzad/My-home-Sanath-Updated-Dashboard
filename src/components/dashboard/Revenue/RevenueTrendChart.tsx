@@ -4,10 +4,11 @@ import { cn } from "../../../lib/utils";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
-import { useGetRevenueGrowthQuery } from "../../../redux/features/dashboard/dashboardApi";
+import { useGetMonthlyRevenueStatsQuery } from "../../../redux/features/revenue/revenueApi";
 
-const YEARS = ["2026", "2025"] as const;
-type Year = typeof YEARS[number];
+const currentYear = new Date().getFullYear();
+const YEARS = Array.from({ length: 5 }, (_, i) => (currentYear - i).toString());
+type Year = string;
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
@@ -17,12 +18,12 @@ const RevenueTrendChart: React.FC = () => {
   const [year, setYear] = useState<Year>(YEARS[0]);
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading } = useGetRevenueGrowthQuery(year);
+  const { data, isLoading } = useGetMonthlyRevenueStatsQuery(year);
 
   const chartData = data?.length
-    ? data.map((item: { month: string; revenue: number }) => ({
+    ? data.map((item: { month: string; totalRevenue: number }) => ({
         month: item.month,
-        revenue: item.revenue ?? 0,
+        revenue: item.totalRevenue ?? 0,
       }))
     : EMPTY_CHART;
 
@@ -67,8 +68,8 @@ const RevenueTrendChart: React.FC = () => {
 
       {/* Chart */}
       <div className={cn("transition-opacity", isLoading && "opacity-40")}>
-        <ResponsiveContainer width="100%" height={220}>
-          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={chartData} margin={{ top: 4, right: 20, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%"  stopColor="#22c996" stopOpacity={0.18} />
@@ -93,22 +94,6 @@ const RevenueTrendChart: React.FC = () => {
             />
           </AreaChart>
         </ResponsiveContainer>
-      </div>
-
-      {/* Bottom stats — will be populated from backend */}
-      <div className="grid grid-cols-3 gap-0 border-t border-gray-100 mt-4 pt-4">
-        {[
-          { label: "This Month", value: data?.thisMonth ?? "—" },
-          { label: "Target",     value: data?.target    ?? "—" },
-          { label: "Achievement",value: data?.achievement ?? "—", green: true },
-        ].map(({ label, value, green }) => (
-          <div key={label}>
-            <p className="text-[11px] text-gray-400 mb-1">{label}</p>
-            <p className={cn("text-base font-medium", green ? "text-green-500" : "text-gray-900")}>
-              {value}
-            </p>
-          </div>
-        ))}
       </div>
     </div>
   );

@@ -6,7 +6,16 @@ import { Input } from "../../ui/input";
 import { enquiries } from "../../../data/enquiries";
 import { EnquiryTable } from "./EnquiryTable";
 import { EnquiryModal } from "./EnquiryModal";
-import { Inbox, Calendar, BarChart3 } from "lucide-react";
+import { Inbox, Calendar, BarChart3, Filter } from "lucide-react";
+import { useGetEnquiryStatsQuery, useGetAllEnquiriesQuery } from "../../../redux/features/enquiries/enquiriesApi";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "../../ui/pagination";
 
 
 const StatsCard = ({ title, value, icon: Icon, iconBg, iconColor }: any) => {
@@ -33,8 +42,27 @@ const StatsCard = ({ title, value, icon: Icon, iconBg, iconColor }: any) => {
 
 
 export default function EnquiriesPage() {
-  const [selected, setSelected] = useState<Enquiry | null>(null);
+  const [selected, setSelected] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
+
+  const { data: stats } = useGetEnquiryStatsQuery(undefined);
+  const { data: apiData, isLoading } = useGetAllEnquiriesQuery({
+    page,
+    limit: PAGE_SIZE,
+    searchTerm: search || undefined,
+  });
+
+  const enquiriesList = apiData?.data || [];
+  const totalItems = apiData?.meta?.total || 0;
+  const totalPages = apiData?.meta?.totalPage || 1;
+
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    setPage(1);
+  };
 
   const handleView = (item: Enquiry) => {
     setSelected(item);
@@ -46,28 +74,27 @@ export default function EnquiriesPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="title">Leads & Enquiries</h1>
-        <Button>Export</Button>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <StatsCard
           title="Total Enquiries"
-          value="1,247"
+          value={stats?.totalEnqueries?.toLocaleString() || "0"}
           icon={Inbox}
           iconBg="bg-blue-50"
           iconColor="text-blue-600"
         />
         <StatsCard
           title="New This Week"
-          value="87"
+          value={stats?.thisWeekEnqueries?.toLocaleString() || "0"}
           icon={Calendar}
           iconBg="bg-purple-50"
           iconColor="text-purple-600"
         />
         <StatsCard
           title="This Month"
-          value="342"
+          value={stats?.thisMonthEnqueries?.toLocaleString() || "0"}
           icon={BarChart3}
           iconBg="bg-emerald-50"
           iconColor="text-emerald-600"
@@ -75,10 +102,53 @@ export default function EnquiriesPage() {
       </div>
 
       {/* Search */}
-      <Input placeholder="Search by property, user, or agent..." />
+      <div className="relative max-w-sm mb-4">
+        <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <Input
+          className="pl-9 bg-white"
+          placeholder="Search by name and email"
+          value={search}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+      </div>
 
       {/* Table */}
-      <EnquiryTable data={enquiries} onView={handleView} />
+      <EnquiryTable data={enquiriesList} onView={handleView} isLoading={isLoading} />
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); setPage((p) => Math.max(1, p - 1)); }}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === i + 1}
+                    onClick={(e) => { e.preventDefault(); setPage(i + 1); }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); setPage((p) => Math.min(totalPages, p + 1)); }}
+                  className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
 
       {/* Modal */}
       <EnquiryModal

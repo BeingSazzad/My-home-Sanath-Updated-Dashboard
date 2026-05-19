@@ -97,7 +97,7 @@ const PersonalInformation = () => {
                     <img
                       src={displayImage}
                       alt="Profile Preview"
-                      className="w-full h-full object-cover rounded-2xl"
+                      className="w-full h-full object-cover rounded-2xl "
                     />
                     <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white text-xs font-semibold gap-1 rounded-2xl">
                       <User className="h-5 w-5" />
@@ -106,7 +106,7 @@ const PersonalInformation = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center p-4 text-center">
-                    <div className="p-3 rounded-full bg-slate-50 text-slate-400 group-hover:bg-[#0B3C6D]/8 group-hover:text-[#0B3C6D] transition-colors duration-200 mb-2">
+                    <div className="p-3 rounded-full bg-slate-50 text-slate-400 group-hover:bg-[#0B3C6D]/8 group-hover:text-[#0B3C6D] transition-colors duration-200 mb-2 border">
                       <User className="h-6 w-6" />
                     </div>
                     <span className="text-xs font-semibold text-slate-600 group-hover:text-[#0B3C6D]">
@@ -119,7 +119,7 @@ const PersonalInformation = () => {
                 )}
               </div>
 
-              {displayImage && (
+              {/* {displayImage && (
                 <button
                   type="button"
                   onClick={handleRemoveImage}
@@ -127,7 +127,7 @@ const PersonalInformation = () => {
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
-              )}
+              )} */}
             </div>
           </div>
 

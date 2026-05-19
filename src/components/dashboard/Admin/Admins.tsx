@@ -2,7 +2,7 @@ import { Mail, Pencil, Shield, ShieldCheck, Trash2, UserPlus, Users } from 'luci
 import { useState } from 'react';
 import { toast } from 'sonner';
 import Swal from 'sweetalert2';
-import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery } from '../../../redux/features/user/userApi';
+import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery, useGetAdminStatsQuery } from '../../../redux/features/user/userApi';
 import { confirmDelete } from '../../Shared/confirmDelete';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -31,9 +31,8 @@ interface Admin {
     email: string;
     role: string;
     status?: string;
-    permissions?: string[];
     createdAt?: string;
-    lastLogin?: string;
+    lastLoginAt?: string;
 }
 
 interface StatCardProps {
@@ -76,12 +75,7 @@ function AdminAvatar({ name, color }: { name: string; color: string }) {
 }
 
 const ROLE_STYLES: Record<string, string> = {
-    'Super Admin': 'bg-purple-100 text-purple-700 border-purple-200',
-    'SUPER_ADMIN': 'bg-purple-100 text-purple-700 border-purple-200',
-    'Admin':       'bg-blue-100 text-blue-700 border-blue-200',
-    'ADMIN':       'bg-blue-100 text-blue-700 border-blue-200',
-    'Moderator':   'bg-emerald-100 text-emerald-700 border-emerald-200',
-    'MODERATOR':   'bg-emerald-100 text-emerald-700 border-emerald-200',
+    'ADMIN':'bg-blue-100 text-blue-700 border-blue-200',
 };
 
 function RoleBadge({ role }: { role: string }) {
@@ -103,25 +97,7 @@ function StatusBadge({ status }: { status: string }) {
     );
 }
 
-function PermissionsCell({ permissions }: { permissions?: string[] }) {
-    if (!permissions?.length) return <span className="text-gray-400 text-sm">—</span>;
-    const shown = permissions.slice(0, 2);
-    const extra = permissions.length - 2;
-    return (
-        <div className="flex flex-wrap gap-1">
-            {shown.map((p) => (
-                <Badge key={p} variant="outline" className="text-xs bg-gray-50 text-gray-700 border-gray-200">
-                    {p}
-                </Badge>
-            ))}
-            {extra > 0 && (
-                <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-200">
-                    +{extra} more
-                </Badge>
-            )}
-        </div>
-    );
-}
+
 
 const AVATAR_COLORS = [
     'bg-blue-600', 'bg-teal-600', 'bg-indigo-600',
@@ -132,23 +108,26 @@ export default function AdminManage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data: adminsData, refetch } = useGetAdminQuery({});
+    const { data: adminStats } = useGetAdminStatsQuery({});
     const [addAdmin] = useCreateAdminMutation();
     const [deleteAdmin] = useDeleteAdminMutation();
 
-    const admins: Admin[] = adminsData?.data ?? [];
-    const activeCount = admins.filter((a) => a.status?.toLowerCase() === 'active').length;
-    const superCount = admins.filter((a) => ['Super Admin', 'SUPER_ADMIN'].includes(a.role)).length;
+    const admins: Admin[] = adminsData?? [];
+    const totalAdmins = adminStats?.totalAdmins ?? 0;
+    const totalSuperAdmins = adminStats?.totalSuperAdmins ?? 0;
+    const totalActiveAdmins = adminStats?.totalActiveAdmins ?? 0;
+    const totalInactiveAdmins = adminStats?.totalInactiveAdmins ?? 0;
 
     const handleFormSubmit = async (formData: FormData) => {
         const data = Object.fromEntries(formData);
-        const permissions = formData.getAll('permissions') as string[];
+        
 
         const payload = {
             name: data.name,
             email: data.email,
             password: data.password,
             role: data.role || 'ADMIN',
-            permissions,
+        
         };
 
         try {
@@ -186,7 +165,7 @@ export default function AdminManage() {
             <div className="flex items-start justify-between mb-6">
                 <div>
                     <h2 className="text-3xl font-bold text-gray-900">Admin Management</h2>
-                    <p className="text-sm text-slate-500 mt-1">Add and manage administrator accounts and permissions</p>
+                    <p className="text-sm text-slate-500 mt-1">Add and manage administrator accounts</p>
                 </div>
 
                 <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -209,16 +188,17 @@ export default function AdminManage() {
                 </Dialog>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <StatCard icon={<Shield size={18} />} label="Total Admins" value={admins.length} color="purple" />
-                <StatCard icon={<ShieldCheck size={18} />} label="Active Admins" value={activeCount} color="green" />
-                <StatCard icon={<Users size={18} />} label="Super Admins" value={superCount} color="blue" />
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <StatCard icon={<Shield size={18} />} label="Total Admins" value={totalAdmins} color="purple" />
+                <StatCard icon={<ShieldCheck size={18} />} label="Active Admins" value={totalActiveAdmins} color="green" />
+                <StatCard icon={<Users size={18} />} label="Inactive Admins" value={totalInactiveAdmins} color="blue" />
+                <StatCard icon={<Users size={18} />} label="Super Admins" value={totalSuperAdmins} color="blue" />
             </div>
 
             <Card className="border-none shadow-sm rounded-xl">
                 <CardHeader className="pb-2">
                     <h3 className="text-lg font-semibold text-gray-900">All Administrators</h3>
-                    <p className="text-sm text-gray-500">Manage admin accounts and roles</p>
+                    <p className="text-sm text-gray-500">Manage admin accounts</p>
                 </CardHeader>
 
                 <CardContent className="p-0">
@@ -227,7 +207,7 @@ export default function AdminManage() {
                             <TableRow className="text-xs uppercase tracking-wider text-gray-500 bg-gray-50">
                                 <TableHead className="pl-6">Admin</TableHead>
                                 <TableHead>Role</TableHead>
-                                <TableHead>Permissions</TableHead>
+                         
                                 <TableHead>Date Added</TableHead>
                                 <TableHead>Last Login</TableHead>
                                 <TableHead>Status</TableHead>
@@ -249,24 +229,22 @@ export default function AdminManage() {
                                         </div>
                                     </TableCell>
                                     <TableCell><RoleBadge role={admin.role} /></TableCell>
-                                    <TableCell><PermissionsCell permissions={admin.permissions} /></TableCell>
+                                    
                                     <TableCell className="text-sm text-gray-600">
                                         {admin.createdAt ? new Date(admin.createdAt).toISOString().slice(0, 10) : '—'}
                                     </TableCell>
                                     <TableCell className="text-sm text-gray-600">
-                                        {admin.lastLogin ? new Date(admin.lastLogin).toISOString().slice(0, 10) : '—'}
+                                        {admin.lastLoginAt ? new Date(admin.lastLoginAt).toISOString().slice(0, 10) : '—'}
                                     </TableCell>
                                     <TableCell><StatusBadge status={admin.status ?? 'Active'} /></TableCell>
                                     <TableCell className="text-right pr-6">
                                         <div className="flex items-center justify-end gap-2">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-gray-700">
-                                                <Pencil size={15} />
-                                            </Button>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
-                                                className="h-8 w-8 text-red-400 hover:text-red-600"
+                                                className="h-8 w-8 text-red-400 hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 onClick={() => handleAdminDelete(admin?._id ?? admin?.id ?? '')}
+                                                disabled={admin.role === 'SUPER_ADMIN'}
                                             >
                                                 <Trash2 size={15} />
                                             </Button>

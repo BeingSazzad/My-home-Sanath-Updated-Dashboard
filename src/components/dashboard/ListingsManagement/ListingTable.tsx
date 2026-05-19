@@ -11,14 +11,19 @@ import { Button } from "../../ui/button";
 
 const HEADERS = ["PROPERTY", "AGENT", "PRICE", "TYPE", "STATS", "STATUS", "ACTIONS"];
 
-interface Props { listings: Listing[] }
+interface Props { 
+    listings: any[];
+    isLoading?: boolean;
+}
 
-const ListingTable: React.FC<Props> = ({ listings }) => {
+const ListingTable: React.FC<Props> = ({ listings, isLoading }) => {
     const [selectedListing, setSelectedListing] = useState<any | null>(null);
     const navigate = useNavigate();
     return (
         <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden">
-            {listings.length === 0 ? (
+            {isLoading ? (
+                <p className="text-center py-12 text-gray-400 text-sm">Loading listings...</p>
+            ) : listings.length === 0 ? (
                 <p className="text-center py-12 text-gray-400 text-sm">No listings found.</p>
             ) : (
                 <div className="overflow-x-auto">
@@ -34,48 +39,43 @@ const ListingTable: React.FC<Props> = ({ listings }) => {
                         </thead>
                         <tbody>
                             {listings.map(l =>
-                                <tr className="border-b border-gray-50 hover:bg-gray-50/60 last:border-0">
+                                <tr key={l._id} className="border-b border-gray-50 hover:bg-gray-50/60 last:border-0">
                                     <td className="py-3.5 px-4">
                                         <div className="flex items-center gap-1.5 font-semibold text-[13.5px] text-gray-900 mb-1">
-                                            {/* {l.featured && (
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" strokeWidth="1">
-                                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                                </svg>
-                                            )} */}
                                             {l.title}
                                         </div>
                                         <div className="flex items-center gap-1 text-[11.5px] text-gray-400 mb-1">
                                             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
                                             </svg>
-                                            {l.address}
+                                            {l.location?.address || l.city}
                                         </div>
 
                                     </td>
                                     <td className="py-3.5 px-4">
-                                        <p className="text-[13px] font-medium text-gray-900">{l.agent.name}</p>
-                                        <p className="text-[11px] text-gray-400">{l.agency}</p>
+                                        <p className="text-[13px] font-medium text-gray-900">{l.agentId?.name || "Unknown"}</p>
+                                        <p className="text-[11px] text-gray-400">{l.agentId?.agencyName || "N/A"}</p>
                                     </td>
                                     <td className="py-3.5 px-4">
-                                        <p className="text-[13.5px] font-semibold text-gray-900">{l.price}</p>
-                                        {l.period && <p className="text-[11px] text-gray-400">{l.period}</p>}
+                                        <p className="text-[13.5px] font-semibold text-gray-900">£{l.askingPrice?.toLocaleString()}</p>
+                                        {l.tenure && <p className="text-[11px] text-gray-400">{l.tenure}</p>}
                                     </td>
                                     <td className="py-3.5 px-4">
-                                        <p className="text-[13px] text-gray-800">{l.type}</p>
-                                        <p className="text-[11px] text-gray-400">{l.subType}</p>
+                                        <p className="text-[13px] text-gray-800">{l.listingType}</p>
+                                        <p className="text-[11px] text-gray-400">{l.propertyType}</p>
                                     </td>
                                     <td className="py-3.5 px-4">
                                         <p className="text-[12px] text-gray-500 flex items-center gap-1 mb-1">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
                                             </svg>
-                                            {l.views} views
+                                            {l.views || 0} views
                                         </p>
                                         <p className="text-[12px] text-gray-500 flex items-center gap-1">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                                             </svg>
-                                            {l.leads} leads
+                                            {l.leadsCount || 0} leads
                                         </p>
                                     </td>
                                     <td className="py-3.5 px-4"><ListingStatusBadge status={l.status} /></td>
@@ -87,11 +87,11 @@ const ListingTable: React.FC<Props> = ({ listings }) => {
                                             </Button>
 
                                             {/* Approve / Reject — pending only */}
-                                            {l.status === "pending" && <>
-                                                <Button variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100">
+                                            {l.status === "PENDING_APPROVAL" && <>
+                                                <Button variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-green-600">
                                                     <Check size={20} />
                                                 </Button>
-                                                <Button variant="ghost" color="destructive" size="icon" className="w-7 h-7 flex items-center justify-center rounded ">
+                                                <Button variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded text-red-600 hover:bg-red-50">
                                                     <X size={14} />
                                                 </Button>
                                             </>}
@@ -100,7 +100,7 @@ const ListingTable: React.FC<Props> = ({ listings }) => {
                                                 <Edit size={14} />
                                             </Button>
                                             {/* Delete */}
-                                            <Button variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100">
+                                            <Button variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-red-600">
                                                 <Trash size={14} />
                                             </Button>
                                         </div>

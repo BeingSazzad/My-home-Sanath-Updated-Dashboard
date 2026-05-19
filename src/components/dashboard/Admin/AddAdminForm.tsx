@@ -3,13 +3,6 @@ import { useState } from 'react';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '../../ui/select';
 
 interface AddAdminFormProps {
     onSubmit?: (formData: FormData) => void;
@@ -17,13 +10,12 @@ interface AddAdminFormProps {
 }
 
 export default function AddAdminForm({ onSubmit, onCancel }: AddAdminFormProps) {
-    const [role, setRole] = useState('ADMIN');
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        formData.set('role', role);
+        formData.set('role', 'ADMIN');
         onSubmit?.(formData);
     };
 
@@ -81,16 +73,11 @@ export default function AddAdminForm({ onSubmit, onCancel }: AddAdminFormProps) 
             {/* Role */}
             <div className="space-y-1.5">
                 <Label>Role</Label>
-                <Select value={role} onValueChange={setRole}>
-                    <SelectTrigger className="h-11 w-full">
-                        <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                        <SelectItem value="ADMIN">Admin</SelectItem>
-                        <SelectItem value="MODERATOR">Moderator</SelectItem>
-                    </SelectContent>
-                </Select>
+                <Input
+                    value="Admin"
+                    className="h-11 bg-gray-50 text-gray-500 cursor-not-allowed"
+                    readOnly
+                />
             </div>
 
             {/* Actions */}

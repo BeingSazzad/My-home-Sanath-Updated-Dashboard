@@ -66,6 +66,11 @@ const userApi = baseApi.injectEndpoints({
       providesTags: ['admin'],
       transformResponse: (response: { data: any }) => response.data,
     }),
+    getAdminStats: build.query({
+      query: () => `/analytics/stats`,
+      providesTags: ['admin'],
+      transformResponse: (response: { data: any }) => response.data,
+    }),
     deleteAdmin: build.mutation({
       query: (id) => { return { url: `/users/admins/${id}`, method: "DELETE" } },
       invalidatesTags: ['admin'],
@@ -85,6 +90,7 @@ const userApi = baseApi.injectEndpoints({
 export const {
   useGetUsersQuery,
   useGetAdminQuery,
+  useGetAdminStatsQuery,
   useGetProfileQuery,
   useGetAllSubscriberQuery,
 

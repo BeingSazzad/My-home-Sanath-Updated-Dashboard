@@ -1,5 +1,5 @@
 import React from "react";
-import { transactions } from "../../../data/revenueData";
+import { useGetRecentTransactionsQuery } from "../../../redux/features/revenue/revenueApi";
 import { Button } from "../../ui/button";
 
 
@@ -12,59 +12,80 @@ const AgentIcon = () => (
   </div>
 );
 
-const StatusBadge: React.FC<{ status: string }> = ({ status }) => (
-  <span
-    className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
-      status === "Completed"
-        ? "bg-green-50 text-green-700"
-        : "bg-amber-50 text-amber-700"
-    }`}
-  >
-    {status}
-  </span>
-);
+const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
+  const normalizedStatus = status?.toLowerCase() || '';
+  let bgClass = "bg-gray-50 text-gray-700";
+  
+  if (normalizedStatus === "active") {
+    bgClass = "bg-green-50 text-green-700";
+  } else if (normalizedStatus === "trialing") {
+    bgClass = "bg-blue-50 text-blue-700";
+  } else if (normalizedStatus === "canceled" || normalizedStatus === "deactivated") {
+    bgClass = "bg-red-50 text-red-700";
+  }
 
-const RecentTransactions: React.FC = () => (
-  <div className="bg-white border border-gray-100 rounded-2xl p-5">
-    <div className="flex justify-between items-start mb-5">
-      <div>
-        <p className="text-lg font-medium text-gray-900">Recent Transactions</p>
-        <p className="text-xs text-gray-400">Latest revenue transactions</p>
+  return (
+    <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${bgClass} capitalize`}>
+      {status || 'Unknown'}
+    </span>
+  );
+};
+
+const RecentTransactions: React.FC = () => {
+  const { data, isLoading } = useGetRecentTransactionsQuery(5);
+  const transactions = Array.isArray(data) ? data : data?.data || [];
+
+  return (
+    <div className="bg-white border border-gray-100 rounded-2xl p-5">
+      <div className="flex justify-between items-start mb-5">
+        <div>
+          <p className="text-lg font-medium text-gray-900">Recent Transactions</p>
+          <p className="text-xs text-gray-400">Latest revenue transactions</p>
+        </div>
+        <Button variant="ghost" className="text-[13px] ">View all →</Button>
       </div>
-      <Button variant="ghost" className="text-[13px] ">View all →</Button>
-    </div>
 
-    <div className="overflow-x-auto">
-      <table className="w-full text-[13px]">
-        <thead>
-          <tr className="border-b border-gray-100">
-            {["TRANSACTION ID","AGENT","TYPE","AMOUNT","DATE","STATUS"].map((h) => (
-              <th key={h} className="text-left text-[11px] font-normal text-gray-400 tracking-wider pb-3 pr-4">
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((txn) => (
-            <tr key={txn.id} className="border-b border-gray-50 last:border-0">
-              <td className="py-3 pr-4 font-medium text-gray-900">{txn.id}</td>
-              <td className="py-3 pr-4">
-                <div className="flex items-center gap-2">
-                  <AgentIcon />
-                  <span className="text-gray-700">{txn.agent}</span>
-                </div>
-              </td>
-              <td className="py-3 pr-4 text-gray-500">{txn.type}</td>
-              <td className="py-3 pr-4 font-medium text-gray-900">{txn.amount}</td>
-              <td className="py-3 pr-4 text-gray-400">{txn.date}</td>
-              <td className="py-3"><StatusBadge status={txn.status} /></td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[13px]">
+          <thead>
+            <tr className="border-b border-gray-100">
+              {["TRANSACTION ID","AGENT","AMOUNT","DATE","STATUS"].map((h) => (
+                <th key={h} className="text-left text-[11px] font-normal text-gray-400 tracking-wider pb-3 pr-4">
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-gray-400">Loading...</td>
+              </tr>
+            ) : transactions.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-gray-400">No transactions found</td>
+              </tr>
+            ) : (
+              transactions.map((txn: any) => (
+                <tr key={txn._id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+                  <td className="py-3 pr-4 font-medium text-gray-900">{txn.trxId || txn._id}</td>
+                  <td className="py-3 pr-4">
+                    <div className="flex items-center gap-2">
+                      <AgentIcon />
+                      <span className="text-gray-700">{txn.userId?.name || "Unknown"}</span>
+                    </div>
+                  </td>
+                  <td className="py-3 pr-4 font-medium text-gray-900">£{txn.amountPaid}</td>
+                  <td className="py-3 pr-4 text-gray-400">{new Date(txn.createdAt).toLocaleDateString()}</td>
+                  <td className="py-3"><StatusBadge status={txn.status} /></td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default RecentTransactions;

@@ -1,8 +1,16 @@
-import React, { useState, useMemo } from "react";
-import { listingsData } from "../../../data/listingsData";
+import React, { useState } from "react";
 import ListingStatCards from "./ListingStatCards";
 import ListingTabs from "./ListingTabs";
 import ListingTable from "./ListingTable";
+import { useGetAllListingsQuery } from "../../../redux/features/listings/listingsApi";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "../../ui/pagination";
 
 type Tab = "all" | "pending";
 
@@ -10,26 +18,25 @@ const ListingsManagement: React.FC = () => {
   const [tab, setTab]       = useState<Tab>("all");
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
-  const [bedsFilter, setBedsFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
-  const filtered = useMemo(() => {
-    const q    = search.toLowerCase();
-    const base = tab === "pending"
-      ? listingsData.filter(l => l.status === "pending")
-      : listingsData;
-    return base.filter(l => {
-      const matchQ = !q ||
-        l.title.toLowerCase().includes(q)   ||
-        l.address.toLowerCase().includes(q) ||      
-        l.agency.toLowerCase().includes(q);
-      const matchType = !typeFilter || l.type === typeFilter;
-      const matchBeds = !bedsFilter || 
-        (bedsFilter === "4+" ? l.beds >= 4 : l.beds === parseInt(bedsFilter));
-      return matchQ && matchType && matchBeds;
-    });
-  }, [tab, search, typeFilter, bedsFilter]);
+  const { data: allData, isLoading } = useGetAllListingsQuery({
+    page,
+    limit,
+    searchTerm: search || undefined,
+    listingType: typeFilter ? typeFilter.toUpperCase() : undefined,
+    status: tab === "pending" ? "PENDING_APPROVAL" : undefined,
+  });
 
-  const pendingCount = listingsData.filter(l => l.status === "pending").length;
+  const listingsList = allData?.data || [];
+  const totalPages = allData?.meta?.totalPage || 1;
+  const totalCount = allData?.meta?.total || 0;
+
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    setPage(1);
+  };
 
   return (
     <div className="">
@@ -39,27 +46,16 @@ const ListingsManagement: React.FC = () => {
           <h1 className="title">Listings Management</h1>
           <p className="text-sm text-gray-400 mt-0.5">Manage all property listings on the platform</p>
         </div>
-        <div className="flex gap-2">
-          {["Export","Import"].map(label => (
-            <button key={label} className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm bg-white text-gray-700 hover:bg-gray-50">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                {label === "Export"
-                  ? <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>
-                  : <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></>}
-              </svg>
-              {label}
-            </button>
-          ))}
-        </div>
       </div>
 
-      <ListingStatCards listings={listingsData} />
+      {/* Stats - using empty array for now since we don't have static data */}
+      <ListingStatCards listings={[]} />
 
       <ListingTabs
         active={tab}
-        allCount={listingsData.length}
-        pendingCount={pendingCount}
-        onChange={(t) => { setTab(t); setSearch(""); setTypeFilter(""); setBedsFilter(""); }}
+        allCount={tab === "all" ? totalCount : 0}
+        pendingCount={tab === "pending" ? totalCount : 0}
+        onChange={(t) => { setTab(t); setSearch(""); setTypeFilter(""); setPage(1); }}
       />
 
       {/* Search & Filter */}
@@ -70,8 +66,8 @@ const ListingsManagement: React.FC = () => {
           </svg>
           <input
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search by title, address, city, agent..."
+            onChange={e => handleSearch(e.target.value)}
+            placeholder="Search by title, city, country..."
             className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder:text-gray-400"
           />
         </div>
@@ -87,26 +83,13 @@ const ListingsManagement: React.FC = () => {
           <option value="Sale">For Sale</option>
         </select>
 
-        {/* Beds Filter */}
-        <select
-          value={bedsFilter}
-          onChange={(e) => setBedsFilter(e.target.value)}
-          className="h-10 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
-        >
-          <option value="">All Bedrooms</option>
-          <option value="1">1 Bed</option>
-          <option value="2">2 Beds</option>
-          <option value="3">3 Beds</option>
-          <option value="4+">4+ Beds</option>
-        </select>
-
         {/* Clear Filters Button */}
-        {(search || typeFilter || bedsFilter) && (
+        {(search || typeFilter) && (
           <button
             onClick={() => {
               setSearch("");
               setTypeFilter("");
-              setBedsFilter("");
+              setPage(1);
             }}
             className="text-xs text-slate-500 hover:text-slate-900 cursor-pointer px-2 py-1"
           >
@@ -115,7 +98,42 @@ const ListingsManagement: React.FC = () => {
         )}
       </div>
 
-      <ListingTable listings={filtered} />
+      <ListingTable listings={listingsList} isLoading={isLoading} />
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); setPage((p) => Math.max(1, p - 1)); }}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    href="#"
+                    isActive={page === i + 1}
+                    onClick={(e) => { e.preventDefault(); setPage(i + 1); }}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => { e.preventDefault(); setPage((p) => Math.min(totalPages, p + 1)); }}
+                  className={page === totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 };
