@@ -12,10 +12,17 @@ import ManagePagination from "../../Shared/ManagePagination";
 import { Button } from "../../ui/button";
 import { Card } from "../../ui/card";
 
+interface NotificationItem {
+  _id: string;
+  title: string;
+  text: string;
+  read: boolean;
+  createdAt: string;
+}
+
 const formatTimeAgo = (dateString: string) => {
   const date = new Date(dateString);
   const now = new Date();
-
   const diffMs = now.getTime() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMs / 3600000);
@@ -27,29 +34,21 @@ const formatTimeAgo = (dateString: string) => {
   return `${diffDays}d ago`;
 };
 
-const NotificationItem = ({ notification }: any) => {
-  console.log("nooti", notification);
-  
+const NotificationCard = ({ notification }: { notification: NotificationItem }) => {
   return (
     <div
-      className={`p-4 cursor-pointer ${!notification.read && "bg-gray-100!"} hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${!notification.read ? "bg-white" : ""
-        }`}
+      className={`p-4 cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0 ${
+        !notification.read ? "bg-gray-100!" : "bg-white"
+      }`}
     >
       <div className="flex items-start gap-3">
-        {/* Icon */}
         <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
           <Bell className="w-5 h-5 text-blue-600" />
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <p
-              className={`text-sm ${!notification.read
-                  ? "font-semibold text-gray-900"
-                  : "text-gray-800"
-                }`}
-            >
+            <p className={`text-sm ${!notification.read ? "font-semibold text-gray-900" : "text-gray-800"}`}>
               {notification.title}
             </p>
           </div>
@@ -81,22 +80,14 @@ const Notification = () => {
   }, [page]);
 
   const socket = useSocket();
+  const notifications: NotificationItem[] = notificationsData?.data || [];
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const notifications = notificationsData?.data || [];
-
-  const unreadCount = notifications.filter((n: any) => !n.read).length;
-
-  // socket realtime update
   useEffect(() => {
     if (!socket || !profileData?._id) return;
 
-    socket.on(`send-notification::${profileData._id}`, () => {
-      refetch();
-    });
-
-    socket.on(`unreadCountUpdate::${profileData._id}`, () => {
-      refetch();
-    });
+    socket.on(`send-notification::${profileData._id}`, () => { refetch(); });
+    socket.on(`unreadCountUpdate::${profileData._id}`, () => { refetch(); });
 
     return () => {
       socket.off(`send-notification::${profileData._id}`);
@@ -107,80 +98,63 @@ const Notification = () => {
   const handleMarkAllRead = async () => {
     try {
       const response = await readAllNotification({}).unwrap();
-
       if (response?.success) {
         toast.success(response?.message);
         refetch();
       }
-    } catch (error: any) {
-      console.error(error?.data?.message);
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      toast.error(err?.data?.message);
     }
   };
 
   return (
     <div>
-      <div className="">
-        <Card className="">
-
-          {/* Header */}
-          <header className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
-            <div>
-              <h3 className="title">Notifications</h3>
-
-              {unreadCount > 0 ? (
-                <p className="text-sm text-gray-500 mt-0.5">
-                  {unreadCount} unread notification
-                  {unreadCount !== 1 ? "s" : ""}
-                </p>
-              ) : (
-                <p className="text-sm text-gray-400 mt-0.5">All caught up!</p>
-              )}
-            </div>
-
-            <Button              
-              size="sm"
-              onClick={handleMarkAllRead}
-              disabled={unreadCount === 0}
-              className="  gap-1.5 text-sm"
-            >
-              <CheckCheck className="w-4 h-4" />
-              Mark all read
-            </Button>
-          </header>
-
-          {/* List */}
-          <div
-            ref={scrollContainerRef}
-            className="divide-y divide-gray-100 min-h-[65vh] max-h-[65vh] overflow-y-auto"
-          >
-            {notifications.length === 0 ? (
-              <div className="flex flex-col items-center justify-center p-16 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                  <Bell className="h-8 w-8 text-gray-300" />
-                </div>
-
-                <h3 className="text-base font-semibold text-gray-700 mb-1">
-                  No notifications yet
-                </h3>
-
-                <p className="text-sm text-gray-400">
-                  When you get notifications, they'll show up here
-                </p>
-              </div>
+      <Card>
+        <header className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between">
+          <div>
+            <h3 className="title">Notifications</h3>
+            {unreadCount > 0 ? (
+              <p className="text-sm text-gray-500 mt-0.5">
+                {unreadCount} unread notification{unreadCount !== 1 ? "s" : ""}
+              </p>
             ) : (
-              notifications.map((notif: any) => (
-                <NotificationItem
-                  key={notif._id}
-                  notification={notif}
-                />
-              ))
+              <p className="text-sm text-gray-400 mt-0.5">All caught up!</p>
             )}
           </div>
 
-          {/* Footer */}
-          <ManagePagination meta={notificationsData?.meta} />
-        </Card>
-      </div>
+          <Button
+            size="sm"
+            onClick={handleMarkAllRead}
+            disabled={unreadCount === 0}
+            className="gap-1.5 text-sm"
+          >
+            <CheckCheck className="w-4 h-4" />
+            Mark all read
+          </Button>
+        </header>
+
+        <div
+          ref={scrollContainerRef}
+          className="divide-y divide-gray-100 min-h-[65vh] max-h-[65vh] overflow-y-auto"
+        >
+          {notifications.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-16 text-center">
+              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                <Bell className="h-8 w-8 text-gray-300" />
+              </div>
+              <h3 className="text-base font-semibold text-gray-700 mb-1">No notifications yet</h3>
+              <p className="text-sm text-gray-400">When you get notifications, they'll show up here</p>
+            </div>
+          ) : (
+            notifications.map((notif) => (
+              <NotificationCard key={notif._id} notification={notif} />
+            ))
+          )}
+        </div>
+
+        <ManagePagination meta={notificationsData?.meta} />
+      </Card>
     </div>
   );
 };

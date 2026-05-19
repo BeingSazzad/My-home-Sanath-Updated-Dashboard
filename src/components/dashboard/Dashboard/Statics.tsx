@@ -14,16 +14,18 @@ import {
 } from "../../ui/select";
 import StatsCard from "./StatsCard";
 
-
-const currentYear = new Date().getFullYear();
-
 const StatsCards = () => {
   const [filter, setFilter] = useState("This Year");
   const { data: analyticsData } = useGetAnalyticsQuery({ period: filter });
 
+  const getTitle = (base: string) => {
+    if (filter === "Total") return `Total ${base}`;
+    return `${base} (${filter})`;
+  };
+
   const stats = [
     {
-      title: "Total Property Seeker",
+      title: getTitle("Property Seekers"),
       value: analyticsData?.totalPropertySeekers
         ? analyticsData.totalPropertySeekers.toLocaleString()
         : "4,020",
@@ -32,14 +34,14 @@ const StatsCards = () => {
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
     },
     {
-      title: "Total Agents",
+      title: getTitle("Agents"),
       value: analyticsData?.totalAgents ?? "342",
       icon: <MdOutlineRealEstateAgent className="h-5 w-5 text-purple-600" />,
       iconBgColor: "bg-purple-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
     },
     {
-      title: "Total Revenue",
+      title: getTitle("Revenue"),
       value: analyticsData?.totalRevenue
         ? `£${analyticsData.totalRevenue.toLocaleString()}`
         : "£412,450",
@@ -65,7 +67,7 @@ const StatsCards = () => {
           value={filter}
           onValueChange={(value) => setFilter(value)}
         >
-          <SelectTrigger className="w-36 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-lg font-medium">
+          <SelectTrigger className="w-[150px] h-10 px-4 bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer rounded-xl font-medium">
             <SelectValue placeholder="Select Period" />
           </SelectTrigger>
           <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">

@@ -13,15 +13,11 @@ const OTPVerifyPage = () => {
     const [verifyOTP] = useVerifyOTPMutation();
     const navigate = useNavigate();
 
-    // ✅ Destructure `start` to use on resend
-    const { timeLeft, finished, start } = useCountdown({
-        storageKey: "otpExpiry",
-    });
-
+    const { timeLeft, finished, start } = useCountdown({ storageKey: "otpExpiry" });
+    const [resendOtp] = useResendOTPMutation();
 
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
     const seconds = String(timeLeft % 60).padStart(2, "0");
-    const [resendOtp] = useResendOTPMutation();
 
     const handleVerify = async () => {
         const otpCode = otp.join("");
@@ -44,16 +40,13 @@ const OTPVerifyPage = () => {
                 toast.success(res?.message);
                 navigate("/new-password");
             }
-        } catch (error: any) {
-            console.error("OTP Verify Error:", error);
-            toast.error(error?.data?.message);
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message);
         }
     };
 
-    const handlePaste = (
-        e: React.ClipboardEvent<HTMLInputElement>,
-        index: number
-    ) => {
+    const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
         e.preventDefault();
         const pastedData = e.clipboardData.getData("text").trim();
 
@@ -62,7 +55,6 @@ const OTPVerifyPage = () => {
             return;
         }
 
-        // Get up to 4 digits
         const digits = pastedData.slice(0, 4).split("");
         const newOtp = [...otp];
 
@@ -90,17 +82,13 @@ const OTPVerifyPage = () => {
         }
     };
 
-    const handleKeyDown = (
-        index: number,
-        e: React.KeyboardEvent<HTMLInputElement>
-    ) => {
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Backspace" && !otp[index] && index > 0) {
             inputsRef.current[index - 1]?.focus();
         }
     };
 
     const handleResendOtp = async () => {
-        // ✅ Fixed: was Array(6), now matches the 4-digit OTP
         setOtp(Array(4).fill(""));
 
         try {
@@ -108,12 +96,11 @@ const OTPVerifyPage = () => {
             const res = await resendOtp({ email }).unwrap();
             if (res?.success) {
                 toast.success(res.message);
-                // ✅ Fixed: use start() instead of manually setting the cookie
                 start();
             }
-        } catch (error: any) {
-            console.log("handleResendOtp", error);
-            toast.error(error?.data?.message);
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message);
         }
     };
 
@@ -132,8 +119,7 @@ const OTPVerifyPage = () => {
                         {otp.map((digit, index) => (
                             <input
                                 key={index}
-                                // @ts-ignore
-                                ref={(el) => (inputsRef.current[index] = el)}
+                                ref={(el) => { inputsRef.current[index] = el; }}
                                 type="text"
                                 value={digit}
                                 onChange={(e) => handleChange(e.target.value, index)}
@@ -165,9 +151,9 @@ const OTPVerifyPage = () => {
                         onClick={handleResendOtp}
                         disabled={!finished}
                         className={`w-full mx-auto px-4 py-2 rounded font-semibold ${finished
-                                ? 'bg-primary! text-white! cursor-not-allowed'
-                                : 'border-gray-500! border-2! hover:bg-gray-200! transition-all! duration-300!'
-                            }`}
+                            ? 'bg-primary! text-white! cursor-not-allowed'
+                            : 'border-gray-500! border-2! hover:bg-gray-200! transition-all! duration-300!'
+                        }`}
                     >
                         Resend OTP
                     </Button>

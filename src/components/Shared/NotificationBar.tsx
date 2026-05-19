@@ -6,6 +6,19 @@ import { useEffect } from "react";
 import { useSocket } from "../../hooks/socketConnection";
 import { toast } from "sonner";
 
+interface ProfileData {
+    _id: string;
+}
+
+interface NotificationItem {
+    _id: string;
+    title: string;
+    text: string;
+    read: boolean;
+    type: string;
+    createdAt: string;
+}
+
 const getTypeConfig = (type: string) => {
     switch (type?.toUpperCase()) {
         case 'REQUESTED':
@@ -25,43 +38,41 @@ const getTypeConfig = (type: string) => {
     }
 };
 
-const NotificationBar = ({ profileData }: any) => {
+const NotificationBar = ({ profileData }: { profileData: ProfileData }) => {
     const { data: notificationData, refetch, isLoading } = useGetNotificationsQuery({});
-    
     const [readAllNotification] = useReadAllNotificationMutation();
 
-    const notifications: any[] = notificationData?.data ?? [];
+    const notifications: NotificationItem[] = notificationData?.data ?? [];
     const unreadCount = notifications.filter((n) => !n.read).length;
 
-    const socket = useSocket()
+    const socket = useSocket();
 
     useEffect(() => {
         if (!socket) return;
 
-        socket.on(`send-notification::${profileData?._id}`, () => { refetch() });
-        socket.on(`unreadCountUpdate::${profileData?._id}`, () => { refetch() });
+        socket.on(`send-notification::${profileData?._id}`, () => { refetch(); });
+        socket.on(`unreadCountUpdate::${profileData?._id}`, () => { refetch(); });
 
         return () => {
             socket.off(`send-notification::${profileData?._id}`);
             socket.off(`unreadCountUpdate::${profileData?._id}`);
-        }
-    }, [])
-
+        };
+    }, [socket, profileData, refetch]);
 
     const handleMarkAllRead = async () => {
         try {
-           const response =  await readAllNotification({}).unwrap();
-           if(response?.success){
-            toast.success(response?.message);            
-           }
-        } catch (error:any) {
-            console.error(error?.data?.message);
+            const response = await readAllNotification({}).unwrap();
+            if (response?.success) {
+                toast.success(response?.message);
+            }
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message);
         }
     };
+
     return (
         <div className="absolute right-0 top-18 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-xl z-20 overflow-hidden max-h-[500px] flex flex-col">
-
-            {/* Header */}
             <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                 <div>
                     <h3 className="text-gray-900 font-medium">Notifications</h3>
@@ -70,7 +81,7 @@ const NotificationBar = ({ profileData }: any) => {
                     )}
                 </div>
                 <button
-                    onClick={()=>handleMarkAllRead()}
+                    onClick={handleMarkAllRead}
                     disabled={unreadCount === 0}
                     className="text-xs text-primary hover:underline disabled:opacity-40 disabled:cursor-not-allowed"
                 >
@@ -78,7 +89,6 @@ const NotificationBar = ({ profileData }: any) => {
                 </button>
             </div>
 
-            {/* Notifications List */}
             <div className="overflow-y-auto flex-1">
                 {isLoading ? (
                     <div className="flex items-center justify-center gap-3 h-40">
@@ -91,9 +101,8 @@ const NotificationBar = ({ profileData }: any) => {
                         <p className="text-sm text-gray-400">No notifications yet</p>
                     </div>
                 ) : (
-                    notifications.map((notification: any) => {
+                    notifications.map((notification) => {
                         const { icon: Icon, bg, text } = getTypeConfig(notification.type);
-
 
                         return (
                             <div
@@ -124,7 +133,6 @@ const NotificationBar = ({ profileData }: any) => {
                 )}
             </div>
 
-            {/* Footer */}
             <div className="p-3 border-t border-gray-200 text-center">
                 <Link to="/notification" className="text-xs text-primary hover:underline">
                     View all notifications

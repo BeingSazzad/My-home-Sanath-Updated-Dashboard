@@ -9,8 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
-
-
 export default function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -19,14 +17,13 @@ export default function Login() {
     const [login] = useLoginAdminMutation()
 
     useEffect(() => {
-        const email = Cookies.get("email");
-        const password = Cookies.get("password");
-        if (email && password) {
-            setEmail(email);
-            setPassword(password);
+        const savedEmail = Cookies.get("email");
+        const savedPassword = Cookies.get("password");
+        if (savedEmail && savedPassword) {
+            setEmail(savedEmail);
+            setPassword(savedPassword);
         }
     }, []);
-
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,21 +33,17 @@ export default function Login() {
             Cookies.set("password", password);
         }
 
-        console.log("auth", { email, password });
-        
-
         try {
             const response = await login({ email, password })?.unwrap();
-            console.log("response",response);
-            
             if (response?.success) {
                 toast.success(response?.message);
                 Cookies.set("accessToken", response?.data?.token);
                 Cookies.set("role", response?.data?.user?.role);
                 window.location.replace("/")
             }
-        } catch (error: any) {
-            toast.error(error?.data?.message);
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message);
         }
     }
 
@@ -59,7 +52,7 @@ export default function Login() {
             <Card className="w-full max-w-md rounded-2xl shadow-lg" data-aos="zoom-in">
                 <CardHeader className="text-center space-y-2">
                     <div className="flex justify-center">
-                        <img src="/logo.png" className='w-full  max-w-20 h-14 object-cover overflow-visible scale-70' alt="Logo" />
+                        <img src="/logo.png" className='w-full max-w-20 h-14 object-cover overflow-visible scale-70' alt="Logo" />
                     </div>
                     <CardTitle className="text-2xl font-semibold">
                         Welcome back
@@ -68,7 +61,6 @@ export default function Login() {
 
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-5">
-                        {/* Email */}
                         <div className="space-y-1">
                             <Label className="mb-2">Email</Label>
                             <Input
@@ -81,10 +73,8 @@ export default function Login() {
                             />
                         </div>
 
-                        {/* Password */}
                         <div className="space-y-1">
                             <Label className="mb-2">Password</Label>
-
                             <div className="relative">
                                 <Input
                                     type={viewPassword ? "text" : "password"}
@@ -94,7 +84,6 @@ export default function Login() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-
                                 <button
                                     type="button"
                                     onClick={() => setViewPassword(!viewPassword)}
@@ -104,27 +93,17 @@ export default function Login() {
                                 </button>
                             </div>
                         </div>
-                        {/* Terms + Forgot */}
+
                         <div className="space-y-3 flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                {/* <Checkbox
-                                    id="terms"
-                                    checked={acceptTerms}
-                                    onCheckedChange={(checked) => setAcceptTerms(!!checked)}
-                                    className="data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600
-    "
-                                /> */}
                                 <input
                                     checked={acceptTerms}
                                     onChange={() => setAcceptTerms(!acceptTerms)}
                                     type="checkbox"
                                     id="terms"
                                     name="terms"
-                                    value="Bike" />
-                                <Label
-                                    htmlFor="terms"
-                                    className="text-sm cursor-pointer"
-                                >
+                                />
+                                <Label htmlFor="terms" className="text-sm cursor-pointer">
                                     Remember Me
                                 </Label>
                             </div>
@@ -139,8 +118,6 @@ export default function Login() {
                             </div>
                         </div>
 
-
-                        {/* Login Button */}
                         <Button type="submit" className="w-full h-11 text-base">
                             Login
                         </Button>
