@@ -58,7 +58,7 @@ export default function Sidebar() {
                   key={item.key}
                   to={itemPath}
                   className={cn(
-                    "relative flex items-center gap-3 pl-6 pr-4 py-2.5 min-h-11 transition-all rounded-r-xl rounded-l-none font-medium text-sm",
+                    "relative flex items-center gap-3 pl-6 pr-4 py-2.5 min-h-11 transition-all rounded-r-xl rounded-l-none font-medium text-base",
                     isItemActive
                       ? "bg-[#0B3C6D]/8 text-[#0B3C6D]! font-semibold"
                       : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
