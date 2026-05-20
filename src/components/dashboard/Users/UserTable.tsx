@@ -3,7 +3,7 @@ import React from "react";
 import UserTableRow from "./UserTableRow";
 import type { User } from "../../../data/usersData";
 
-const HEADERS = ["USER","CONTACT","LOCATION","SAVED","ENQUIRIES","JOIN DATE","LAST ACTIVE","Status","ACTIONS"];
+const HEADERS = ["USER","CONTACT","LOCATION","SAVED","ENQUIRIES","JOIN DATE","LAST ACTIVE","STATUS","ACTIONS"];
 
 interface Props {
   users: User[];
@@ -55,14 +55,14 @@ const UserTable: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-slate-100 rounded-2xl">
       <div className="px-5 py-4 border-b border-slate-100">
         <h2 className="text-[15px] font-medium text-gray-900">All Users</h2>
         <p className="text-xs text-gray-400 mt-0.5">
           {isLoading ? "Loading…" : showEmpty ? "No data available" : `${users.length} users found`}
         </p>
       </div>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto overflow-y-visible">
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-slate-50/70 border-b border-slate-100">
@@ -70,7 +70,7 @@ const UserTable: React.FC<Props> = ({
                 <th
                   key={h}
                   className={`text-[11.5px] font-semibold text-slate-600 tracking-wider px-5 py-4 whitespace-nowrap ${
-                    h === "Status" ? "text-center" : "text-left uppercase"
+                    h === "STATUS" ? "text-left uppercase" : "text-left uppercase"
                   }`}
                 >
                   {h}
