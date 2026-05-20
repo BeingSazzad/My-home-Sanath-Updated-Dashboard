@@ -1,6 +1,6 @@
 import { baseApi } from "../../base/baseAPI";
 
-export const listingsApi = baseApi.enhanceEndpoints({addTagTypes: ['Listings']}).injectEndpoints({
+export const listingsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getAllListings: build.query({
       query: (params) => {
@@ -10,10 +10,10 @@ export const listingsApi = baseApi.enhanceEndpoints({addTagTypes: ['Listings']})
         if (params?.searchTerm) queryParams.append("searchTerm", params.searchTerm);
         if (params?.status) queryParams.append("status", params.status);
         if (params?.listingType) queryParams.append("listingType", params.listingType);
-        
+
         return `/listings/admin/all?${queryParams.toString()}`;
       },
-      providesTags: ['Listings'],
+      providesTags: ['listings'],
     }),
     changeListingStatus: build.mutation({
       query: ({ id, status }) => ({
@@ -21,13 +21,19 @@ export const listingsApi = baseApi.enhanceEndpoints({addTagTypes: ['Listings']})
         method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: ['Listings'],
+      invalidatesTags: ['listings'],
     }),
     getListingById: build.query({
       query: (id: string) => `/listings/admin/${id}`,
-      providesTags: ['Listings'],
+      providesTags: ['listings'],
+    }),
+    getListingStats: build.query({
+      query: () => `/listings/admin/stats`,
+      providesTags: ['listings'],
+      transformResponse: (response: { data: any }) => response.data,
     }),
   }),
+  overrideExisting: true,
 });
 
-export const { useGetAllListingsQuery, useChangeListingStatusMutation, useGetListingByIdQuery } = listingsApi;
+export const { useGetAllListingsQuery, useChangeListingStatusMutation, useGetListingByIdQuery, useGetListingStatsQuery } = listingsApi;

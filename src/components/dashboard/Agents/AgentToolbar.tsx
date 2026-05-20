@@ -42,9 +42,10 @@ const AgentToolbar: React.FC<Props> = ({ search, plan, status, onSearch, onPlan,
       className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
     >
       <option value="">All Statuses</option>
-      <option value="active">Active</option>
-      <option value="pending">Pending</option>
-      <option value="suspended">Suspended</option>
+      <option value="ACTIVE">Active</option>
+      <option value="INACTIVE">Inactive</option>
+      <option value="PENDING">Pending</option>
+      <option value="SUSPENDED">Suspended</option>
     </select>
 
     {/* Clear Filters Button */}

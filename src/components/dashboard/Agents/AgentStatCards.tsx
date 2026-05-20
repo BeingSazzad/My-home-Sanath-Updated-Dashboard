@@ -6,7 +6,7 @@ interface Props { agents: Agent[] }
 const AgentStatCards: React.FC<Props> = ({ agents }) => {
   const active  = agents.filter(a => a.status === "active").length;
   const pending = agents.filter(a => a.status === "pending").length;
-  const revenue = agents.reduce((s, a) => s + a.revenue, 0);
+  const revenue = agents.reduce((s, a) => s + (a.revenue || 0), 0);
 
   const cards = [
     { label: "Total Agents",  value: agents.length,               cls: "text-gray-900" },

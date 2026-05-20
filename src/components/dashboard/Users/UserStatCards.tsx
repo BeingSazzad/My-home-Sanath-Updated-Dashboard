@@ -1,5 +1,5 @@
 import React from "react";
-import { statCards } from "../../../data/usersData";
+import { useGetUserStatsQuery } from "../../../redux/features/user/userApi";
 
 const themeStyles: Record<string, { cardBg: string; border: string; iconBg: string; iconColor: string }> = {
   blue: {
@@ -35,27 +35,79 @@ const icons: Record<string, React.ReactNode> = {
   eye:   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>,
 };
 
-const UserStatCards: React.FC = () => (
-  <div className="grid grid-cols-4 gap-4 mb-6">
-    {statCards.map((s) => {
-      const theme = themeStyles[s.color] || themeStyles.blue;
-      return (
-        <div key={s.label} className={`rounded-2xl border ${theme.border} p-4 ${theme.cardBg} shadow-sm hover:shadow-md transition-all duration-300`}>
-          <div className="flex items-center gap-3">
-            <div className={`w-9.5 h-9.5 rounded-xl ${theme.iconBg} ${theme.iconColor} flex items-center justify-center flex-shrink-0`}>
-              {icons[s.icon]}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">{s.label}</p>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="text-xl font-extrabold text-slate-800">{s.value}</span>
+
+
+const UserStatCards: React.FC = () => {
+  const { data: stats, isLoading } = useGetUserStatsQuery({});
+
+  const displayStats = [
+    {
+      label: "Total Users",
+      value: stats?.totalUsers || 0,
+      color: "blue",
+      icon: "users",
+    },
+    {
+      label: "Active Users",
+      value: stats?.activeUsers || 0,
+      color: "green",
+      icon: "check",
+    },
+    {
+      label: "Total Enquiries",
+      value: stats?.totalEnquiries || 0,
+      color: "purple",
+      icon: "mail",
+    },
+    {
+      label: "Saved Properties",
+      value: stats?.totalSavedProperty || 0,
+      color: "orange",
+      icon: "eye",
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-4 gap-4 mb-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-24 bg-slate-50 animate-pulse rounded-2xl border border-slate-100" />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-4 gap-4 mb-6">
+      {displayStats.map((s) => {
+        const theme = themeStyles[s.color] || themeStyles.blue;
+        return (
+          <div
+            key={s.label}
+            className={`rounded-2xl border ${theme.border} p-4 ${theme.cardBg} shadow-sm hover:shadow-md transition-all duration-300`}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-9.5 h-9.5 rounded-xl ${theme.iconBg} ${theme.iconColor} flex items-center justify-center flex-shrink-0`}
+              >
+                {icons[s.icon]}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">
+                  {s.label}
+                </p>
+                <div className="flex items-baseline gap-2 mt-0.5">
+                  <span className="text-xl font-extrabold text-slate-800">
+                    {s.value}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );
-    })}
-  </div>
-);
+        );
+      })}
+    </div>
+  );
+};
 
 export default UserStatCards;

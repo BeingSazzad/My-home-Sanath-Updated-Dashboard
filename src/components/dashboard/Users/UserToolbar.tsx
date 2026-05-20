@@ -4,13 +4,11 @@ import React from "react";
 interface Props {
   search: string;
   status: string;
-  location: string;
   onSearch: (v: string) => void;
   onStatus: (v: string) => void;
-  onLocation: (v: string) => void;
 }
 
-const UserToolbar: React.FC<Props> = ({ search, status, location, onSearch, onStatus, onLocation }) => (
+const UserToolbar: React.FC<Props> = ({ search, status, onSearch, onStatus }) => (
   <div className="bg-white border border-slate-100 rounded-xl px-4 py-3 flex items-center gap-3 mb-4 flex-wrap">
     <div className="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-9">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="flex-shrink-0">
@@ -24,42 +22,23 @@ const UserToolbar: React.FC<Props> = ({ search, status, location, onSearch, onSt
       />
     </div>
     
-    {/* Status Filter */}
+  
     <select
       value={status}
       onChange={(e) => onStatus(e.target.value)}
       className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
     >
       <option value="">All Statuses</option>
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
-      <option value="suspended">Suspended</option>
-    </select>
-
-    {/* Location Filter */}
-    <select
-      value={location}
-      onChange={(e) => onLocation(e.target.value)}
-      className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
-    >
-      <option value="">All Locations</option>
-      <option value="London">London</option>
-      <option value="Manchester">Manchester</option>
-      <option value="Birmingham">Birmingham</option>
-      <option value="Edinburgh">Edinburgh</option>
-      <option value="Leeds">Leeds</option>
-      <option value="Bristol">Bristol</option>
-      <option value="Liverpool">Liverpool</option>
-      <option value="Glasgow">Glasgow</option>
+      <option value="ACTIVE">Active</option>
+      <option value="INACTIVE">Inactive</option>
     </select>
 
     {/* Clear Filters Button */}
-    {(search || status || location) && (
+    {(search || status) && (
       <button
         onClick={() => {
           onSearch("");
           onStatus("");
-          onLocation("");
         }}
         className="text-xs text-slate-500 hover:text-slate-900 cursor-pointer px-2 py-1"
       >

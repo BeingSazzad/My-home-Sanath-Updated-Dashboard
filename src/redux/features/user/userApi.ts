@@ -3,7 +3,13 @@ import { baseApi } from "../../base/baseAPI";
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getUsers: build.query({
-      query: () => `/users/${location.search}`,
+      query: (params) => {
+        return {
+          url: `/users`,
+          method: 'GET',
+          params: params
+        };
+      },
       providesTags: ['user'],
     }),
 
@@ -17,6 +23,7 @@ const userApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['user', 'admin', 'host'],
     }),
+
     deleteUser: build.mutation({
       query: (id) => {
         return {
@@ -38,6 +45,19 @@ const userApi = baseApi.injectEndpoints({
       providesTags: ['profile'],
       transformResponse: (response: { data: any }) => response.data,
     }),
+
+    getUserStats: build.query({
+      query: () => `/analytics/user-management-stats?role=USER`,
+      providesTags: ['user'],
+      transformResponse: (response: { data: any }) => response.data,
+    }),
+
+    getAgentStats: build.query({
+      query: () => `/analytics/user-management-stats?role=AGENT`,
+      providesTags: ['user'],
+      transformResponse: (response: { data: any }) => response.data,
+    }),
+
     editProfile: build.mutation({
       query: (data) => {
         return {
@@ -91,6 +111,8 @@ export const {
   useGetUsersQuery,
   useGetAdminQuery,
   useGetAdminStatsQuery,
+  useGetUserStatsQuery,
+  useGetAgentStatsQuery,
   useGetProfileQuery,
   useGetAllSubscriberQuery,
 

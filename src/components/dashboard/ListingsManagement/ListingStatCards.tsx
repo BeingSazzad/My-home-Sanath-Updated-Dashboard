@@ -2,7 +2,15 @@ import React from "react";
 import type { Listing } from "../../../data/listingsData";
 
 
-interface Props { listings: Listing[] }
+interface Props { 
+  listings?: Listing[];
+  stats?: {
+    total?: number;
+    published?: number;
+    pendingApproval?: number;
+    rejected?: number;
+  };
+}
 
 const infoMap: Record<string, { badge: string; style: string }> = {
   "Total Listings": { badge: "All properties", style: "text-blue-600 bg-blue-50/70 border-blue-100" },
@@ -11,17 +19,16 @@ const infoMap: Record<string, { badge: string; style: string }> = {
   "Rejected": { badge: "Declined", style: "text-red-600 bg-red-50/70 border-red-100" },
 };
 
-const ListingStatCards: React.FC<Props> = ({ listings }) => {
-  const active   = listings.filter(l => l.status === "active").length;
-  const pending  = listings.filter(l => l.status === "pending").length;
-  const rejected = listings.filter(l => l.status === "rejected").length;
+const ListingStatCards: React.FC<Props> = ({ stats }) => {
+  
 
   const cards = [
-    { label:"Total Listings", value:listings.length },
-    { label:"Active",          value:active },
-    { label:"Pending",         value:pending },
-    { label:"Rejected",        value:rejected },
+    { label:"Total Listings", value: stats?.total ?? 0 },
+    { label:"Active",          value: stats?.published ?? 0 },
+    { label:"Pending",         value: stats?.pendingApproval ?? 0 },
+    { label:"Rejected",        value: stats?.rejected ?? 0 },
   ];
+
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import ListingStatCards from "./ListingStatCards";
 import ListingTabs from "./ListingTabs";
 import ListingTable from "./ListingTable";
-import { useGetAllListingsQuery } from "../../../redux/features/listings/listingsApi";
+import { useGetAllListingsQuery, useGetListingStatsQuery } from "../../../redux/features/listings/listingsApi";
 import {
-    Pagination,
-    PaginationContent,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
 } from "../../ui/pagination";
 
 type Tab = "all" | "pending";
 
 const ListingsManagement: React.FC = () => {
-  const [tab, setTab]       = useState<Tab>("all");
+  const [tab, setTab] = useState<Tab>("all");
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [page, setPage] = useState(1);
@@ -32,6 +32,9 @@ const ListingsManagement: React.FC = () => {
   // Fetch counts independently so they don't go to 0 when switching tabs
   const { data: allCountData } = useGetAllListingsQuery({ limit: 1 });
   const { data: pendingCountData } = useGetAllListingsQuery({ limit: 1, status: "PENDING_APPROVAL" });
+  const { data: stats } = useGetListingStatsQuery(undefined);
+
+
 
   const listingsList = allData?.data || [];
   const totalPages = allData?.meta?.totalPage || 1;
@@ -53,8 +56,9 @@ const ListingsManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats - using empty array for now since we don't have static data */}
-      <ListingStatCards listings={[]} />
+      {/* Stats */}
+      <ListingStatCards stats={stats}
+      />
 
       <ListingTabs
         active={tab}
@@ -67,7 +71,7 @@ const ListingsManagement: React.FC = () => {
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <div className="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-10 bg-white">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="flex-shrink-0">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <input
             value={search}

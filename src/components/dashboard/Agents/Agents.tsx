@@ -5,6 +5,7 @@ import AgentToolbar from "./AgentToolbar";
 import AgentTable from "./AgentTable";
 import { Button } from "../../ui/button";
 import { Download, Plus } from "lucide-react";
+import { useGetUsersQuery } from "../../../redux/features/user/userApi";
 
 interface AgentsProps {
   isTabbed?: boolean;
@@ -15,18 +16,20 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
   const [planFilter, setPlanFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
+  const { data: allData } = useGetUsersQuery({
+    page: 1,
+    limit: 10,
+    searchTerm: search,
+    role: "AGENT",
+    status: statusFilter,
+    plan: planFilter,
+  });
+
+  console.log(allData,"AGENTS DATA");
+
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return agentsData.filter(a => {
-      const matchSearch = !q ||
-        a.name.toLowerCase().includes(q) ||
-        a.email.toLowerCase().includes(q) ||
-        a.agency.toLowerCase().includes(q);
-      const matchPlan = !planFilter || a.plan === planFilter;
-      const matchStatus = !statusFilter || a.status === statusFilter;
-      return matchSearch && matchPlan && matchStatus;
-    });
-  }, [search, planFilter, statusFilter]);
+    return allData?.data || [];
+  }, [allData]);
 
   return (
     <div className="">
@@ -42,7 +45,7 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
         </div>
       </div>
 
-      <AgentStatCards agents={agentsData} />
+      <AgentStatCards agents={filtered} />
       <AgentToolbar
         search={search}
         plan={planFilter}
@@ -51,7 +54,7 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
         onPlan={setPlanFilter}
         onStatus={setStatusFilter}
       />
-      <AgentTable agents={filtered} total={agentsData.length} />
+      <AgentTable agents={filtered} total={allData?.meta?.total || 0} />
     </div>
   );
 };

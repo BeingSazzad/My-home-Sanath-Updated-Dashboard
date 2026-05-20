@@ -21,7 +21,7 @@ const AgentTable: React.FC<Props> = ({ agents, total }) => (
           </tr>
         </thead>
         <tbody>
-          {agents.map(a => <AgentTableRow key={a.id} agent={a} />)}
+          {agents.map(a => <AgentTableRow key={a._id || a.id} agent={a} />)}
         </tbody>
       </table>
     </div>

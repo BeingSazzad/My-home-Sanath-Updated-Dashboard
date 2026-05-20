@@ -2,7 +2,7 @@ import { Mail, Pencil, Shield, ShieldCheck, Trash2, UserPlus, Users } from 'luci
 import { useState } from 'react';
 import { toast } from 'sonner';
 import Swal from 'sweetalert2';
-import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery, useGetAdminStatsQuery } from '../../../redux/features/user/userApi';
+import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery } from '../../../redux/features/user/userApi';
 import { confirmDelete } from '../../Shared/confirmDelete';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -108,15 +108,15 @@ export default function AdminManage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data: adminsData, refetch } = useGetAdminQuery({});
-    const { data: adminStats } = useGetAdminStatsQuery({});
+    // const { data: adminStats } = useGetAdminStatsQuery({});
     const [addAdmin] = useCreateAdminMutation();
     const [deleteAdmin] = useDeleteAdminMutation();
 
     const admins: Admin[] = adminsData?? [];
-    const totalAdmins = adminStats?.totalAdmins ?? 0;
-    const totalSuperAdmins = adminStats?.totalSuperAdmins ?? 0;
-    const totalActiveAdmins = adminStats?.totalActiveAdmins ?? 0;
-    const totalInactiveAdmins = adminStats?.totalInactiveAdmins ?? 0;
+    const totalAdmins =  0;
+    const totalSuperAdmins =  0;
+    const totalActiveAdmins = 0;
+    const totalInactiveAdmins =  0;
 
     const handleFormSubmit = async (formData: FormData) => {
         const data = Object.fromEntries(formData);

@@ -25,7 +25,7 @@ const UserTable: React.FC<Props> = ({ users, total }) => (
           </tr>
         </thead>
         <tbody>
-          {users.map((u, i) => <UserTableRow key={u.id} user={u} index={i} />)}
+          {users.map((u, i) => <UserTableRow key={u._id || u.id} user={u} index={i} />)}
         </tbody>
       </table>
     </div>
