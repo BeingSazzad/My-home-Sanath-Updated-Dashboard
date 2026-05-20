@@ -3,7 +3,7 @@ import React from "react";
 import AgentTableRow from "./AgentTableRow";
 import type { Agent } from "../../../data/agentsData";
 
-const HEADERS = ["AGENT", "AGENCY", "PLAN", "LISTINGS", "REVENUE",  "JOINED","STATUS", "ACTIONS"];
+const HEADERS = ["AGENT", "AGENCY", "PLAN", "LISTINGS", "REVENUE", "STATUS", "JOINED", "ACTIONS"];
 
 interface Props {
   agents: Agent[];
@@ -56,8 +56,8 @@ const AgentTable: React.FC<Props> = ({
   };
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="bg-white border border-slate-100 rounded-2xl">
+      <div className="overflow-x-auto overflow-y-visible">
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-slate-50/70 border-b border-slate-100">

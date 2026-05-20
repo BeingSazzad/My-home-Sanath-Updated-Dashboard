@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { Trash2 } from "lucide-react";
+import StatusBadge from "./StatusBadge";
 import type { User, UserStatus } from "../../../data/usersData";
 import { imageUrl } from "../../../redux/base/baseAPI";
 import { confirmDelete } from "../../Shared/confirmDelete";
@@ -126,7 +127,7 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
   const actionsDisabled = !userId || statusPending || deletePending;
 
   return (
-    <tr className="border-b border-slate-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
+    <tr className="relative z-0 border-b border-slate-100/60 transition-colors last:border-0 hover:z-20 hover:bg-gray-50/60">
       <td className="py-4 px-5">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center text-white text-[13px] font-medium flex-shrink-0">
@@ -156,28 +157,33 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
       <td className="py-4 px-5 text-[12.5px] text-gray-400">{formatDate(user.createdAt)}</td>
       <td className="py-4 px-5 text-[12.5px] text-gray-400">{formatDate(user.lastLoginAt)}</td>
       <td className="py-4 px-5">
-        <select
-          value={rowStatus}
-          disabled={actionsDisabled}
-          onChange={(e) => void handleStatusChange(e.target.value)}
-          className={`text-xs font-semibold rounded-full px-3 py-1.5 border outline-none cursor-pointer transition-all min-w-[108px] ${
-            rowStatus === "ACTIVE"
-              ? "bg-green-50 text-green-700 border-green-200 focus:ring-2 focus:ring-green-100"
-              : "bg-gray-100 text-gray-600 border-gray-200 focus:ring-2 focus:ring-gray-100"
-          } ${actionsDisabled ? "opacity-50 cursor-not-allowed" : "hover:brightness-95"}`}
-        >
-          <option value="ACTIVE">Active</option>
-          <option value="INACTIVE">Inactive</option>
-        </select>
+        <StatusBadge status={rowStatus} />
       </td>
-      <td className="py-4 px-5">
-        <div className="flex items-center justify-end">
+      <td className="relative z-30 bg-white py-4 px-5">
+        <div className="relative z-50 flex items-center justify-end gap-2 rounded-lg border border-slate-100 bg-white px-2 py-1.5 shadow-sm">
+          <select
+            value={rowStatus}
+            disabled={actionsDisabled}
+            onChange={(e) => void handleStatusChange(e.target.value)}
+            className={`relative z-50 min-w-[100px] cursor-pointer rounded-full border bg-white px-2.5 py-1.5 text-xs font-semibold outline-none transition-all focus:ring-2 ${
+              rowStatus === "ACTIVE"
+                ? "border-green-200 text-green-700 focus:ring-green-100"
+                : "border-gray-200 text-gray-600 focus:ring-gray-100"
+            } ${actionsDisabled ? "cursor-not-allowed opacity-50" : "hover:brightness-95"}`}
+          >
+            <option value="ACTIVE" className="bg-white text-gray-900">
+              Active
+            </option>
+            <option value="INACTIVE" className="bg-white text-gray-900">
+              Inactive
+            </option>
+          </select>
           <button
             type="button"
             disabled={actionsDisabled}
             onClick={handleDelete}
             title="Delete user"
-            className="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-2 text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="relative z-50 inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-2 text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Trash2 className="h-4 w-4" aria-hidden />
           </button>
