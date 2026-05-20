@@ -21,12 +21,18 @@ const userApi = baseApi.injectEndpoints({
     }),
 
     updateUser: build.mutation({
-      query: ({ id, status }) => {
+      query: (arg: { id: string; status: string }) => {
+        const id = String(arg?.id ?? "").trim();
+        const normalizedStatus = String(arg?.status ?? "")
+          .trim()
+          .toUpperCase();
+
         return {
           url: `/users/status/${id}`,
           method: "PATCH",
-          body: { status }
-        }
+          headers: { "Content-Type": "application/json" },
+          body: { status: normalizedStatus },
+        };
       },
       invalidatesTags: ['user', 'admin', 'host'],
     }),
@@ -110,7 +116,33 @@ const userApi = baseApi.injectEndpoints({
     getAllSubscriber: build.query({
       query: () => `/subscriptions${location?.search}`,
       transformResponse: (res: { data: any }) => res?.data
-    })
+    }),
+
+    userDelete: build.mutation({
+      query: (id) => {
+        return {
+          url: `/users/${id}`,
+          method: "DELETE"
+        }
+      },
+      invalidatesTags: ["user"]
+    }),
+    userStatusUpdate: build.mutation({
+      query: (arg: { id: string; status: string }) => {
+        const id = String(arg?.id ?? "").trim();
+        const normalizedStatus = String(arg?.status ?? "")
+          .trim()
+          .toUpperCase();
+
+        return {
+          url: `/users/status/${id}`,
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: { status: normalizedStatus },
+        };
+      },
+      invalidatesTags: ["user"],
+    }),
   }),
 });
 
@@ -129,4 +161,6 @@ export const {
   useEditProfileMutation,
   useCreateAdminMutation,
   useUpdateUserMutation,
+  useUserDeleteMutation,
+  useUserStatusUpdateMutation,
 } = userApi;

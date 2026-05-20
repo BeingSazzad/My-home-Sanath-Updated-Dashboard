@@ -1,6 +1,7 @@
 import React from "react";
 import { useGetRecentTransactionsQuery } from "../../../redux/features/revenue/revenueApi";
 import { Button } from "../../ui/button";
+import { useNavigate } from "react-router-dom";
 
 
 const AgentIcon = () => (
@@ -34,6 +35,11 @@ const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
 const RecentTransactions: React.FC = () => {
   const { data, isLoading } = useGetRecentTransactionsQuery(5);
   const transactions = Array.isArray(data) ? data : data?.data || [];
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    navigate("/transactions");
+  };
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-5">
@@ -42,7 +48,7 @@ const RecentTransactions: React.FC = () => {
           <p className="text-lg font-medium text-gray-900">Recent Transactions</p>
           <p className="text-xs text-gray-400">Latest revenue transactions</p>
         </div>
-        <Button variant="ghost" className="text-[13px] ">View all →</Button>
+        <Button variant="ghost" className="text-[13px] " onClick={handleViewAll}>View all →</Button>
       </div>
 
       <div className="overflow-x-auto">

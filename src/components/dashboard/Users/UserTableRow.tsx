@@ -1,14 +1,49 @@
-import React from "react";
-import StatusBadge from "./StatusBadge";
-import type { User } from "../../../data/usersData";
+import React, { useMemo, useState } from "react";
+import Swal from "sweetalert2";
+import { Trash2 } from "lucide-react";
+import type { User, UserStatus } from "../../../data/usersData";
 import { imageUrl } from "../../../redux/base/baseAPI";
+import { confirmDelete } from "../../Shared/confirmDelete";
+import {
+  useUpdateUserMutation,
+  useUserDeleteMutation,
+} from "../../../redux/features/user/userApi";
 
+interface Props {
+  user: User;
+  index: number;
+}
 
-interface Props { user: User; index: number; }
+const normalizeStatus = (raw: unknown): UserStatus => {
+  if (typeof raw === "boolean") {
+    return raw ? "ACTIVE" : "INACTIVE";
+  }
+  const s = String(raw ?? "INACTIVE").trim().toUpperCase();
+  return s === "ACTIVE" ? "ACTIVE" : "INACTIVE";
+};
+
+const getUserId = (user: User): string | undefined => {
+  const raw = user._id ?? user.id;
+  if (!raw) return undefined;
+  if (typeof raw === "string") return raw;
+  if (typeof raw === "object" && raw !== null && "_id" in raw) {
+    return String((raw as { _id: string })._id);
+  }
+  return String(raw);
+};
 
 const UserTableRow: React.FC<Props> = ({ user }) => {
+  const userId = getUserId(user);
+  const [statusPending, setStatusPending] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
 
+  const [updateUser] = useUpdateUserMutation();
+  const [userDelete] = useUserDeleteMutation();
 
+  const rowStatus = useMemo(() => {
+    const withActive = user as User & { isActive?: boolean };
+    return normalizeStatus(withActive.isActive ?? user.status);
+  }, [user]);
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -18,7 +53,7 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
       .slice(0, 2);
   };
 
-  const renderLocation = (location: any) => {
+  const renderLocation = (location: User["location"]) => {
     if (typeof location === "string") return location;
     if (location && typeof location === "object") {
       return location.address || location.city || "N/A";
@@ -40,6 +75,56 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
     });
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!userId || statusPending) return;
+    const nextStatus = normalizeStatus(newStatus);
+    if (nextStatus === rowStatus) return;
+    setStatusPending(true);
+    try {
+      await updateUser({ id: userId, status: nextStatus }).unwrap();
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      await Swal.fire({
+        icon: "error",
+        title: "Update failed",
+        text: err?.data?.message ?? "Could not update user status. Please try again.",
+      });
+    } finally {
+      setStatusPending(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!userId || deletePending) return;
+    const confirmed = await confirmDelete({
+      title: "Delete this user?",
+      text: `${user.name} will be removed permanently.`,
+    });
+    if (!confirmed) return;
+
+    setDeletePending(true);
+    try {
+      await userDelete(userId).unwrap();
+      await Swal.fire({
+        icon: "success",
+        title: "Deleted",
+        text: "User removed successfully.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch {
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: "Something went wrong while deleting the user.",
+      });
+    } finally {
+      setDeletePending(false);
+    }
+  };
+
+  const actionsDisabled = !userId || statusPending || deletePending;
+
   return (
     <tr className="border-b border-slate-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
       <td className="py-4 px-5">
@@ -52,9 +137,7 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span>
-                {user.initials || getInitials(user.name)}
-              </span>
+              <span>{user.initials || getInitials(user.name)}</span>
             )}
           </div>
           <div>
@@ -66,15 +149,39 @@ const UserTableRow: React.FC<Props> = ({ user }) => {
       <td className="py-4 px-5 text-[12.5px] text-gray-500">{user.phone || "N/A"}</td>
       <td className="py-4 px-5 text-[12.5px] text-gray-500">{renderLocation(user.location)}</td>
       <td className="py-4 px-5">
-        <p className="text-[12.5px] font-medium text-gray-900">{user.savedProperties || 0} properties</p>
-        <p className="text-[11.5px] text-gray-400">{user.searches || 0} searches</p>
+        <p className="text-[12.5px] font-medium text-gray-900">{user.savedPropertyCount || 0} properties</p>
+        <p className="text-[11.5px] text-gray-400">{user.savedSearchCount || 0} searches</p>
       </td>
-      <td className="py-4 px-5 text-[13px] font-medium text-gray-900">{user.enquiries || 0}</td>
+      <td className="py-4 px-5 text-[13px] font-medium text-gray-900">{user.enqueryCount || 0}</td>
       <td className="py-4 px-5 text-[12.5px] text-gray-400">{formatDate(user.createdAt)}</td>
       <td className="py-4 px-5 text-[12.5px] text-gray-400">{formatDate(user.lastLoginAt)}</td>
-      <td className="py-4 px-5"><StatusBadge status={user.status} /></td>
       <td className="py-4 px-5">
-        <button className="text-gray-400 hover:text-gray-700 px-2.5 py-1.5 rounded hover:bg-gray-100 text-base">⋮</button>
+        <select
+          value={rowStatus}
+          disabled={actionsDisabled}
+          onChange={(e) => void handleStatusChange(e.target.value)}
+          className={`text-xs font-semibold rounded-full px-3 py-1.5 border outline-none cursor-pointer transition-all min-w-[108px] ${
+            rowStatus === "ACTIVE"
+              ? "bg-green-50 text-green-700 border-green-200 focus:ring-2 focus:ring-green-100"
+              : "bg-gray-100 text-gray-600 border-gray-200 focus:ring-2 focus:ring-gray-100"
+          } ${actionsDisabled ? "opacity-50 cursor-not-allowed" : "hover:brightness-95"}`}
+        >
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </td>
+      <td className="py-4 px-5">
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            disabled={actionsDisabled}
+            onClick={handleDelete}
+            title="Delete user"
+            className="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-2 text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
       </td>
     </tr>
   );

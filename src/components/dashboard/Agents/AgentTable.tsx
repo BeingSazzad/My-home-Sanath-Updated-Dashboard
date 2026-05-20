@@ -3,7 +3,7 @@ import React from "react";
 import AgentTableRow from "./AgentTableRow";
 import type { Agent } from "../../../data/agentsData";
 
-const HEADERS = ["AGENT", "AGENCY", "PLAN", "LISTINGS", "REVENUE", "STATUS", "JOINED", "ACTIONS"];
+const HEADERS = ["AGENT", "AGENCY", "PLAN", "LISTINGS", "REVENUE",  "JOINED","STATUS", "ACTIONS"];
 
 interface Props {
   agents: Agent[];
@@ -11,10 +11,21 @@ interface Props {
   page: number;
   limit: number;
   onPageChange: (page: number) => void;
+  isLoading?: boolean;
+  isError?: boolean;
 }
 
-const AgentTable: React.FC<Props> = ({ agents, total, page, limit, onPageChange }) => {
+const AgentTable: React.FC<Props> = ({
+  agents,
+  total,
+  page,
+  limit,
+  onPageChange,
+  isLoading = false,
+  isError = false,
+}) => {
   const totalPages = Math.ceil(total / limit) || 1;
+  const showEmpty = !isLoading && (isError || agents.length === 0);
 
   const handlePrev = () => {
     if (page > 1) onPageChange(page - 1);
@@ -58,7 +69,21 @@ const AgentTable: React.FC<Props> = ({ agents, total, page, limit, onPageChange 
             </tr>
           </thead>
           <tbody>
-            {agents.map(a => <AgentTableRow key={a._id || a.id} agent={a} />)}
+            {isLoading ? (
+              <tr>
+                <td colSpan={HEADERS.length} className="px-5 py-16 text-center text-sm text-gray-500">
+                  Loading…
+                </td>
+              </tr>
+            ) : showEmpty ? (
+              <tr>
+                <td colSpan={HEADERS.length} className="px-5 py-16 text-center text-sm text-gray-500">
+                  No data available
+                </td>
+              </tr>
+            ) : (
+              agents.map((a) => <AgentTableRow key={a._id || a.id} agent={a} />)
+            )}
           </tbody>
         </table>
       </div>
@@ -78,7 +103,7 @@ const AgentTable: React.FC<Props> = ({ agents, total, page, limit, onPageChange 
               onClick={() => onPageChange(p)}
               className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-all cursor-pointer ${
                 page === p
-                  ? "bg-[#0B3C6D] text-white font-medium shadow-sm"
+                  ? "bg-[#0b3c6d]! text-white font-medium shadow-sm"
                   : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >

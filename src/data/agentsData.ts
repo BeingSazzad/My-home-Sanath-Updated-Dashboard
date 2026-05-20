@@ -1,4 +1,4 @@
-export type AgentStatus = "active" | "pending" | "suspended";
+export type AgentStatus = "active" | "pending" | "suspended" | "ACTIVE" | "INACTIVE";
 export type AgentPlan   = "Basic" | "Professional" | "Enterprise";
 
 export interface Agent {

@@ -14,7 +14,7 @@ const UserManagement: React.FC = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data: allData } = useGetUsersQuery({
+  const { data: allData, isLoading, isError } = useGetUsersQuery({
     page,
     limit,
     searchTerm: search || undefined,
@@ -22,8 +22,6 @@ const UserManagement: React.FC = () => {
     status: statusFilter || undefined,
     plan: plan || undefined,
   });
-
-  console.log(allData, "USERS DATA");
 
   const filtered = useMemo(() =>
     allData?.data || [], [allData]);
@@ -96,12 +94,14 @@ const UserManagement: React.FC = () => {
             onStatus={handleStatus}
             onPlan={handlePlan}
           />
-          <UserTable 
-            users={filtered} 
-            total={allData?.meta?.total || 0} 
+          <UserTable
+            users={filtered}
+            total={allData?.meta?.total || 0}
             page={page}
             limit={limit}
             onPageChange={setPage}
+            isLoading={isLoading}
+            isError={isError}
           />
         </TabsContent>
 

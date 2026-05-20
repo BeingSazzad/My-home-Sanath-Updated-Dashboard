@@ -12,6 +12,10 @@ export interface User {
   savedProperties?: number;
   searches?: number;
   enquiries?: number;
+  /** API list fields (user management table) */
+  savedPropertyCount?: number;
+  savedSearchCount?: number;
+  enqueryCount?: number;
   createdAt?: string;
   lastLoginAt?: string;
   status: UserStatus;

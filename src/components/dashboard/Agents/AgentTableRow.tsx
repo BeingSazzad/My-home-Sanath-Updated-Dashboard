@@ -1,57 +1,36 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
+import Swal from "sweetalert2";
+import { Trash2 } from "lucide-react";
 import type { Agent } from "../../../data/agentsData";
-import { imageUrl } from "../../../redux/base/baseAPI";
 import type { UserStatus } from "../../../data/usersData";
+import { imageUrl } from "../../../redux/base/baseAPI";
+import { confirmDelete } from "../../Shared/confirmDelete";
+import {
+  useUpdateUserMutation,
+  useUserDeleteMutation,
+} from "../../../redux/features/user/userApi";
 
-const planStyles: Record<string, string> = {
-  TRIAL: "bg-gray-100 text-gray-700",
-  STARTER: "bg-blue-100 text-blue-800",
-  PROFESSIONAL: "bg-purple-100 text-purple-800",
-  PREMIUM: "bg-indigo-100 text-indigo-800",
-  BASIC: "bg-gray-100 text-gray-700",
-  ENTERPRISE: "bg-indigo-100 text-indigo-800",
+interface Props {
+  agent: Agent;
+}
+
+const normalizeStatus = (raw: unknown): UserStatus => {
+  if (typeof raw === "boolean") {
+    return raw ? "ACTIVE" : "INACTIVE";
+  }
+  const s = String(raw ?? "INACTIVE").trim().toUpperCase();
+  return s === "ACTIVE" ? "ACTIVE" : "INACTIVE";
 };
 
-type StatusType = "ACTIVE" | "INACTIVE";
-
-const statusConfig: Record<
-  StatusType,
-  { cls: string; icon: React.ReactNode }
-> = {
-  ACTIVE: {
-    cls: "bg-green-50 text-green-700",
-    icon: (
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-        <polyline points="22 4 12 14.01 9 11.01" />
-      </svg>
-    ),
-  },
-
-  INACTIVE: {
-    cls: "bg-orange-50 text-orange-600",
-    icon: (
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5">
-        <circle cx="12" cy="12" r="10" />
-        <path d="M12 6v6l4 2" />
-      </svg>
-    ),
-  },
+const getAgentId = (agent: Agent): string | undefined => {
+  const raw = agent._id ?? agent.id;
+  if (!raw) return undefined;
+  if (typeof raw === "string") return raw;
+  if (typeof raw === "object" && raw !== null && "_id" in raw) {
+    return String((raw as { _id: string })._id);
+  }
+  return String(raw);
 };
-
-const StatusBadge: React.FC<{ status: UserStatus }> = ({ status }) => {
-  const s = statusConfig[status as StatusType] || statusConfig.INACTIVE;
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium capitalize ${s.cls}`}>
-      {s.icon}
-      {status || "INACTIVE"}
-    </span>
-  );
-};
-
-
-
-interface Props { agent: Agent }
 
 const formatDate = (dateString?: string | null) => {
   if (!dateString) return "N/A";
@@ -65,11 +44,30 @@ const formatDate = (dateString?: string | null) => {
     month: "short",
     year: "numeric",
   });
-}
+};
 
-
+const planStyles: Record<string, string> = {
+  TRIAL: "bg-gray-100 text-gray-700",
+  STARTER: "bg-blue-100 text-blue-800",
+  PROFESSIONAL: "bg-purple-100 text-purple-800",
+  PREMIUM: "bg-indigo-100 text-indigo-800",
+  BASIC: "bg-gray-100 text-gray-700",
+  ENTERPRISE: "bg-indigo-100 text-indigo-800",
+};
 
 const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
+  const agentId = getAgentId(a);
+  const [statusPending, setStatusPending] = useState(false);
+  const [deletePending, setDeletePending] = useState(false);
+
+  const [updateUser] = useUpdateUserMutation();
+  const [userDelete] = useUserDeleteMutation();
+
+  const rowStatus = useMemo(() => {
+    const withActive = a as Agent & { isActive?: boolean };
+    return normalizeStatus(withActive.isActive ?? a.status);
+  }, [a]);
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -79,7 +77,7 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
       .slice(0, 2);
   };
 
-  const renderPlan = (plan: any) => {
+  const renderPlan = (plan: Agent["plan"]) => {
     if (!plan) return "N/A";
     if (typeof plan === "string") return plan;
     return plan.title || plan.tier || "N/A";
@@ -87,7 +85,55 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
 
   const planName = renderPlan(a.plan);
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!agentId || statusPending) return;
+    const nextStatus = normalizeStatus(newStatus);
+    if (nextStatus === rowStatus) return;
+    setStatusPending(true);
+    try {
+      await updateUser({ id: agentId, status: nextStatus }).unwrap();
+    } catch (error: unknown) {
+      const err = error as { data?: { message?: string } };
+      await Swal.fire({
+        icon: "error",
+        title: "Update failed",
+        text: err?.data?.message ?? "Could not update agent status. Please try again.",
+      });
+    } finally {
+      setStatusPending(false);
+    }
+  };
 
+  const handleDelete = async () => {
+    if (!agentId || deletePending) return;
+    const confirmed = await confirmDelete({
+      title: "Delete this agent?",
+      text: `${a.name} will be removed permanently.`,
+    });
+    if (!confirmed) return;
+
+    setDeletePending(true);
+    try {
+      await userDelete(agentId).unwrap();
+      await Swal.fire({
+        icon: "success",
+        title: "Deleted",
+        text: "Agent removed successfully.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch {
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: "Something went wrong while deleting the agent.",
+      });
+    } finally {
+      setDeletePending(false);
+    }
+  };
+
+  const actionsDisabled = !agentId || statusPending || deletePending;
 
   return (
     <tr className="border-b border-gray-100/60 hover:bg-gray-50/60 last:border-0 transition-colors">
@@ -101,9 +147,7 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span>
-                {a.initials || getInitials(a.name)}
-              </span>
+              <span>{a.initials || getInitials(a.name)}</span>
             )}
           </div>
           <div>
@@ -117,20 +161,51 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
         <p className="text-[11.5px] text-gray-400">{a.phone || "N/A"}</p>
       </td>
       <td className="py-4.5 px-5">
-        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${planStyles[planName.toUpperCase()] || planStyles.TRIAL}`}>
+        <span
+          className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
+            planStyles[planName.toUpperCase()] || planStyles.TRIAL
+          }`}
+        >
           {planName}
         </span>
       </td>
-      <td className="py-4.5 px-5 text-[13px] font-medium text-gray-900">{a.totalListings || 0}</td>
+      <td className="py-4.5 px-5 text-[13px] font-medium text-gray-900">
+        {a.totalListings || 0}
+      </td>
       <td className="py-4.5 px-5 text-[13px] font-medium text-green-600">
         £{(a.revenue || 0).toLocaleString()}
       </td>
-      <td className="py-4.5 px-5">
-        <StatusBadge status={a.status as UserStatus} />
+      <td className="py-4.5 px-5 text-[12.5px] text-gray-500">
+        {formatDate(a.createdAt)}
       </td>
-      <td className="py-4.5 px-5 text-[12.5px] text-gray-500">{formatDate(a.createdAt)}</td>
       <td className="py-4.5 px-5">
-        <button className="text-gray-400 hover:text-gray-700 px-2.5 py-1.5 rounded hover:bg-gray-100 text-lg">⋮</button>
+        <select
+          value={rowStatus}
+          disabled={actionsDisabled}
+          onChange={(e) => void handleStatusChange(e.target.value)}
+          className={`text-xs font-semibold rounded-full px-3 py-1.5 border outline-none cursor-pointer transition-all min-w-[108px] ${
+            rowStatus === "ACTIVE"
+              ? "bg-green-50 text-green-700 border-green-200 focus:ring-2 focus:ring-green-100"
+              : "bg-gray-100 text-gray-600 border-gray-200 focus:ring-2 focus:ring-gray-100"
+          } ${actionsDisabled ? "opacity-50 cursor-not-allowed" : "hover:brightness-95"}`}
+        >
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
+      </td>
+     
+      <td className="py-4.5 px-5">
+        <div className="flex items-center justify-end">
+          <button
+            type="button"
+            disabled={actionsDisabled}
+            onClick={handleDelete}
+            title="Delete agent"
+            className="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-2 text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
       </td>
     </tr>
   );

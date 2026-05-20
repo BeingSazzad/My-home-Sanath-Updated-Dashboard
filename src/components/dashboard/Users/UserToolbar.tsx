@@ -11,8 +11,8 @@ interface Props {
 }
 
 const UserToolbar: React.FC<Props> = ({ search, status, plan, onSearch, onStatus, onPlan }) => (
-  <div className="bg-white border border-slate-100 rounded-xl px-4 py-3 flex items-center gap-3 mb-4 flex-wrap">
-    <div className="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-9">
+  <div className="bg-white border border-slate-100 rounded-xl px-4 py-3 flex items-center justify-end gap-3 mb-4 flex-wrap">
+    <div className=" flex items-center justify-end gap-2 border border-gray-200 rounded-lg px-3 h-9 w-[400px]">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="flex-shrink-0">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
@@ -20,13 +20,13 @@ const UserToolbar: React.FC<Props> = ({ search, status, plan, onSearch, onStatus
         value={search}
         onChange={(e) => onSearch(e.target.value)}
         placeholder="Search by name, email, or location..."
-        className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder:text-gray-400"
+        className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder:text-gray-400 max-w-[400px]"
       />
     </div>
   
   
     {/* Plan Filter */}
-    <select
+    {/* <select
       value={plan}
       onChange={(e) => onPlan(e.target.value)}
       className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
@@ -36,7 +36,7 @@ const UserToolbar: React.FC<Props> = ({ search, status, plan, onSearch, onStatus
       <option value="STARTER">Starter</option>
       <option value="PROFESSIONAL">Professional</option>
       <option value="PREMIUM">Premium</option>
-    </select>
+    </select> */}
 
     {/* Status Filter */}
     <select

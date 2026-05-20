@@ -3,7 +3,7 @@ import React from "react";
 import UserTableRow from "./UserTableRow";
 import type { User } from "../../../data/usersData";
 
-const HEADERS = ["USER","CONTACT","LOCATION","SAVED","ENQUIRIES","JOIN DATE","LAST ACTIVE","STATUS","ACTIONS"];
+const HEADERS = ["USER","CONTACT","LOCATION","SAVED","ENQUIRIES","JOIN DATE","LAST ACTIVE","Status","ACTIONS"];
 
 interface Props {
   users: User[];
@@ -11,11 +11,21 @@ interface Props {
   page: number;
   limit: number;
   onPageChange: (page: number) => void;
+  isLoading?: boolean;
+  isError?: boolean;
 }
 
-const UserTable: React.FC<Props> = ({ users, total, page, limit, onPageChange }) => {
+const UserTable: React.FC<Props> = ({
+  users,
+  total,
+  page,
+  limit,
+  onPageChange,
+  isLoading = false,
+  isError = false,
+}) => {
   const totalPages = Math.ceil(total / limit) || 1;
-
+  const showEmpty = !isLoading && (isError || users.length === 0);
   const handlePrev = () => {
     if (page > 1) onPageChange(page - 1);
   };
@@ -48,21 +58,42 @@ const UserTable: React.FC<Props> = ({ users, total, page, limit, onPageChange })
     <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100">
         <h2 className="text-[15px] font-medium text-gray-900">All Users</h2>
-        <p className="text-xs text-gray-400 mt-0.5">{users.length} users found</p>
+        <p className="text-xs text-gray-400 mt-0.5">
+          {isLoading ? "Loading…" : showEmpty ? "No data available" : `${users.length} users found`}
+        </p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-slate-50/70 border-b border-slate-100">
               {HEADERS.map((h) => (
-                <th key={h} className="text-left text-[11.5px] font-semibold text-slate-500 uppercase tracking-wider px-5 py-4 whitespace-nowrap">
+                <th
+                  key={h}
+                  className={`text-[11.5px] font-semibold text-slate-600 tracking-wider px-5 py-4 whitespace-nowrap ${
+                    h === "Status" ? "text-center" : "text-left uppercase"
+                  }`}
+                >
                   {h}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {users.map((u, i) => <UserTableRow key={u._id || u.id} user={u} index={i} />)}
+            {isLoading ? (
+              <tr>
+                <td colSpan={HEADERS.length} className="px-5 py-16 text-center text-sm text-gray-500">
+                  Loading…
+                </td>
+              </tr>
+            ) : showEmpty ? (
+              <tr>
+                <td colSpan={HEADERS.length} className="px-5 py-16 text-center text-sm text-gray-500">
+                  No data available
+                </td>
+              </tr>
+            ) : (
+              users.map((u, i) => <UserTableRow key={u._id || u.id} user={u} index={i} />)
+            )}
           </tbody>
         </table>
       </div>
@@ -82,7 +113,7 @@ const UserTable: React.FC<Props> = ({ users, total, page, limit, onPageChange })
               onClick={() => onPageChange(p)}
               className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-all cursor-pointer ${
                 page === p
-                  ? "bg-[#0B3C6D] text-white font-medium shadow-sm"
+                  ? "bg-[#0b3c6d]! text-white font-medium shadow-sm"
                   : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >

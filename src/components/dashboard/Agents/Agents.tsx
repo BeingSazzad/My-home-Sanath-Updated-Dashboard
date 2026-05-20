@@ -15,7 +15,7 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data: allData } = useGetUsersQuery({
+  const { data: allData, isLoading, isError } = useGetUsersQuery({
     page,
     limit,
     searchTerm: search || undefined,
@@ -23,8 +23,6 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
     status: statusFilter || undefined,
     plan: planFilter || undefined,
   });
-
-  console.log(allData, "AGENTS DATA");
 
   const filtered = useMemo(() => {
     return allData?.data || [];
@@ -68,12 +66,14 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
         onPlan={handlePlan}
         onStatus={handleStatus}
       />
-      <AgentTable 
-        agents={filtered} 
-        total={allData?.meta?.total || 0} 
+      <AgentTable
+        agents={filtered}
+        total={allData?.meta?.total || 0}
         page={page}
         limit={limit}
         onPageChange={setPage}
+        isLoading={isLoading}
+        isError={isError}
       />
     </div>
   );
