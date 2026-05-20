@@ -82,7 +82,7 @@ const UserTable: React.FC<Props> = ({ users, total, page, limit, onPageChange })
               onClick={() => onPageChange(p)}
               className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm transition-all cursor-pointer ${
                 page === p
-                  ? "bg-blue-600 text-white font-medium shadow-sm"
+                  ? "bg-[#0B3C6D] text-white font-medium shadow-sm"
                   : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >

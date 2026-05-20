@@ -25,6 +25,19 @@ const UserToolbar: React.FC<Props> = ({ search, status, plan, onSearch, onStatus
     </div>
   
   
+    {/* Plan Filter */}
+    <select
+      value={plan}
+      onChange={(e) => onPlan(e.target.value)}
+      className="h-9 px-3 text-sm border border-gray-200 rounded-lg bg-white text-gray-700 outline-none cursor-pointer"
+    >
+      <option value="">All Plans</option>
+      <option value="TRIAL">Trial</option>
+      <option value="STARTER">Starter</option>
+      <option value="PROFESSIONAL">Professional</option>
+      <option value="PREMIUM">Premium</option>
+    </select>
+
     {/* Status Filter */}
     <select
       value={status}

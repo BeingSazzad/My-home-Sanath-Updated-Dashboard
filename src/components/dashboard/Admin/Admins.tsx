@@ -2,7 +2,7 @@ import { Mail, Shield, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-react
 import { useState } from 'react';
 import { toast } from 'sonner';
 import Swal from 'sweetalert2';
-import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery } from '../../../redux/features/user/userApi';
+import { useCreateAdminMutation, useDeleteAdminMutation, useGetAdminQuery, useUpdateUserMutation } from '../../../redux/features/user/userApi';
 import { confirmDelete } from '../../Shared/confirmDelete';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -97,6 +97,33 @@ function StatusBadge({ status }: { status: string }) {
     );
 }
 
+function StatusSelect({
+    status,
+    onChange,
+    disabled
+}: {
+    status: string;
+    onChange: (newStatus: string) => void;
+    disabled?: boolean;
+}) {
+    const isActive = status?.toUpperCase() === 'ACTIVE';
+    return (
+        <select
+            value={status?.toUpperCase() || 'ACTIVE'}
+            disabled={disabled}
+            onChange={(e) => onChange(e.target.value)}
+            className={`text-xs font-semibold rounded-full px-2.5 py-1.5 border outline-none cursor-pointer transition-all ${
+                isActive
+                    ? 'bg-green-50 text-green-700 border-green-200 focus:ring-green-100'
+                    : 'bg-gray-100 text-gray-600 border-gray-200 focus:ring-gray-100'
+            } ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'}`}
+        >
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+        </select>
+    );
+}
+
 
 
 const AVATAR_COLORS = [
@@ -111,12 +138,13 @@ export default function AdminManage() {
     // const { data: adminStats } = useGetAdminStatsQuery({});
     const [addAdmin] = useCreateAdminMutation();
     const [deleteAdmin] = useDeleteAdminMutation();
+    const [updateUser] = useUpdateUserMutation();
 
     const admins: Admin[] = adminsData?? [];
-    const totalAdmins =  0;
-    const totalSuperAdmins =  0;
-    const totalActiveAdmins = 0;
-    const totalInactiveAdmins =  0;
+    const totalAdmins = admins.length;
+    const totalSuperAdmins = admins.filter(a => a.role === 'SUPER_ADMIN').length;
+    const totalActiveAdmins = admins.filter(a => a.status?.toUpperCase() === 'ACTIVE').length;
+    const totalInactiveAdmins = admins.filter(a => a.status?.toUpperCase() === 'INACTIVE').length;
 
     const handleFormSubmit = async (formData: FormData) => {
         const data = Object.fromEntries(formData);
@@ -157,6 +185,17 @@ export default function AdminManage() {
             refetch();
         } catch {
             Swal.fire({ icon: 'error', title: 'Failed!', text: 'Something went wrong while deleting.' });
+        }
+    };
+
+    const handleStatusChange = async (adminId: string, newStatus: string) => {
+        try {
+            await updateUser({ id: adminId, status: newStatus }).unwrap();
+            toast.success('Admin status updated successfully!');
+            refetch();
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string } };
+            toast.error(err?.data?.message ?? 'Failed to update admin status.');
         }
     };
 
@@ -236,7 +275,13 @@ export default function AdminManage() {
                                     <TableCell className="text-sm text-gray-600">
                                         {admin.lastLoginAt ? new Date(admin.lastLoginAt).toISOString().slice(0, 10) : '—'}
                                     </TableCell>
-                                    <TableCell><StatusBadge status={admin.status ?? 'Active'} /></TableCell>
+                                    <TableCell>
+                                        <StatusSelect
+                                            status={admin.status ?? 'ACTIVE'}
+                                            onChange={(newStatus) => handleStatusChange(admin._id ?? admin.id ?? '', newStatus)}
+                                            disabled={admin.role === 'SUPER_ADMIN'}
+                                        />
+                                    </TableCell>
                                     <TableCell className="text-right pr-6">
                                         <div className="flex items-center justify-end gap-2">
                                             <Button
