@@ -1,6 +1,7 @@
 import React from "react";
 import type { Agent } from "../../../data/agentsData";
 import { imageUrl } from "../../../redux/base/baseAPI";
+import type { UserStatus } from "../../../data/usersData";
 
 const planStyles: Record<string, string> = {
   Professional: "bg-purple-100 text-purple-800",
@@ -8,12 +9,44 @@ const planStyles: Record<string, string> = {
   Basic: "bg-gray-100 text-gray-700",
 };
 
-const statusStyles: Record<string, string> = {
-  ACTIVE:    "bg-green-50 text-green-700",
-  PENDING:   "bg-orange-50 text-orange-600",
-  SUSPENDED: "bg-red-50 text-red-700",
-  INACTIVE:  "bg-gray-50 text-gray-600",
+type StatusType = "ACTIVE" | "INACTIVE";
+
+const statusConfig: Record<
+  StatusType,
+  { cls: string; icon: React.ReactNode }
+> = {
+  ACTIVE: {
+    cls: "bg-green-50 text-green-700",
+    icon: (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+    ),
+  },
+
+  INACTIVE: {
+    cls: "bg-orange-50 text-orange-600",
+    icon: (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2.5">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 6v6l4 2" />
+      </svg>
+    ),
+  },
 };
+
+const StatusBadge: React.FC<{ status: UserStatus }> = ({ status }) => {
+  const s = statusConfig[status as StatusType] || statusConfig.INACTIVE;
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium capitalize ${s.cls}`}>
+      {s.icon}
+      {status || "INACTIVE"}
+    </span>
+  );
+};
+
+
 
 interface Props { agent: Agent }
 
@@ -90,9 +123,7 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
         £{(a.revenue || 0).toLocaleString()}
       </td>
       <td className="py-4.5 px-5">
-        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-md tracking-wide uppercase ${statusStyles[a.status] || statusStyles.PENDING}`}>
-          {a.status || "PENDING"}
-        </span>
+        <StatusBadge status={a.status as UserStatus} />
       </td>
       <td className="py-4.5 px-5 text-[12.5px] text-gray-500">{formatDate(a.createdAt)}</td>
       <td className="py-4.5 px-5">

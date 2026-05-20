@@ -1,20 +1,13 @@
 import React from "react";
-
 import StatusBadge from "./StatusBadge";
 import type { User } from "../../../data/usersData";
 import { imageUrl } from "../../../redux/base/baseAPI";
 
-const avatarColors = [
-  { bg: "#dbeafe", color: "#1e40af" }, { bg: "#dcfce7", color: "#166534" },
-  { bg: "#e9d5ff", color: "#6b21a8" }, { bg: "#fce7f3", color: "#9d174d" },
-  { bg: "#fed7aa", color: "#9a3412" }, { bg: "#d1fae5", color: "#065f46" },
-  { bg: "#fef3c7", color: "#92400e" }, { bg: "#e0e7ff", color: "#3730a3" },
-];
 
 interface Props { user: User; index: number; }
 
-const UserTableRow: React.FC<Props> = ({ user, index }) => {
-  const c = avatarColors[index % avatarColors.length];
+const UserTableRow: React.FC<Props> = ({ user }) => {
+
 
   const getInitials = (name: string) => {
     return name

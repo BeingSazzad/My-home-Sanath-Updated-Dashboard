@@ -1,7 +1,6 @@
 import React from "react";
 import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogDescription } from "../../../ui/dialog";
-import { Button } from "../../../ui/button";
-import { MapPin, Eye, Home, Bath, Maximize, Tag, Calendar, User, FileText, CheckCircle2, ChevronLeft, ChevronRight, Video, Mail, Phone } from "lucide-react";
+import { MapPin, Eye, Home, Bath, Maximize, Tag, Calendar, User, FileText, CheckCircle2, ChevronLeft, ChevronRight, Mail, Phone } from "lucide-react";
 import ListingStatusBadge from "../ListingStatusBadge";
 import { useGetListingByIdQuery } from "../../../../redux/features/listings/listingsApi";
 
@@ -12,53 +11,7 @@ interface Props {
   onEdit: (id: string) => void;
 }
 
-// function ImageSlider({ images, title }: { images: string[], title: string }) {
-//   const [active, setActive] = React.useState(0);
-//   if (!images || !images.length) return null;
-//   const prev = () => setActive((i) => (i === 0 ? images.length - 1 : i - 1));
-//   const next = () => setActive((i) => (i === images.length - 1 ? 0 : i + 1));
-//   return (
-//     <div className="space-y-2">
-//       <div className="relative w-full h-56 sm:h-80 rounded-xl overflow-hidden bg-gray-100 group">
-//         <img
-//           src={`${import.meta.env.VITE_IMAGE_BASE_URL}${images[active]}`}
-//           alt={`${title} - photo ${active + 1}`}
-//           className="w-full h-full object-cover transition-all duration-300"
-//           onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/800x400?text=No+Image+Available"; }}
-//         />
-//         {images.length > 1 && (
-//           <>
-//             <button
-//               onClick={prev}
-//               className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black border-2 border-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-10"
-//             >
-//               <ChevronLeft className="w-6 h-6 text-white" strokeWidth={3} />
-//             </button>
 
-//             <button
-//               onClick={next}
-//               className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black border-2 border-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-10"
-//             >
-//               <ChevronRight className="w-6 h-6 text-white" strokeWidth={3} />
-//             </button>
-//             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">
-//               {active + 1} / {images.length}
-//             </div>
-//           </>
-//         )}
-//       </div>
-//       {images.length > 1 && (
-//         <div className="flex gap-2 overflow-x-auto pb-1 mt-2">
-//           {images.map((src, i) => (
-//             <button key={i} onClick={() => setActive(i)} className={`relative flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === active ? "border-blue-600" : "border-transparent opacity-60 hover:opacity-100"}`}>
-//               <img src={`${import.meta.env.VITE_IMAGE_BASE_URL}${src}`} alt={`thumb-${i}`} className="w-full h-full object-cover" />
-//             </button>
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
 
 function ImageSlider({ images, title }: { images: string[], title: string }) {
   const [active, setActive] = React.useState(0);
@@ -170,7 +123,7 @@ function StatTile({ icon: Icon, label, value }: any) {
   );
 }
 
-const ListingDetailsModal: React.FC<Props> = ({ listing, isOpen, onClose, onEdit }) => {
+const ListingDetailsModal: React.FC<Props> = ({ listing, isOpen, onClose }) => {
   const { data, isLoading } = useGetListingByIdQuery(listing?._id, { skip: !isOpen || !listing?._id });
   const detail = data?.data;
 

@@ -11,14 +11,6 @@ const config: Record<UserStatus, { cls: string; icon: React.ReactNode }> = {
     cls: "bg-gray-100 text-gray-600",
     icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
   },
-  PENDING: {
-    cls: "bg-amber-50 text-amber-600",
-    icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  },
-  SUSPENDED: {
-    cls: "bg-red-50 text-red-800",
-    icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>,
-  },
 };
 
 const StatusBadge: React.FC<{ status: UserStatus }> = ({ status }) => {

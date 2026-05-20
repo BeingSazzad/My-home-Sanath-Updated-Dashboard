@@ -1,4 +1,4 @@
-import { Mail, Pencil, Shield, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-react';
+import { Mail, Shield, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import Swal from 'sweetalert2';

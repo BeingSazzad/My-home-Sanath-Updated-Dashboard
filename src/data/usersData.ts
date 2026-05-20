@@ -1,4 +1,4 @@
-export type UserStatus = "ACTIVE" | "INACTIVE" | "PENDING" | "SUSPENDED";
+export type UserStatus = "ACTIVE" | "INACTIVE";
 
 export interface User {
   _id?: string;
@@ -28,9 +28,9 @@ export interface User {
 //   { id: "8", initials: "JW", name: "Jennifer White", email: "jennifer.w@email.com",   phone: "+44 7700 900 888", location: "Glasgow",    savedProperties: 18, searches: 5, enquiries: 9,  joinDate: "2024-01-25", lastActive: "2024-03-16", status: "active" },
 // ];
 
-export const statCards = [
-  { label: "Total Users",       value: 8,  sub: "All registered users", color: "blue",   icon: "users" },
-  { label: "Active Users",      value: 6,  sub: "Currently active",     color: "green",  icon: "check" },
-  { label: "Total Enquiries",   value: 39, sub: "All time enquiries",   color: "purple", icon: "mail" },
-  { label: "Saved Properties",  value: 86, sub: "Total saved",          color: "orange", icon: "eye" },
-];
+// export const statCards = [
+//   { label: "Total Users",       value: 8,  sub: "All registered users", color: "blue",   icon: "users" },
+//   { label: "Active Users",      value: 6,  sub: "Currently active",     color: "green",  icon: "check" },
+//   { label: "Total Enquiries",   value: 39, sub: "All time enquiries",   color: "purple", icon: "mail" },
+//   { label: "Saved Properties",  value: 86, sub: "Total saved",          color: "orange", icon: "eye" },
+// ];

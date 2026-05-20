@@ -1,4 +1,3 @@
-import type { Enquiry } from "../../../types/enquiry";
 import { Button } from "../../ui/button";
 
 

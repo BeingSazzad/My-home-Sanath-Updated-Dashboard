@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { usersData } from "../../../data/usersData";
 import UserStatCards from "./UserStatCards";
 import UserToolbar from "./UserToolbar";
 import UserTable from "./UserTable";

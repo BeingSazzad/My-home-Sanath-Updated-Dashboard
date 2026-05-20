@@ -1,18 +1,22 @@
 import React from "react";
 import type { Agent } from "../../../data/agentsData";
+import { useGetAgentStatsQuery } from "../../../redux/features/user/userApi";
 
 interface Props { agents: Agent[] }
 
-const AgentStatCards: React.FC<Props> = ({ agents }) => {
-  const active  = agents.filter(a => a.status === "active").length;
-  const pending = agents.filter(a => a.status === "pending").length;
-  const revenue = agents.reduce((s, a) => s + (a.revenue || 0), 0);
+const AgentStatCards: React.FC<Props> = () => {
+  const { data: stats } = useGetAgentStatsQuery(undefined);
+
+  const totalAgents = stats?.totalAgents || 0;
+  const activeAgents = stats?.activeAgents || 0;
+  const inactiveAgents = stats?.inactiveAgents || 0;
+  const totalRevenue = stats?.totalRevenue || 0;
 
   const cards = [
-    { label: "Total Agents",  value: agents.length,               cls: "text-gray-900" },
-    { label: "Active",        value: active,                       cls: "text-green-600" },
-    { label: "Pending",       value: pending,                      cls: "text-orange-500" },
-    { label: "Total Revenue", value: `£${revenue.toLocaleString()}`, cls: "text-blue-600" },
+    { label: "Total Agents", value: totalAgents, cls: "text-gray-900" },
+    { label: "Active", value: activeAgents, cls: "text-green-600" },
+    { label: "Inactive", value: inactiveAgents, cls: "text-orange-500" },
+    { label: "Total Revenue", value: `£${totalRevenue.toLocaleString()}`, cls: "text-blue-600" },
   ];
 
   return (

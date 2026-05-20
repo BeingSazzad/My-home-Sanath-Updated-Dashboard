@@ -1,9 +1,8 @@
 import { useState } from "react";
 import type { Enquiry } from "../../../types/enquiry";
-import { Button } from "../../ui/button";
+
 import { Card, CardContent } from "../../ui/card";
 import { Input } from "../../ui/input";
-import { enquiries } from "../../../data/enquiries";
 import { EnquiryTable } from "./EnquiryTable";
 import { EnquiryModal } from "./EnquiryModal";
 import { Inbox, Calendar, BarChart3, Filter } from "lucide-react";
@@ -56,7 +55,7 @@ export default function EnquiriesPage() {
   });
 
   const enquiriesList = apiData?.data || [];
-  const totalItems = apiData?.meta?.total || 0;
+
   const totalPages = apiData?.meta?.totalPage || 1;
 
   const handleSearch = (val: string) => {

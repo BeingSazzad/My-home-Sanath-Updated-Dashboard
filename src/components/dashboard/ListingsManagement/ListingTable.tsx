@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-
-
-import type { Listing } from "../../../data/listingsData";
 import ListingDetailsModal from "./ListingDetails/ListingDetailsModal";
 import ListingStatusBadge from "./ListingStatusBadge";
-         
-import { Check, Edit, Eye, Trash, X } from "lucide-react";
+
+import { Check, Eye, Trash, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../ui/button";
 import { useChangeListingStatusMutation } from "../../../redux/features/listings/listingsApi";
 
 const HEADERS = ["PROPERTY", "AGENT", "PRICE", "TYPE", "STATS", "STATUS", "ACTIONS"];
 
-interface Props { 
+interface Props {
     listings: any[];
     isLoading?: boolean;
 }
@@ -93,24 +90,24 @@ const ListingTable: React.FC<Props> = ({ listings, isLoading }) => {
                                     <td className="w-[14.28%] py-3.5 px-4 first:pl-6 last:pr-6 text-right">
                                         <div className="flex items-center justify-end gap-1.5">
                                             {/* View */}
-                                            <Button onClick={()=>{setSelectedListing(l); }} variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100">
+                                            <Button onClick={() => { setSelectedListing(l); }} variant="ghost" size="icon" className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100">
                                                 <Eye size={20} />
                                             </Button>
 
                                             {/* Approve / Reject — pending only */}
                                             {l.status === "PENDING_APPROVAL" && <>
-                                                <Button 
+                                                <Button
                                                     onClick={() => handleStatusUpdate(l._id, "PUBLISHED")}
-                                                    variant="ghost" 
-                                                    size="icon" 
+                                                    variant="ghost"
+                                                    size="icon"
                                                     className="w-7 h-7 flex items-center justify-center rounded hover:bg-gray-100 text-green-600"
                                                 >
                                                     <Check size={20} />
                                                 </Button>
-                                                <Button 
+                                                <Button
                                                     onClick={() => handleStatusUpdate(l._id, "REJECTED")}
-                                                    variant="ghost" 
-                                                    size="icon" 
+                                                    variant="ghost"
+                                                    size="icon"
                                                     className="w-7 h-7 flex items-center justify-center rounded text-red-600 hover:bg-red-50"
                                                 >
                                                     <X size={14} />

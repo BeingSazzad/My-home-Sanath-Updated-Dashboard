@@ -1,5 +1,4 @@
 import { Calendar } from "lucide-react";
-import type { Enquiry } from "../../../types/enquiry";
 import { Button } from "../../ui/button";
 import {
     Dialog,
