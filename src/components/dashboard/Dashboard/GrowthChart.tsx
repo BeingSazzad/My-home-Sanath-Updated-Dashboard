@@ -13,12 +13,24 @@ interface GrowthChartProps {
   data: { month: string; value: number }[];
   color: string;
   gradientId: string;
+  yAxisProps?: {
+    domain?: any;
+    ticks?: number[];
+    tickCount?: number;
+  };
 }
 
-const GrowthChart = ({ data, color, gradientId }: GrowthChartProps) => {
+const formatYAxisTick = (value: number) => {
+  if (value === 0) return "0";
+  if (value >= 1000000) return `${value / 1000000}M`;
+  if (value >= 1000) return `${value / 1000}k`;
+  return value.toString();
+};
+
+const GrowthChart = ({ data, color, gradientId, yAxisProps }: GrowthChartProps) => {
   return (
     <ResponsiveContainer width="100%" height={200}>
-      <AreaChart data={data} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 5, right: 10, left: 15, bottom: 0 }}>
         <defs>
           <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor={color} stopOpacity={0.2} />
@@ -41,6 +53,11 @@ const GrowthChart = ({ data, color, gradientId }: GrowthChartProps) => {
           tickLine={false}
           tick={{ fill: "#9ca3af", fontSize: 11 }}
           dx={-5}
+          width={45}
+          domain={yAxisProps?.domain}
+          ticks={yAxisProps?.ticks}
+          tickCount={yAxisProps?.tickCount}
+          tickFormatter={formatYAxisTick}
         />
 
         <Tooltip

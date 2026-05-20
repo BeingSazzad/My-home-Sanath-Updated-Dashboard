@@ -3,17 +3,17 @@
 import { BsCurrencyDollar } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
-import { useGetAnalyticsQuery } from "../../../redux/features/dashboard/dashboardApi";
+import { useGetOverviewStatsQuery } from "../../../redux/features/dashboard/dashboardApi";
 import StatsCard from "./StatsCard";
 
 const StatsCards = () => {
-  const { data: analyticsData } = useGetAnalyticsQuery(undefined);
+  const { data: overviewData } = useGetOverviewStatsQuery(undefined);
 
   const stats = [
     {
       title: "Total Property Seekers",
-      value: analyticsData?.totalPropertySeekers
-        ? analyticsData.totalPropertySeekers.toLocaleString()
+      value: overviewData?.totalUsers !== undefined
+        ? overviewData.totalUsers.toLocaleString()
         : "4,020",
       icon: <FiUsers className="h-5 w-5 text-blue-600" />,
       iconBgColor: "bg-blue-50/70",
@@ -21,15 +21,17 @@ const StatsCards = () => {
     },
     {
       title: "Total Agents",
-      value: analyticsData?.totalAgents ?? "342",
+      value: overviewData?.totalAgents !== undefined
+        ? overviewData.totalAgents.toLocaleString()
+        : "342",
       icon: <MdOutlineRealEstateAgent className="h-5 w-5 text-purple-600" />,
       iconBgColor: "bg-purple-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
     },
     {
       title: "Total Revenue",
-      value: analyticsData?.totalRevenue
-        ? `£${analyticsData.totalRevenue.toLocaleString()}`
+      value: overviewData?.totalRevenue !== undefined
+        ? `£${overviewData.totalRevenue.toLocaleString()}`
         : "£412,450",
       icon: <BsCurrencyDollar className="h-5 w-5 text-green-600" />,
       iconBgColor: "bg-green-50/70",

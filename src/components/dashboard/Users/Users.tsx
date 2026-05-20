@@ -11,20 +11,45 @@ const UserManagement: React.FC = () => {
   const [tab, setTab] = useState("USER");
   const [plan, setPlan] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const { data: allData } = useGetUsersQuery({
-    page: 1,
-    limit: 10,
-    searchTerm: search,
+    page,
+    limit,
+    searchTerm: search || undefined,
     role: tab,
-    status: statusFilter,
-    plan: plan,
+    status: statusFilter || undefined,
+    plan: plan || undefined,
   });
 
-    console.log(allData,"USERS DATA");
+  console.log(allData, "USERS DATA");
 
   const filtered = useMemo(() =>
     allData?.data || [], [allData]);
+
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleStatus = (val: string) => {
+    setStatusFilter(val);
+    setPage(1);
+  };
+
+  const handlePlan = (val: string) => {
+    setPlan(val);
+    setPage(1);
+  };
+
+  const handleTabChange = (val: string) => {
+    setTab(val);
+    setPage(1);
+    setSearch("");
+    setStatusFilter("");
+    setPlan("");
+  };
 
   return (
     <div className="space-y-6">
@@ -37,7 +62,7 @@ const UserManagement: React.FC = () => {
       <Tabs 
         defaultValue="USER" 
         className="w-full"
-        onValueChange={(value) => setTab(value)}
+        onValueChange={handleTabChange}
       >
         <TabsList className="bg-slate-100 p-1 rounded-xl w-fit flex gap-1 mb-6 border border-slate-200/50">
           <TabsTrigger 
@@ -66,10 +91,18 @@ const UserManagement: React.FC = () => {
           <UserToolbar
             search={search}
             status={statusFilter}
-            onSearch={(val) => { setSearch(val); }}
-            onStatus={(val) => { setStatusFilter(val); }}
+            plan={plan}
+            onSearch={handleSearch}
+            onStatus={handleStatus}
+            onPlan={handlePlan}
           />
-          <UserTable users={filtered} total={allData?.meta?.total || 0} />
+          <UserTable 
+            users={filtered} 
+            total={allData?.meta?.total || 0} 
+            page={page}
+            limit={limit}
+            onPageChange={setPage}
+          />
         </TabsContent>
 
         <TabsContent value="AGENT" className="outline-none focus:outline-none">

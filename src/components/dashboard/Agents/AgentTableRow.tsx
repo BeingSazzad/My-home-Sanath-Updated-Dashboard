@@ -4,9 +4,12 @@ import { imageUrl } from "../../../redux/base/baseAPI";
 import type { UserStatus } from "../../../data/usersData";
 
 const planStyles: Record<string, string> = {
-  Professional: "bg-purple-100 text-purple-800",
-  Enterprise: "bg-indigo-100 text-indigo-800",
-  Basic: "bg-gray-100 text-gray-700",
+  TRIAL: "bg-gray-100 text-gray-700",
+  STARTER: "bg-blue-100 text-blue-800",
+  PROFESSIONAL: "bg-purple-100 text-purple-800",
+  PREMIUM: "bg-indigo-100 text-indigo-800",
+  BASIC: "bg-gray-100 text-gray-700",
+  ENTERPRISE: "bg-indigo-100 text-indigo-800",
 };
 
 type StatusType = "ACTIVE" | "INACTIVE";
@@ -114,7 +117,7 @@ const AgentTableRow: React.FC<Props> = ({ agent: a }) => {
         <p className="text-[11.5px] text-gray-400">{a.phone || "N/A"}</p>
       </td>
       <td className="py-4.5 px-5">
-        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${planStyles[planName] || planStyles.Basic}`}>
+        <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${planStyles[planName.toUpperCase()] || planStyles.TRIAL}`}>
           {planName}
         </span>
       </td>

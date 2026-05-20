@@ -12,7 +12,6 @@ export const enquiriesApi = baseApi.injectEndpoints({
         if (params?.page) queryParams.append("page", params.page.toString());
         if (params?.limit) queryParams.append("limit", params.limit.toString());
         if (params?.searchTerm) queryParams.append("searchTerm", params.searchTerm);
-        
         return `/enquiries/admin/all-enqueries?${queryParams.toString()}`;
       },
     }),

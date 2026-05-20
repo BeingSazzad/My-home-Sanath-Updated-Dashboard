@@ -4,11 +4,13 @@ import React from "react";
 interface Props {
   search: string;
   status: string;
+  plan: string;
   onSearch: (v: string) => void;
   onStatus: (v: string) => void;
+  onPlan: (v: string) => void;
 }
 
-const UserToolbar: React.FC<Props> = ({ search, status, onSearch, onStatus }) => (
+const UserToolbar: React.FC<Props> = ({ search, status, plan, onSearch, onStatus, onPlan }) => (
   <div className="bg-white border border-slate-100 rounded-xl px-4 py-3 flex items-center gap-3 mb-4 flex-wrap">
     <div className="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 h-9">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" className="flex-shrink-0">
@@ -21,8 +23,9 @@ const UserToolbar: React.FC<Props> = ({ search, status, onSearch, onStatus }) =>
         className="flex-1 text-sm outline-none bg-transparent text-gray-900 placeholder:text-gray-400"
       />
     </div>
-    
   
+  
+    {/* Status Filter */}
     <select
       value={status}
       onChange={(e) => onStatus(e.target.value)}
@@ -34,11 +37,12 @@ const UserToolbar: React.FC<Props> = ({ search, status, onSearch, onStatus }) =>
     </select>
 
     {/* Clear Filters Button */}
-    {(search || status) && (
+    {(search || status || plan) && (
       <button
         onClick={() => {
           onSearch("");
           onStatus("");
+          onPlan("");
         }}
         className="text-xs text-slate-500 hover:text-slate-900 cursor-pointer px-2 py-1"
       >

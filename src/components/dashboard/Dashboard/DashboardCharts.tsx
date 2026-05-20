@@ -1,7 +1,11 @@
 // components/dashboard/Charts/DashboardCharts.tsx
 import { useState } from "react";
 import ChartCard from "./ChartCard";
-import { useGetRecentActivitiesQuery } from "../../../redux/features/notification/notificationApi";
+import {
+  useGetUserMonthlyStatsQuery,
+  useGetRevenueMonthlyStatsQuery,
+  useGetAgentMonthlyStatsQuery,
+} from "../../../redux/features/dashboard/dashboardApi";
 
 const monthNames = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -26,25 +30,25 @@ const DashboardCharts = () => {
   const [revenueYear, setRevenueYear] = useState(new Date().getFullYear().toString());
   const [agentYear, setAgentYear] = useState(new Date().getFullYear().toString());
 
-  const { data: userDataResponse } = useGetRecentActivitiesQuery({ year: userYear });
-  const { data: revenueDataResponse } = useGetRecentActivitiesQuery({ year: revenueYear });
-  const { data: agentDataResponse } = useGetRecentActivitiesQuery({ year: agentYear });
+  const { data: userStatsResponse } = useGetUserMonthlyStatsQuery(userYear);
+  const { data: revenueStatsResponse } = useGetRevenueMonthlyStatsQuery(revenueYear);
+  const { data: agentStatsResponse } = useGetAgentMonthlyStatsQuery(agentYear);
 
   const userGrowthData =
-    userDataResponse?.userGrowth?.map((item: any) => ({
-      month: monthNames[item.month - 1],
+    userStatsResponse?.map((item: any) => ({
+      month: item.month,
       value: item.totalUsers,
     })) || fallbackUserData;
 
   const revenueData =
-    revenueDataResponse?.revenue?.map((item: any) => ({
-      month: monthNames[item.month - 1],
+    revenueStatsResponse?.map((item: any) => ({
+      month: item.month,
       value: item.totalRevenue,
     })) || fallbackRevenueData;
 
   const agentData =
-    agentDataResponse?.agents?.map((item: any) => ({
-      month: monthNames[item.month - 1],
+    agentStatsResponse?.map((item: any) => ({
+      month: item.month,
       value: item.totalAgents,
     })) || fallbackAgentData;
 
@@ -64,6 +68,10 @@ const DashboardCharts = () => {
         footerValue={`${currentUsers.toLocaleString()} seekers`}
         selectedYear={userYear}
         onYearChange={setUserYear}
+        yAxisProps={{
+          domain: [0, (dataMax: number) => (dataMax <= 50 ? 50 : Math.ceil(dataMax / 10) * 10)],
+          tickCount: 6,
+        }}
       />
       <ChartCard
         title="Revenue"
@@ -75,6 +83,10 @@ const DashboardCharts = () => {
         footerValue={`£${currentRevenue.toLocaleString()}`}
         selectedYear={revenueYear}
         onYearChange={setRevenueYear}
+        yAxisProps={{
+          domain: [0, (dataMax: number) => Math.max(200000, dataMax)],
+          ticks: [0, 50000, 100000, 150000, 200000],
+        }}
       />
       <ChartCard
         title="Agents"
@@ -85,7 +97,11 @@ const DashboardCharts = () => {
         footerLabel="Total agents"
         footerValue={`${currentAgents} agents`}
         selectedYear={agentYear}
-        onYearChange={setAgentYear}
+        onYearChange={setYear => setAgentYear(setYear)}
+        yAxisProps={{
+          domain: [0, (dataMax: number) => (dataMax <= 50 ? 50 : Math.ceil(dataMax / 10) * 10)],
+          tickCount: 6,
+        }}
       />
     </div>
   );

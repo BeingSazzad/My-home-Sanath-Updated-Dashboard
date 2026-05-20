@@ -12,21 +12,38 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
   const [search, setSearch] = useState("");
   const [planFilter, setPlanFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const { data: allData } = useGetUsersQuery({
-    page: 1,
-    limit: 10,
-    searchTerm: search,
+    page,
+    limit,
+    searchTerm: search || undefined,
     role: "AGENT",
-    status: statusFilter,
-    plan: planFilter,
+    status: statusFilter || undefined,
+    plan: planFilter || undefined,
   });
 
-  console.log(allData,"AGENTS DATA");
+  console.log(allData, "AGENTS DATA");
 
   const filtered = useMemo(() => {
     return allData?.data || [];
   }, [allData]);
+
+  const handleSearch = (val: string) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleStatus = (val: string) => {
+    setStatusFilter(val);
+    setPage(1);
+  };
+
+  const handlePlan = (val: string) => {
+    setPlanFilter(val);
+    setPage(1);
+  };
 
   return (
     <div className="">
@@ -47,11 +64,17 @@ const Agents: React.FC<AgentsProps> = ({ isTabbed = false }) => {
         search={search}
         plan={planFilter}
         status={statusFilter}
-        onSearch={setSearch}
-        onPlan={setPlanFilter}
-        onStatus={setStatusFilter}
+        onSearch={handleSearch}
+        onPlan={handlePlan}
+        onStatus={handleStatus}
       />
-      <AgentTable agents={filtered} total={allData?.meta?.total || 0} />
+      <AgentTable 
+        agents={filtered} 
+        total={allData?.meta?.total || 0} 
+        page={page}
+        limit={limit}
+        onPageChange={setPage}
+      />
     </div>
   );
 };

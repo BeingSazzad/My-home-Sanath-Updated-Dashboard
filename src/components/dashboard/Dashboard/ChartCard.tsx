@@ -18,6 +18,11 @@ interface ChartCardProps {
   footerValue: string;
   selectedYear: string;
   onYearChange: (year: string) => void;
+  yAxisProps?: {
+    domain?: any;
+    ticks?: number[];
+    tickCount?: number;
+  };
 }
 
 const ChartCard = ({
@@ -26,15 +31,14 @@ const ChartCard = ({
   data,
   color,
   gradientId,
-  footerLabel,
-  footerValue,
   selectedYear,
   onYearChange,
+  yAxisProps,
 }: ChartCardProps) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-3">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-3 h-[320px]">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -51,7 +55,7 @@ const ChartCard = ({
             <SelectValue placeholder="Year" />
           </SelectTrigger>
           <SelectContent position="popper" className="bg-white border border-slate-100 text-slate-800 shadow-md rounded-lg">
-            {[0, 1].map((i) => (
+            {[0, 1, 2, 3, 4].map((i) => (
               <SelectItem key={i} value={(currentYear - i).toString()} className="cursor-pointer hover:bg-slate-50 text-xs">
                 {currentYear - i}
               </SelectItem>
@@ -61,13 +65,8 @@ const ChartCard = ({
       </div>
 
       {/* Chart */}
-      <GrowthChart data={data} color={color} gradientId={gradientId} />
+      <GrowthChart data={data} color={color} gradientId={gradientId} yAxisProps={yAxisProps} />
 
-      {/* Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-        <span className="text-sm text-gray-400">{footerLabel}</span>
-        <span className="text-base font-bold text-gray-900">{footerValue}</span>
-      </div>
     </div>
   );
 };
