@@ -123,7 +123,7 @@ const PersonalInformation = () => {
                 <button
                   type="button"
                   onClick={handleRemoveImage}
-                  className="absolute -top-2 -right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full p-1.5 shadow-md border border-white hover:scale-105 transition-all z-20"
+                  className="absolute -top-2 -right-2 bg-[#0B3C6D]! hover:bg-[#0B3C6D]/90! text-red-500 rounded-full p-1.5 shadow-md border border-white hover:scale-105 transition-all z-20"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
