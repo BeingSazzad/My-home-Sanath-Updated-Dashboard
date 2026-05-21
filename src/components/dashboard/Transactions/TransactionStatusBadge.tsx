@@ -2,7 +2,6 @@
 import { CheckCircle2, Clock, XCircle, CornerDownLeft } from "lucide-react";
 import { Badge } from "../../ui/badge";
 
-type Status = "completed" | "pending" | "failed" | "refunded";
 
 const config: Record<string, { label: string; icon: React.ReactNode; className: string }> = {
   completed: {

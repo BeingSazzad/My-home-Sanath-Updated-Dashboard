@@ -1,5 +1,5 @@
-import { Calendar, CreditCard, Download, Filter } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Calendar, CreditCard, Filter } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import {
@@ -26,7 +26,6 @@ const PAGE_SIZE = 5;
 
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
 

@@ -7,7 +7,8 @@ import {
   CreditCard, 
   Bell, 
   UserCheck, 
-  Settings 
+  Settings,
+  Gem
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -58,6 +59,13 @@ export const sidebarItems = [
     label: "Push Notifications",
     path: "push-notifications",
     icon: <Bell size={20} />,
+    public: true
+  },
+  {
+    key: "packages",
+    label: "Subscription Plans",
+    path: "packages",
+    icon: <Gem size={20} />,
     public: true
   },
   {

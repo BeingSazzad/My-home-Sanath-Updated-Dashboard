@@ -83,19 +83,19 @@ function RoleBadge({ role }: { role: string }) {
     return <Badge variant="outline" className={`text-xs font-semibold ${cls}`}>{role}</Badge>;
 }
 
-function StatusBadge({ status }: { status: string }) {
-    const active = status?.toLowerCase() === 'active';
-    return (
-        <Badge
-            variant="outline"
-            className={`text-xs font-medium capitalize ${
-                active ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'
-            }`}
-        >
-            {status}
-        </Badge>
-    );
-}
+// function StatusBadge({ status }: { status: string }) {
+//     const active = status?.toLowerCase() === 'active';
+//     return (
+//         <Badge
+//             variant="outline"
+//             className={`text-xs font-medium capitalize ${
+//                 active ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-100 text-gray-600 border-gray-200'
+//             }`}
+//         >
+//             {status}
+//         </Badge>
+//     );
+// }
 
 function StatusSelect({
     status,

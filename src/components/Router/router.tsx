@@ -17,6 +17,7 @@ import EnquiriesPage from "../dashboard/Enquiries/EnquiriesPage";
 import TransactionsPage from "../dashboard/Transactions/TransactionsPage";
 import PushNotificationsPage from "../dashboard/Pushnotifications/Pushnotificationspage";
 import PrivateRoute from "./PrivateRouter";
+import Packages from "../dashboard/Packages/Packages";
 
 const router = createBrowserRouter([
     {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
             { path: "enquiries", element: <EnquiriesPage /> },
             { path: "transactions", element: <TransactionsPage /> },
             { path: "push-notifications", element: <PushNotificationsPage /> },
+            { path: "packages", element: <Packages /> },
             { path: "admins", element: <AdminManage /> },
             { path: "setting", element: <Settings /> },
             { path: "notification", element: <Notification /> },

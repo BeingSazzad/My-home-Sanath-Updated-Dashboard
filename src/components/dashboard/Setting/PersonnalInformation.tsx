@@ -119,7 +119,7 @@ const PersonalInformation = () => {
                 )}
               </div>
 
-              {/* {displayImage && (
+              {displayImage && (
                 <button
                   type="button"
                   onClick={handleRemoveImage}
@@ -127,7 +127,7 @@ const PersonalInformation = () => {
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
-              )} */}
+              )}
             </div>
           </div>
 

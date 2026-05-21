@@ -1,6 +1,5 @@
 
 
-import { BsCurrencyDollar } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { useGetOverviewStatsQuery } from "../../../redux/features/dashboard/dashboardApi";
