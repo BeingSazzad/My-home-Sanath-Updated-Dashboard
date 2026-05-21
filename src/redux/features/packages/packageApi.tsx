@@ -3,12 +3,12 @@ import { baseApi } from "../../base/baseAPI";
 const packagesApi = baseApi.injectEndpoints({
     endpoints: build=>({
         getPackages: build.query({
-            query: ()=>`/packages`,
+            query: ()=>`/plans`,
             transformResponse: (res: {data: any})=>res?.data
         }),
         addPackage: build.mutation({
             query: (data: any)=>({
-                url: `/packages`,
+                url: `/plans`,
                 method: 'POST',
                 body: data
             }),
@@ -16,7 +16,7 @@ const packagesApi = baseApi.injectEndpoints({
         }),
         updatePackage: build.mutation({
             query: ({id, data}: {id: string, data: any})=>({
-                url: `/packages/${id}`,                
+                url: `/plans/${id}`,                
                 method: 'PATCH',
                 body: data
             }),
@@ -24,7 +24,7 @@ const packagesApi = baseApi.injectEndpoints({
         }),
         deletePackage: build.mutation({
             query: (id: string)=>({
-                url: `/packages/${id}`,
+                url: `/plans/${id}`,
                 method: 'DELETE',
         })
         }),        

@@ -224,7 +224,17 @@ export default function Packages() {
 
     try {
       if (editingPlan) {
-        await updatePackage({ id: editingPlan._id || editingPlan.id || "", data: payload })?.unwrap();
+        await updatePackage({
+          id: editingPlan._id || editingPlan.id || "",
+          data: {
+            title,
+            description,
+            pricing: {
+              amount: priceAmount !== "" ? Number(priceAmount) : 0,
+              currency,
+            },
+          },
+        })?.unwrap();
         toast.success("Subscription plan updated successfully!");
       } else {
         await addPackage(payload)?.unwrap();
@@ -305,9 +315,11 @@ export default function Packages() {
   };
 
   // Shared input class using #0b3c6d as focus accent
+  const isEditMode = !!editingPlan;
   const inputCls = "w-full h-11 px-3.5 rounded-lg bg-white border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#0b3c6d] focus:ring-1 focus:ring-[#0b3c6d]/30 transition-colors placeholder:text-slate-400";
   const selectCls = "w-full h-11 px-3.5 rounded-lg bg-white border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-[#0b3c6d] focus:ring-1 focus:ring-[#0b3c6d]/30 transition-colors";
   const labelCls = "text-xs font-bold uppercase tracking-wider text-slate-500 block";
+  const lockedCls = isEditMode ? " opacity-60 cursor-not-allowed bg-slate-100" : "";
 
   return (
     <div className="space-y-6">
@@ -487,7 +499,11 @@ export default function Packages() {
               <Layers className="text-[#0b3c6d]" />
               {editingPlan ? "Edit Subscription Plan" : "Add New Subscription Plan"}
             </DialogTitle>
-            <p className="text-xs text-slate-400 font-medium">Configure plan settings, price structure, trial phases, and subscriber parameters.</p>
+            <p className="text-xs text-slate-400 font-medium">
+              {isEditMode
+                ? "You can update the plan title, description, and price. Other settings are locked."
+                : "Configure plan settings, price structure, trial phases, and subscriber parameters."}
+            </p>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -508,9 +524,10 @@ export default function Packages() {
               <div className="space-y-1">
                 <label className={labelCls}>Plan Tier</label>
                 <select
-                  className={selectCls}
+                  className={selectCls + lockedCls}
                   value={tier}
                   onChange={(e) => setTier(e.target.value as PLAN_TIER)}
+                  disabled={isEditMode}
                 >
                   <option value={PLAN_TIER.TRIAL}>Trial Package</option>
                   <option value={PLAN_TIER.STARTER}>Starter Package</option>
@@ -557,9 +574,10 @@ export default function Packages() {
               <div className="space-y-1">
                 <label className={labelCls}>Billing Period</label>
                 <select
-                  className={selectCls}
+                  className={selectCls + lockedCls}
                   value={duration}
                   onChange={(e) => setDuration(e.target.value as PLATFORM_PLAN_DURATION)}
+                  disabled={isEditMode}
                 >
                   <option value={PLATFORM_PLAN_DURATION.MONTHLY}>Monthly</option>
                   <option value={PLATFORM_PLAN_DURATION.QUARTERLY}>Quarterly (3 Months)</option>
@@ -576,18 +594,19 @@ export default function Packages() {
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
-                    disabled={isUnlimitedListings}
+                    disabled={isEditMode || isUnlimitedListings}
                     placeholder="e.g. 10"
-                    className={inputCls + (isUnlimitedListings ? " opacity-40 cursor-not-allowed" : "")}
+                    className={inputCls + (isUnlimitedListings || isEditMode ? " opacity-40 cursor-not-allowed" : "") + lockedCls}
                     value={isUnlimitedListings ? "" : maxListings}
                     onChange={(e) => setMaxListings(e.target.value)}
                   />
-                  <label className="flex items-center gap-1.5 cursor-pointer select-none whitespace-nowrap">
+                  <label className={`flex items-center gap-1.5 select-none whitespace-nowrap ${isEditMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>
                     <input
                       type="checkbox"
                       checked={isUnlimitedListings}
                       onChange={(e) => setIsUnlimitedListings(e.target.checked)}
-                      className="rounded border-slate-300 text-[#0b3c6d] focus:ring-[#0b3c6d]/30 w-4 h-4 cursor-pointer accent-[#0b3c6d]"
+                      disabled={isEditMode}
+                      className="rounded border-slate-300 text-[#0b3c6d] focus:ring-[#0b3c6d]/30 w-4 h-4 cursor-pointer accent-[#0b3c6d] disabled:cursor-not-allowed"
                     />
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">∞</span>
                   </label>
@@ -597,9 +616,10 @@ export default function Packages() {
               <div className="space-y-1">
                 <label className={labelCls}>Plan Status</label>
                 <select
-                  className={selectCls}
+                  className={selectCls + lockedCls}
                   value={status}
                   onChange={(e) => setStatus(e.target.value as PLAN_STATUS)}
+                  disabled={isEditMode}
                 >
                   <option value={PLAN_STATUS.ACTIVE}>ACTIVE (Live)</option>
                   <option value={PLAN_STATUS.INACTIVE}>INACTIVE (Draft/Hidden)</option>
@@ -611,9 +631,10 @@ export default function Packages() {
                 <input
                   type="number"
                   placeholder="e.g. 1, 2, 3"
-                  className={inputCls}
+                  className={inputCls + lockedCls}
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
+                  disabled={isEditMode}
                 />
               </div>
             </div>
@@ -648,7 +669,9 @@ export default function Packages() {
                 ].map(({ id, checked, onChange, label, desc }) => (
                   <label
                     key={id}
-                    className={`flex items-center gap-3 p-3.5 rounded-lg border cursor-pointer select-none transition-colors ${
+                    className={`flex items-center gap-3 p-3.5 rounded-lg border select-none transition-colors ${
+                      isEditMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                    } ${
                       checked
                         ? "bg-[#0b3c6d]/5 border-[#0b3c6d]/30"
                         : "bg-slate-50 border-slate-200 hover:border-slate-300"
@@ -658,7 +681,8 @@ export default function Packages() {
                       type="checkbox"
                       checked={checked}
                       onChange={(e) => onChange(e.target.checked)}
-                      className="rounded border-slate-300 w-5 h-5 cursor-pointer accent-[#0b3c6d]"
+                      disabled={isEditMode}
+                      className="rounded border-slate-300 w-5 h-5 cursor-pointer accent-[#0b3c6d] disabled:cursor-not-allowed"
                     />
                     <div>
                       <span className={`text-xs font-bold block ${checked ? "text-[#0b3c6d]" : "text-slate-700"}`}>{label}</span>
@@ -673,12 +697,13 @@ export default function Packages() {
             <div className="border-t border-slate-100 pt-4 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-extrabold uppercase tracking-widest text-slate-400 block">Trial Period Settings</span>
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+                <label className={`flex items-center gap-2 select-none ${isEditMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>
                   <input
                     type="checkbox"
                     checked={trialEnabled}
                     onChange={(e) => setTrialEnabled(e.target.checked)}
-                    className="rounded border-slate-300 w-5 h-5 cursor-pointer accent-[#0b3c6d]"
+                    disabled={isEditMode}
+                    className="rounded border-slate-300 w-5 h-5 cursor-pointer accent-[#0b3c6d] disabled:cursor-not-allowed"
                   />
                   <span className="text-xs font-bold uppercase tracking-wider text-[#0b3c6d]">Enable Trial</span>
                 </label>
@@ -693,9 +718,10 @@ export default function Packages() {
                         type="number"
                         min="1"
                         placeholder="e.g. 1"
-                        className={inputCls}
+                        className={inputCls + lockedCls}
                         value={trialDurationInMonths}
                         onChange={(e) => setTrialDurationInMonths(e.target.value)}
+                        disabled={isEditMode}
                       />
                     </div>
                   </div>
@@ -703,21 +729,23 @@ export default function Packages() {
                   <div className="space-y-2">
                     <label className={labelCls}>Restrictions During Trial Phase</label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                      <label className={`flex items-center gap-2.5 select-none ${isEditMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>
                         <input
                           type="checkbox"
                           checked={trialRestrictionsFeaturedListing}
                           onChange={(e) => setTrialRestrictionsFeaturedListing(e.target.checked)}
-                          className="rounded border-slate-300 text-red-500 w-4 h-4 cursor-pointer accent-red-500"
+                          disabled={isEditMode}
+                          className="rounded border-slate-300 text-red-500 w-4 h-4 cursor-pointer accent-red-500 disabled:cursor-not-allowed"
                         />
                         <span className="text-xs text-slate-600">Disable Featured Listings Promotions</span>
                       </label>
-                      <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                      <label className={`flex items-center gap-2.5 select-none ${isEditMode ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}>
                         <input
                           type="checkbox"
                           checked={trialRestrictionsLeadAccess}
                           onChange={(e) => setTrialRestrictionsLeadAccess(e.target.checked)}
-                          className="rounded border-slate-300 text-red-500 w-4 h-4 cursor-pointer accent-red-500"
+                          disabled={isEditMode}
+                          className="rounded border-slate-300 text-red-500 w-4 h-4 cursor-pointer accent-red-500 disabled:cursor-not-allowed"
                         />
                         <span className="text-xs text-slate-600">Disable Direct Lead & Enquiry Access</span>
                       </label>
