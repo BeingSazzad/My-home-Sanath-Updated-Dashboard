@@ -8,7 +8,8 @@ import {
   Bell, 
   UserCheck, 
   Settings,
-  Gem
+  Gem,
+  MapPin
 } from "lucide-react";
 
 export const sidebarItems = [
@@ -66,6 +67,13 @@ export const sidebarItems = [
     label: "Subscription Plans",
     path: "packages",
     icon: <Gem size={20} />,
+    public: true
+  },
+  {
+    key: "popular-listings",
+    label: "Popular Listings",
+    path: "popular-listings",
+    icon: <MapPin size={20} />,
     public: true
   },
   {

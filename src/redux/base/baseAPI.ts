@@ -32,7 +32,7 @@ export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithInterceptor,
   endpoints: () => ({}),
-  tagTypes: ["user", "notifications", "admin", "category", "slider", "faqs", "withdrawal", "planner", "cars", "host", "booking", "profile", "rules", "commission", "listings"],
+  tagTypes: ["user", "notifications", "admin", "category", "slider", "faqs", "withdrawal", "planner", "cars", "host", "booking", "profile", "rules", "commission", "listings", "popularLocations"],
 });
 
 export const imageUrl = import.meta.env.VITE_IMAGE_BASE_URL;
