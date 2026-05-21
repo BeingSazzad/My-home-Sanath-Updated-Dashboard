@@ -5,6 +5,7 @@ import { FiUsers } from "react-icons/fi";
 import { MdOutlineRealEstateAgent } from "react-icons/md";
 import { useGetOverviewStatsQuery } from "../../../redux/features/dashboard/dashboardApi";
 import StatsCard from "./StatsCard";
+import { PoundSterling } from "lucide-react";
 
 const StatsCards = () => {
   const { data: overviewData } = useGetOverviewStatsQuery(undefined);
@@ -33,7 +34,7 @@ const StatsCards = () => {
       value: overviewData?.totalRevenue !== undefined
         ? `£${overviewData.totalRevenue.toLocaleString()}`
         : "£412,450",
-      icon: <BsCurrencyDollar className="h-5 w-5 text-green-600" />,
+      icon: <PoundSterling className="h-5 w-5 text-green-600" />,
       iconBgColor: "bg-green-50/70",
       cardBgColor: "bg-white border border-slate-100 shadow-sm",
     },

@@ -15,12 +15,17 @@ import Agents from "../dashboard/Agents/Agents";
 import ListingsManagement from "../dashboard/ListingsManagement/ListingsManagement";
 import EnquiriesPage from "../dashboard/Enquiries/EnquiriesPage";
 import TransactionsPage from "../dashboard/Transactions/TransactionsPage";
-import PushNotificationsPage from "../dashboard/PushNotifications/PushNotificationsPage";
+import PushNotificationsPage from "../dashboard/Pushnotifications/Pushnotificationspage";
+import PrivateRoute from "./PrivateRouter";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <MainLayout />,
+        element: (
+            <PrivateRoute>
+                <MainLayout />
+            </PrivateRoute>
+        ),
         errorElement: <ErrorPage />,
         children: [
             { path: "", element: <Dashboard /> },
