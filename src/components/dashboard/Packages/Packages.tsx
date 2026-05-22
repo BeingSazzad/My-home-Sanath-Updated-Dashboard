@@ -101,7 +101,7 @@ export default function Packages() {
 
   // Features Toggles
   const [leadAccess, setLeadAccess] = useState(false);
-  const [featuredListing, setFeaturedListing] = useState(false);
+  const [listings, setListings] = useState(false);
   const [verifiedBadge, setVerifiedBadge] = useState(false);
   const [agentProfilePage, setAgentProfilePage] = useState(false);
 
@@ -132,7 +132,7 @@ export default function Packages() {
     setIsUnlimitedListings(true);
     setMaxListings("");
     setLeadAccess(false);
-    setFeaturedListing(false);
+    setListings(false);
     setVerifiedBadge(false);
     setAgentProfilePage(false);
     setSortOrder("");
@@ -161,7 +161,7 @@ export default function Packages() {
     setIsUnlimitedListings((plan.limits?.maxListings ?? -1) === -1);
     setMaxListings(plan.limits?.maxListings !== undefined && plan.limits.maxListings !== -1 ? String(plan.limits.maxListings) : "");
     setLeadAccess(plan.features?.leadAccess ?? false);
-    setFeaturedListing(plan.features?.featuredListing ?? false);
+    setListings(plan.features?.listings ?? false);
     setVerifiedBadge(plan.features?.verifiedBadge ?? false);
     setAgentProfilePage(plan.features?.agentProfilePage ?? false);
     setSortOrder(plan.sortOrder !== undefined ? String(plan.sortOrder) : "");
@@ -204,7 +204,7 @@ export default function Packages() {
       },
       features: {
         leadAccess,
-        featuredListing,
+        listings,
         verifiedBadge,
         agentProfilePage,
       },
@@ -229,6 +229,8 @@ export default function Packages() {
           data: {
             title,
             description,
+            status,
+            sortOrder: sortOrder !== "" ? Number(sortOrder) : 0,
             pricing: {
               amount: priceAmount !== "" ? Number(priceAmount) : 0,
               currency,
@@ -456,7 +458,7 @@ export default function Packages() {
                     
                     {[
                       { flag: plan.features?.leadAccess, label: "Lead Access & Inquiry Management" },
-                      { flag: plan.features?.featuredListing, label: "Featured Listings Promotions" },
+                      { flag: plan.features?.listings, label: "Listings Access" },
                       { flag: plan.features?.verifiedBadge, label: "Verified Agent Badge Indicator" },
                       { flag: plan.features?.agentProfilePage, label: "Custom Agent Profile Showcase Page" },
                     ].map(({ flag, label }) => (
@@ -501,7 +503,7 @@ export default function Packages() {
             </DialogTitle>
             <p className="text-xs text-slate-400 font-medium">
               {isEditMode
-                ? "You can update the plan title, description, and price. Other settings are locked."
+                ? "You can update the plan title, description, price, status, and sort order. Other settings are locked."
                 : "Configure plan settings, price structure, trial phases, and subscriber parameters."}
             </p>
           </DialogHeader>
@@ -616,10 +618,9 @@ export default function Packages() {
               <div className="space-y-1">
                 <label className={labelCls}>Plan Status</label>
                 <select
-                  className={selectCls + lockedCls}
+                  className={selectCls}
                   value={status}
                   onChange={(e) => setStatus(e.target.value as PLAN_STATUS)}
-                  disabled={isEditMode}
                 >
                   <option value={PLAN_STATUS.ACTIVE}>ACTIVE (Live)</option>
                   <option value={PLAN_STATUS.INACTIVE}>INACTIVE (Draft/Hidden)</option>
@@ -631,10 +632,9 @@ export default function Packages() {
                 <input
                   type="number"
                   placeholder="e.g. 1, 2, 3"
-                  className={inputCls + lockedCls}
+                  className={inputCls}
                   value={sortOrder}
                   onChange={(e) => setSortOrder(e.target.value)}
-                  disabled={isEditMode}
                 />
               </div>
             </div>
@@ -653,18 +653,18 @@ export default function Packages() {
                     desc: "Allows viewing generated inquiries & email leads."
                   },
                   {
-                    id: "featuredListing",
-                    checked: featuredListing,
-                    onChange: setFeaturedListing,
-                    label: "Featured Listings",
-                    desc: "Allows marking and promoting listings to prime slots."
+                    id: "listings",
+                    checked: listings,
+                    onChange: setListings,
+                    label: "Listings Access",
+                    desc: "Allows viewing and creating listings."
                   },
                   {
                     id: "verifiedBadge",
                     checked: verifiedBadge,
                     onChange: setVerifiedBadge,
                     label: "Verified Agent Badge",
-                    desc: "Gives a badge next to the profile name for authenticity."
+                    desc: "Gives a badge next to the profile name for authenticity and trust."
                   },
                 ].map(({ id, checked, onChange, label, desc }) => (
                   <label
