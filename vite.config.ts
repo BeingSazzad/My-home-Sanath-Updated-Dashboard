@@ -13,13 +13,13 @@ export default defineConfig({
   },
   server: {
     // host: "10.10.7.52",
-    port: 3025,
-    host: "10.10.7.93",
+    port: 5093,
+    host: "http://195.35.6.13",
     // port: 5005,
 
     // host: "195.35.6.13", // bayzid
     // port: 5000,
-    allowedHosts: ["https://rimaiziza-dashboard.vercel.app", "dashboard.gogreenmatrix.my", "https://api.gogreenmatrix.my"]
+    allowedHosts: ["http://195.35.6.13:4177","http://195.35.6.13:5093"]
   },
   build: {
     chunkSizeWarningLimit: 1000,
