@@ -384,78 +384,85 @@ export default function Packages() {
             const currencySymbol = plan.pricing?.currency === "GBP" ? "£" : plan.pricing?.currency === "USD" ? "$" : plan.pricing?.currency || "";
             const isTrial = plan.tier === PLAN_TIER.TRIAL;
 
+            
             return (
               <div 
                 key={plan._id || plan.id}
-                className="relative rounded-2xl bg-slate-950 border border-slate-900 shadow-xl overflow-hidden group hover:scale-[1.02] hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 flex flex-col h-full min-h-[500px]"
+                className="relative rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden group hover:scale-[1.02] hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col h-full min-h-[500px]"
               >
+                {/* Top color bar — tier অনুযায়ী */}
                 <div className={`h-1.5 w-full ${
-                  plan.tier === PLAN_TIER.PREMIUM ? "bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600" :
-                  plan.tier === PLAN_TIER.PROFESSIONAL ? "bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-600" :
-                  isTrial ? "bg-gradient-to-r from-gray-400 via-slate-500 to-gray-600" :
-                  "bg-gradient-to-r from-[#0b3c6d] via-blue-600 to-[#0b3c6d]"
+                  plan.tier === PLAN_TIER.PREMIUM 
+                    ? "bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600" 
+                    : plan.tier === PLAN_TIER.PROFESSIONAL 
+                    ? "bg-gradient-to-r from-purple-500 via-indigo-600 to-purple-600" 
+                    : isTrial 
+                    ? "bg-gradient-to-r from-gray-300 via-slate-400 to-gray-400" 
+                    : "bg-gradient-to-r from-[#0b3c6d] via-blue-600 to-[#0b3c6d]"
                 }`} />
-
+            
                 <div className="p-6 flex-1 flex flex-col">
+                  {/* Duration & Status badges */}
                   <div className="flex items-center justify-between mb-4">
-                    <span className="px-2.5 py-1 text-[11px] font-bold tracking-wider uppercase bg-slate-900 border border-slate-800 text-slate-300 rounded-lg flex items-center gap-1.5 shadow-xs">
+                    <span className="px-2.5 py-1 text-[11px] font-bold tracking-wider uppercase bg-slate-100 border border-slate-200 text-slate-600 rounded-lg flex items-center gap-1.5">
                       {getDurationLabel(plan.duration)}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                        isActive 
-                          ? "bg-emerald-950/50 text-emerald-400 border-emerald-800" 
-                          : "bg-slate-900 text-slate-400 border-slate-800"
-                      }`}>
-                        {plan.status}
-                      </span>
-                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                      isActive 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-slate-100 text-slate-500 border-slate-200"
+                    }`}>
+                      {plan.status}
+                    </span>
                   </div>
-
+            
+                  {/* Title & Tier icon */}
                   <div className="flex items-start justify-between gap-3 mb-2">
-                    <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">
+                    <h3 className="text-xl font-bold text-slate-900 tracking-tight group-hover:text-[#0b3c6d] transition-colors">
                       {plan.title}
                     </h3>
-                    <div className="shrink-0 p-1.5 rounded-lg bg-slate-900/60 border border-slate-800/80 shadow-xs">
+                    <div className="shrink-0 p-1.5 rounded-lg bg-slate-100 border border-slate-200">
                       {getTierIcon(plan.tier)}
                     </div>
                   </div>
-
-                  <p className="text-xs text-slate-400 font-normal leading-relaxed mb-6 line-clamp-3">
+            
+                  <p className="text-xs text-slate-500 font-normal leading-relaxed mb-6 line-clamp-3">
                     {plan.description || "No description provided for this plan."}
                   </p>
-
+            
+                  {/* Price */}
                   <div className="mb-6 flex items-baseline gap-1">
-                    <span className="text-4xl font-black text-white tracking-tight">
+                    <span className="text-4xl font-black text-[#0b3c6d] tracking-tight">
                       {currencySymbol}{plan.pricing?.amount}
                     </span>
-                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">
+                    <span className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
                       / {plan.duration === PLATFORM_PLAN_DURATION.MONTHLY ? "mo" : 
                          plan.duration === PLATFORM_PLAN_DURATION.QUARTERLY ? "quarter" :
                          plan.duration === PLATFORM_PLAN_DURATION.HALF_YEARLY ? "6mo" : "yr"}
                     </span>
                   </div>
-
-                  <div className="border-t border-slate-900/80 pt-4 mb-6">
+            
+                  {/* Listing Limit & Trial */}
+                  <div className="border-t border-slate-100 pt-4 mb-6">
                     <div className="flex justify-between items-center text-xs mb-2.5">
                       <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Listing Limit</span>
-                      <span className="text-white font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                      <span className="text-slate-700 font-bold bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                         {plan.limits?.maxListings === -1 ? "Unlimited" : `${plan.limits?.maxListings} Listings`}
                       </span>
                     </div>
                     {plan.trial?.enabled && (
                       <div className="flex justify-between items-center text-xs mb-2.5">
                         <span className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Free Trial</span>
-                        <span className="text-emerald-400 font-semibold bg-emerald-950/20 px-2 py-0.5 rounded border border-emerald-900/30">
+                        <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                           {plan.trial.durationInMonths} Months
                         </span>
                       </div>
                     )}
                   </div>
-
+            
+                  {/* Features */}
                   <div className="space-y-3 mb-6 flex-1">
-                    <span className="text-slate-500 uppercase tracking-widest text-[9px] font-bold block mb-1">Features Included</span>
-                    
+                    <span className="text-slate-400 uppercase tracking-widest text-[9px] font-bold block mb-1">Features Included</span>
                     {[
                       { flag: plan.features?.leadAccess, label: "Lead Access & Inquiry Management" },
                       { flag: plan.features?.listings, label: "Listings Access" },
@@ -463,23 +470,24 @@ export default function Packages() {
                       { flag: plan.features?.agentProfilePage, label: "Custom Agent Profile Showcase Page" },
                     ].map(({ flag, label }) => (
                       <div key={label} className="flex items-center gap-2 text-xs">
-                        <CheckCircle2 size={14} className={flag ? "text-emerald-400 shrink-0" : "text-slate-700 shrink-0"} />
-                        <span className={flag ? "text-slate-200" : "text-slate-500 line-through"}>{label}</span>
+                        <CheckCircle2 size={14} className={flag ? "text-emerald-500 shrink-0" : "text-slate-300 shrink-0"} />
+                        <span className={flag ? "text-slate-700" : "text-slate-400 line-through"}>{label}</span>
                       </div>
                     ))}
                   </div>
-
-                  <div className="mt-auto border-t border-slate-900/80 pt-4 flex gap-2">
+            
+                  {/* Action Buttons */}
+                  <div className="mt-auto border-t border-slate-100 pt-4 flex gap-2">
                     <Button
                       onClick={() => handleEditClick(plan)}
-                      className="flex-1 gap-1.5 h-9 rounded-xl bg-[#0b3c6d] hover:bg-[#0b3c6d]/90 text-white shadow-md font-semibold text-xs transition-all"
+                      className="flex-1 gap-1.5 h-9 rounded-xl bg-[#0b3c6d] hover:bg-[#0b3c6d]/90 text-white shadow-sm font-semibold text-xs transition-all"
                     >
                       <Edit3 size={13} />
                       Edit Plan
                     </Button>
                     <Button
                       onClick={() => handleDeleteClick(plan._id || plan.id || "")}
-                      className="px-3 h-9 rounded-xl bg-[#0b3c6d] hover:bg-[#0b3c6d]/90 text-white shadow-md transition-all"
+                      className="px-3 h-9 rounded-xl bg-slate-100 hover:bg-red-50 hover:border-red-200 border border-slate-200 text-slate-500 hover:text-red-600 transition-all"
                     >
                       <Trash2 size={14} />
                     </Button>
@@ -487,6 +495,7 @@ export default function Packages() {
                 </div>
               </div>
             );
+
           })}
         </div>
       )}

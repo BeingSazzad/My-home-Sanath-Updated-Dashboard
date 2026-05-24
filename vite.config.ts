@@ -14,7 +14,7 @@ export default defineConfig({
   server: {
     // host: "10.10.7.52",
     port: 3025,
-    // host: "195.35.6.13",
+    host: "10.10.7.93",
     // port: 5005,
 
     // host: "195.35.6.13", // bayzid

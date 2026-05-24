@@ -22,7 +22,7 @@ import { useGetTransactionsQuery } from "../../../redux/transaction/transactionA
 import { TransactionStatusBadge } from "./TransactionStatusBadge";
 
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
