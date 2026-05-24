@@ -5,7 +5,7 @@ import {
   Home, 
   MessageSquare, 
   CreditCard, 
-  Bell, 
+  // Bell, 
   UserCheck, 
   Settings,
   Gem,
@@ -55,13 +55,13 @@ export const sidebarItems = [
     icon: <DollarSign size={20} />,
     public: true
   },  
-  {
-    key: "push-notifications",
-    label: "Push Notifications",
-    path: "push-notifications",
-    icon: <Bell size={20} />,
-    public: true
-  },
+  // {
+  //   key: "push-notifications",
+  //   label: "Push Notifications",
+  //   path: "push-notifications",
+  //   icon: <Bell size={20} />,
+  //   public: true
+  // },
   {
     key: "packages",
     label: "Subscription Plans",
