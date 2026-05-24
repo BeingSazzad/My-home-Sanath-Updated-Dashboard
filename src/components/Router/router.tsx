@@ -15,7 +15,7 @@ import Agents from "../dashboard/Agents/Agents";
 import ListingsManagement from "../dashboard/ListingsManagement/ListingsManagement";
 import EnquiriesPage from "../dashboard/Enquiries/EnquiriesPage";
 import TransactionsPage from "../dashboard/Transactions/TransactionsPage";
-import PushNotificationsPage from "../dashboard/Pushnotifications/Pushnotificationspage";
+// import PushNotificationsPage from "../dashboard/Pushnotifications/Pushnotificationspage";
 import PrivateRoute from "./PrivateRouter";
 import Packages from "../dashboard/Packages/Packages";
 import PopularListings from "../dashboard/PopularListings/PopularListings";
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
             { path: "listing", element: <ListingsManagement /> },
             { path: "enquiries", element: <EnquiriesPage /> },
             { path: "transactions", element: <TransactionsPage /> },
-            { path: "push-notifications", element: <PushNotificationsPage /> },
+            // { path: "push-notifications", element: <PushNotificationsPage /> },
             { path: "packages", element: <Packages /> },
             { path: "popular-listings", element: <PopularListings /> },
             { path: "admins", element: <AdminManage /> },
